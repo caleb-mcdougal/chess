@@ -1,1 +1,2 @@
-# My notes 
+<<<<<<< HEAD
+# My notes Hello world

@@ -1,2 +1,2 @@
 <<<<<<< HEAD
-# My notes Hello world its wednesday
+# My notes Hello world

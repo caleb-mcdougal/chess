@@ -53,6 +53,6 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         throw new RuntimeException("Not implemented");
-
+        //insert switch that will link to subclasses of chessmovementrule subclass that will create hashtable and return it here
     }
 }

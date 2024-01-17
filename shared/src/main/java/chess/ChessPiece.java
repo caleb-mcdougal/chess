@@ -1,6 +1,8 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
+
 
 /**
  * Represents a single chess piece
@@ -52,7 +54,24 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
         //insert switch that will link to subclasses of chessmovementrule subclass that will create hashtable and return it here
+        ChessPiece.PieceType pieceType = board.getPiece(myPosition).getPieceType(); // This will get the piece type that is at the given position
+        switch (pieceType) {
+            case KING:
+                // code to be executed if expression matches value1
+                break;
+            case QUEEN:
+                // code to be executed if expression matches value2
+            case BISHOP:
+                System.out.println("In Bishop Switch");
+            case KNIGHT:
+            case ROOK:
+            case PAWN:
+                break;
+            // additional cases as needed
+            default:
+                // code to be executed if none of the cases match the expression
+        }
     }
 }

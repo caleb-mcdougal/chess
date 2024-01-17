@@ -57,7 +57,7 @@ public class ChessPiece {
         //throw new RuntimeException("Not implemented");
         //insert switch that will link to subclasses of chessmovementrule subclass that will create hashtable and return it here
         ChessPiece.PieceType pieceType = board.getPiece(myPosition).getPieceType(); // This will get the piece type that is at the given position
-        HashSet<ChessMove> numberSet = new HashSet<>();
+        HashSet<ChessMove> moveSet = new HashSet<>();
         switch (pieceType) {
             case KING:
                 // code to be executed if expression matches value1
@@ -66,6 +66,7 @@ public class ChessPiece {
                 // code to be executed if expression matches value2
             case BISHOP:
                 System.out.println("In Bishop Switch");
+                //Bishop myBishop = new Bishop(chessBoardInstance, chessPositionInstance, TeamColor.WHITE);
             case KNIGHT:
             case ROOK:
             case PAWN:
@@ -74,6 +75,7 @@ public class ChessPiece {
             default:
                 // code to be executed if none of the cases match the expression
         }
-        return numberSet;
+
+        return moveSet;
     }
 }

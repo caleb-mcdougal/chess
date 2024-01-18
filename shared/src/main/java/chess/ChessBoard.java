@@ -20,7 +20,7 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         //throw new RuntimeException("Not implemented");
-        this.board[position.getRow()][position.getColumn()] = piece;
+        this.board[position.getRow()-1][position.getColumn()-1] = piece; //-1 for base 0
     }
 
     /**
@@ -32,7 +32,7 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         //throw new RuntimeException("Not implemented");
-        return this.board[position.getRow()][position.getColumn()];
+        return this.board[position.getRow()-1][position.getColumn()-1]; //-1 for base 0
     }
 
     /**

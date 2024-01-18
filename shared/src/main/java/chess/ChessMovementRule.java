@@ -27,8 +27,8 @@ public class ChessMovementRule {
                 moveSet = bishopMoves();
                 break;
             case KNIGHT:
+                moveSet = knightMoves();
                 break;
-
             case ROOK:
                 moveSet = rookMoves();
                 break;
@@ -49,7 +49,7 @@ public class ChessMovementRule {
             newPosition = new ChessPosition(myPosition.getRow() + rowSteps[i], myPosition.getColumn() + colSteps[i]);//update position
             ChessMove newMove = new ChessMove(myPosition, newPosition, null);
             if (newPosition.getRow() > 8 || newPosition.getColumn() > 8 || newPosition.getRow() < 1 || newPosition.getColumn() < 1) {//Off the board
-                break;
+                //break;
             } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
                 if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
                     System.out.println(newMove.toString());
@@ -125,6 +125,32 @@ public class ChessMovementRule {
                 }
             }
         }
+        return moveSet;
+    }
+
+
+    private HashSet<ChessMove> knightMoves(){
+        HashSet<ChessMove> moveSet = new HashSet<>();
+        ChessPosition newPosition;// ChessPosition(myPosition.getRow(),myPosition.getColumn());//create new position one up and diagonal
+        int [] rowSteps = {2,2,1,-1,-2,-2,1,-1};//starting at forward checking loop around king
+        int [] colSteps = {1,-1,2,2,1,-1,-2,-2};
+
+        for (int i = 0; i < rowSteps.length; i++) {
+            newPosition = new ChessPosition(myPosition.getRow() + rowSteps[i], myPosition.getColumn() + colSteps[i]);//update position
+            ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+            if (newPosition.getRow() > 8 || newPosition.getColumn() > 8 || newPosition.getRow() < 1 || newPosition.getColumn() < 1) {//Off the board
+                //break;
+            } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
+                if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
+                    System.out.println(newMove.toString());
+                    moveSet.add(newMove); //capture and add possible space
+                }
+            } else { // if normal legal space add it to hashset
+                System.out.println(newMove.toString());
+                moveSet.add(newMove);
+            }
+        }
+        System.out.println(moveSet.toString());
         return moveSet;
     }
 

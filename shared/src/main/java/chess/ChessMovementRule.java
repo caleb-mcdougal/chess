@@ -18,6 +18,7 @@ public class ChessMovementRule {
         HashSet<ChessMove> moveSet = new HashSet<>();
         switch (type) {
             case KING:
+                moveSet = kingMoves();
                 break;
             case QUEEN:
                 break;
@@ -35,6 +36,32 @@ public class ChessMovementRule {
     }
 
 
+    private HashSet<ChessMove> kingMoves(){
+        HashSet<ChessMove> moveSet = new HashSet<>();
+        ChessPosition newPosition;// ChessPosition(myPosition.getRow(),myPosition.getColumn());//create new position one up and diagonal
+        int [] rowSteps = {1,1,0,-1,-1,-1,0,1};//starting at forward checking loop around king
+        int [] colSteps = {0,1,1,1,0,-1,-1,-1};
+
+        for (int i = 0; i < rowSteps.length; i++) {
+            newPosition = new ChessPosition(myPosition.getRow() + rowSteps[i], myPosition.getColumn() + colSteps[i]);//update position
+            ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+            if (newPosition.getRow() > 8 || newPosition.getColumn() > 8 || newPosition.getRow() < 1 || newPosition.getColumn() < 1) {//Off the board
+                break;
+            } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
+                if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
+                    System.out.println(newMove.toString());
+                    moveSet.add(newMove); //capture and add possible space
+                }
+            } else { // if normal legal space add it to hashset
+                System.out.println(newMove.toString());
+                moveSet.add(newMove);
+            }
+        }
+        System.out.println(moveSet.toString());
+        return moveSet;
+    }
+
+
 
     private HashSet<ChessMove> bishopMoves(){
         HashSet<ChessMove> moveSet = new HashSet<>();
@@ -47,26 +74,22 @@ public class ChessMovementRule {
             newPosition = new ChessPosition(myPosition.getRow(),myPosition.getColumn());
             while (true) {
                 newPosition = new ChessPosition(newPosition.getRow() + rowSteps[i], newPosition.getColumn() + colSteps[i]);//update position
-
                 ChessMove newMove = new ChessMove(myPosition, newPosition, null);
 
                 if (newPosition.getRow() > 8 || newPosition.getColumn() > 8 || newPosition.getRow() < 1 || newPosition.getColumn() < 1) {//Off the board
                     break;
                 } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
                     if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
-                        System.out.println(newPosition.toString());
                         moveSet.add(newMove); //capture and add possible space
                         break;
                     } else { //if piece is friendly color then break
                         break;
                     }
                 } else { // if normal legal space add it to hashset
-                    System.out.println(newPosition.toString());
                     moveSet.add(newMove);
                 }
             }
         }
-        System.out.println(moveSet);
         return moveSet;
     }
 

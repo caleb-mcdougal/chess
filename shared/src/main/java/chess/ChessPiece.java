@@ -58,23 +58,8 @@ public class ChessPiece {
         //insert switch that will link to subclasses of chessmovementrule subclass that will create hashtable and return it here
         ChessPiece.PieceType pieceType = board.getPiece(myPosition).getPieceType(); // This will get the piece type that is at the given position
         HashSet<ChessMove> moveSet = new HashSet<>();
-        switch (pieceType) {
-            case KING:
-                // code to be executed if expression matches value1
-                break;
-            case QUEEN:
-                // code to be executed if expression matches value2
-            case BISHOP:
-                System.out.println("In Bishop Switch");
-                //Bishop myBishop = new Bishop(chessBoardInstance, chessPositionInstance, TeamColor.WHITE);
-            case KNIGHT:
-            case ROOK:
-            case PAWN:
-                break;
-            // additional cases as needed
-            default:
-                // code to be executed if none of the cases match the expression
-        }
+        ChessMovementRule moveRule = new ChessMovementRule(board,myPosition,pieceColor,type);
+        moveSet = moveRule.getMoves();
 
         return moveSet;
     }

@@ -54,18 +54,16 @@ public class ChessMovementRule {
             newPosition = new ChessPosition(myPosition.getRow() + rowSteps[i], myPosition.getColumn() + colSteps[i]);//update position
             ChessMove newMove = new ChessMove(myPosition, newPosition, null);
             if (newPosition.getRow() > 8 || newPosition.getColumn() > 8 || newPosition.getRow() < 1 || newPosition.getColumn() < 1) {//Off the board
-                //break;
+                // Off the edge, don't add
             } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
                 if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
                     System.out.println(newMove.toString());
                     moveSet.add(newMove); //capture and add possible space
                 }
             } else { // if normal legal space add it to hashset
-                System.out.println(newMove.toString());
                 moveSet.add(newMove);
             }
         }
-        System.out.println(moveSet.toString());
         return moveSet;
     }
 

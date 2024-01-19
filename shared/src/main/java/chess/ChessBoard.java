@@ -42,7 +42,82 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        //White
+        ChessPosition pos = new ChessPosition(1,1);
+        ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        //Rooks
+        this.addPiece(pos,piece);
+        pos = new ChessPosition(1,8);
+        piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        this.addPiece(pos,piece);
+        //Knights
+        pos = new ChessPosition(1,2);
+        piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        this.addPiece(pos,piece);
+        pos = new ChessPosition(1,7);
+        piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        this.addPiece(pos,piece);
+        //Bishops
+        pos = new ChessPosition(1,3);
+        piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        this.addPiece(pos,piece);
+        pos = new ChessPosition(1,6);
+        piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        this.addPiece(pos,piece);
+        //Queen
+        pos = new ChessPosition(1,4);
+        piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        this.addPiece(pos,piece);
+        //King
+        pos = new ChessPosition(1,5);
+        piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        this.addPiece(pos,piece);
+        //Pawns
+        for (int i = 1; i < 9; i++){
+            pos = new ChessPosition(2,i);
+            piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            this.addPiece(pos,piece);
+        }
+
+
+        //Black
+
+        //Rooks
+        pos = new ChessPosition(8,1);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        this.addPiece(pos,piece);
+        pos = new ChessPosition(8,8);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        this.addPiece(pos,piece);
+        //Knights
+        pos = new ChessPosition(8,2);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        this.addPiece(pos,piece);
+        pos = new ChessPosition(8,7);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        this.addPiece(pos,piece);
+        //Bishops
+        pos = new ChessPosition(8,3);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        this.addPiece(pos,piece);
+        pos = new ChessPosition(8,6);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        this.addPiece(pos,piece);
+        //Queen
+        pos = new ChessPosition(8,4);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+        this.addPiece(pos,piece);
+        //King
+        pos = new ChessPosition(8,5);
+        piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+        this.addPiece(pos,piece);
+        //Pawns
+        for (int i = 1; i < 9; i++){
+            pos = new ChessPosition(7,i);
+            piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            this.addPiece(pos,piece);
+        }
+
     }
 
     @Override

@@ -49,12 +49,19 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "ChessMove{" +
-                ", endPosition=" + endPosition.toString() +
-                '}';
-                //removed lines below
-                //"startPosition=" + startPosition.toString() +
-                //", promotionPiece=" + promotionPiece.toString() +
+        if (promotionPiece != null) {
+            return "ChessMove{" +
+                    "startPosition=" + startPosition.toString() +
+                    ", endPosition=" + endPosition.toString() +
+                    ", promotionPiece=" + promotionPiece.toString() +
+                    '}';
+        } else {
+            return "ChessMove{" +
+                    "startPosition=" + startPosition.toString() +
+                    ", endPosition=" + endPosition.toString() +
+                    ", promotionPiece=NULL" +
+                    '}';
+        }
     }
 
     @Override

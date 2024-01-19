@@ -33,6 +33,11 @@ public class ChessMovementRule {
                 moveSet = rookMoves();
                 break;
             case PAWN:
+                if (color == ChessGame.TeamColor.WHITE){
+                    moveSet = whitePawnMoves();
+                } else {
+                    moveSet = blackPawnMoves();
+                }
                 break;
         }
         return moveSet;
@@ -185,43 +190,117 @@ public class ChessMovementRule {
         return moveSet;
     }
 
-}
 
-//Considered using subclasses but determined to just use member functions with a helper function.
-/*
-class Bishop extends ChessMovementRule {
-    public Bishop(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor color) {
-        super(board, myPosition, color); // Call the constructor of the superclass
-    }
-
-    public Collection<ChessMove> bishopMoves(){
+    private HashSet<ChessMove> whitePawnMoves(){
         HashSet<ChessMove> moveSet = new HashSet<>();
-        ChessPosition newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn()+1);//create new position one up and diagonal
-        int [] rowSteps = {1,1,-1,-1};//forward-right, forward-left, backward-right, backward-left
-        int [] colSteps = {1,-1,1,-1};
+        ChessPosition newPosition;// ChessPosition(myPosition.getRow(),myPosition.getColumn());//create new position one up and diagonal
 
-        for (int i = 0; i < rowSteps.length; i++) {
-            while (true) {
-                newPosition = new ChessPosition(newPosition.getRow() + rowSteps[i], newPosition.getColumn() + colSteps[i]);//update position
-                System.out.println("newPosition: " + newPosition);
+        // Open space in front (includes enemy king row to promotion and move two off start position)
+        newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn());
+        if (board.getPiece(newPosition) == null){
+            if (myPosition.getRow() == 2) { // Move forward one or two
                 ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                moveSet.add(newMove); // Add one space forward
+                newPosition = new ChessPosition(myPosition.getRow()+2,myPosition.getColumn());
+                if (board.getPiece(newPosition) == null) {
+                    newMove = new ChessMove(myPosition, newPosition, null);
+                    moveSet.add(newMove); // Add two spaces forward
+                }
+            } else if (newPosition.getRow() == 8) { // Move forward with promotion
+                pawnPromotionAdded(moveSet,newPosition);
+            } else { // Move forward without promotion
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                moveSet.add(newMove);
+            }
+        }
 
-                if (newPosition.getRow() > 7 || newPosition.getColumn() > 7 || newPosition.getRow() < 0 || newPosition.getColumn() < 0) {//Off the board
-                    break;
-                } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
-                    if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
-                        moveSet.add(newMove); //capture and add possible space
-                        System.out.println("moveSet: " + moveSet);
-                        break;
-                    } else { //if piece is friendly color then break
-                        break;
-                    }
-                } else { // if normal legal space add it to hashset
+        //Forward right with enemy
+        newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn()+1);
+        if (board.getPiece(newPosition) != null) {
+            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                if (newPosition.getRow() == 8) { // King row
+                    pawnPromotionAdded(moveSet,newPosition);
+                } else { // Non king row
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
                     moveSet.add(newMove);
                 }
             }
         }
+
+        //Forward left with enemy
+        newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn()-1);
+        if (board.getPiece(newPosition) != null) {
+            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                if (newPosition.getRow() == 8) { // King row
+                    pawnPromotionAdded(moveSet,newPosition);
+                } else { // Non king row
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                    moveSet.add(newMove);
+                }
+            }
+        }
+
         return moveSet;
     }
+
+    private HashSet<ChessMove> blackPawnMoves(){
+        HashSet<ChessMove> moveSet = new HashSet<>();
+        ChessPosition newPosition;// ChessPosition(myPosition.getRow(),myPosition.getColumn());//create new position one up and diagonal
+
+        // Open space in front (includes enemy king row to promotion and move two off start position)
+        newPosition = new ChessPosition(myPosition.getRow()-1,myPosition.getColumn());
+        if (board.getPiece(newPosition) == null){
+            if (myPosition.getRow() == 7) { // Move forward one or two
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                moveSet.add(newMove); // Add one space forward
+                newPosition = new ChessPosition(myPosition.getRow()-2,myPosition.getColumn());
+                if (board.getPiece(newPosition) == null) {
+                    newMove = new ChessMove(myPosition, newPosition, null);
+                    moveSet.add(newMove); // Add two spaces forward
+                }
+            } else if (newPosition.getRow() == 1) { // Move forward with promotion
+                pawnPromotionAdded(moveSet,newPosition);
+            } else { // Move forward without promotion
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                moveSet.add(newMove);
+            }
+        }
+
+        //Forward right with enemy
+        newPosition = new ChessPosition(myPosition.getRow()-1,myPosition.getColumn()-1);
+        if (board.getPiece(newPosition) != null) {
+            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                if (newPosition.getRow() == 1) { // King row
+                    pawnPromotionAdded(moveSet,newPosition);
+                } else { // Non king row
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                    moveSet.add(newMove);
+                }
+            }
+        }
+
+        //Forward left with enemy
+        newPosition = new ChessPosition(myPosition.getRow()-1,myPosition.getColumn()+1);
+        if (board.getPiece(newPosition) != null) {
+            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                if (newPosition.getRow() == 1) { // King row
+                    pawnPromotionAdded(moveSet,newPosition);
+                } else { // Non king row
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                    moveSet.add(newMove);
+                }
+            }
+        }
+
+        return moveSet;
+    }
+
+    private void pawnPromotionAdded(HashSet<ChessMove> move, ChessPosition position){
+        ChessPiece.PieceType[] pieceTypesList = {ChessPiece.PieceType.ROOK,ChessPiece.PieceType.BISHOP,ChessPiece.PieceType.QUEEN,ChessPiece.PieceType.KNIGHT};//ChessPiece.PieceType.values();
+        for (ChessPiece.PieceType pieceType : pieceTypesList) {
+            ChessMove newMove = new ChessMove(myPosition, position, pieceType);
+            move.add(newMove);
+        }
+    }
+
 }
-*/

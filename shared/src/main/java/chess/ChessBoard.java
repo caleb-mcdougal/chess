@@ -79,9 +79,7 @@ public class ChessBoard {
             this.addPiece(pos,piece);
         }
 
-
         //Black
-
         //Rooks
         pos = new ChessPosition(8,1);
         piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);

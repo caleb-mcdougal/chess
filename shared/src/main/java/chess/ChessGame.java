@@ -55,8 +55,7 @@ public class ChessGame {
         //throw new RuntimeException("Not implemented");
 
         ChessPiece piece = board.getPiece(startPosition);
-        Collection<ChessMove> moves = piece.pieceMoves(board,startPosition);
-        return moves;
+        return piece.pieceMoves(board,startPosition);
     }
 
     /**
@@ -67,6 +66,9 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new RuntimeException("Not implemented");
+        //ChessPosition start = move.getStartPosition();
+        //ChessPosition end = move.getEndPosition();
+        //board[start.getRow()][start.getColumn()] =
     }
 
     /**

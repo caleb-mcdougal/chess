@@ -67,7 +67,7 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public HashSet<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessMovementRule moveRule = new ChessMovementRule(board,myPosition,pieceColor,type);
         return moveRule.getMoves();
     }

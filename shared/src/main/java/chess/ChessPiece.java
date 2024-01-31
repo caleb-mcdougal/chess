@@ -68,13 +68,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //throw new RuntimeException("Not implemented");
-        //insert switch that will link to subclasses of chessmovementrule subclass that will create hashtable and return it here
-        ChessPiece.PieceType pieceType = board.getPiece(myPosition).getPieceType(); // This will get the piece type that is at the given position
-        HashSet<ChessMove> moveSet = new HashSet<>();
         ChessMovementRule moveRule = new ChessMovementRule(board,myPosition,pieceColor,type);
-        moveSet = moveRule.getMoves();
-
-        return moveSet;
+        return moveRule.getMoves();
     }
 }

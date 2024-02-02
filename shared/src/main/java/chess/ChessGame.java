@@ -58,11 +58,24 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        //throw new RuntimeException("Not implemented");
-
+    public HashSet<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        return piece.pieceMoves(board,startPosition);
+        HashSet<ChessMove> moveSet = piece.pieceMoves(board,startPosition);
+        ChessBoard OGBoard = board.deepCopy();
+        HashSet<ChessMove> invalidMoves = new HashSet<>();
+        for (ChessMove move : moveSet){
+            try {
+                makeMove(move);
+            } catch (InvalidMoveException e) { // What do i do with this exception?
+                System.out.println("Caught an InvalidMoveException: " + e.getMessage());
+            }
+            if (isInCheck(piece.getTeamColor())) { // if moving to check, then invalid move
+                invalidMoves.add(move);
+            }
+            board = OGBoard.deepCopy();
+        }
+        moveSet.removeAll(invalidMoves);
+        return moveSet;
     }
 
     /**
@@ -72,7 +85,6 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        //throw new RuntimeException("Not implemented");
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         board.addPiece(end,board.getPiece(start)); //overwrite the piece where you end with the piece moving there
@@ -114,7 +126,6 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        //boolean inCheckmate = false;
         //Must be in check to be in checkmate
         System.out.println("in isInCheckmate");
         if(!isInCheck(teamColor)){
@@ -183,7 +194,18 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition newPos = new ChessPosition(i,j);
+                if(board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() == teamColor){
+                    HashSet<ChessMove> moveSet = validMoves(newPos);
+                    if(!moveSet.isEmpty()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**

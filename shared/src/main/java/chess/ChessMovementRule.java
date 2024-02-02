@@ -57,7 +57,6 @@ public class ChessMovementRule {
                 // Off the edge, don't add
             } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
                 if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
-                    System.out.println(newMove.toString());
                     moveSet.add(newMove); //capture and add possible space
                 }
             } else { // if normal legal space add it to hashset
@@ -145,15 +144,12 @@ public class ChessMovementRule {
                 //break;
             } else if (board.getPiece(newPosition) != null) {//if a piece is on newPosition
                 if (board.getPiece(newPosition).getTeamColor() != color) { // if the piece is enemy color
-                    System.out.println(newMove.toString());
                     moveSet.add(newMove); //capture and add possible space
                 }
             } else { // if normal legal space add it to hashset
-                System.out.println(newMove.toString());
                 moveSet.add(newMove);
             }
         }
-        System.out.println(moveSet.toString());
         return moveSet;
     }
 

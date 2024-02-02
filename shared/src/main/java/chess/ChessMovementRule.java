@@ -209,30 +209,10 @@ public class ChessMovementRule {
         }
 
         //Forward right with enemy
-        newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn()+1);
-        if (board.getPiece(newPosition) != null) {
-            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
-                if (newPosition.getRow() == 8) { // King row
-                    pawnPromotionAdded(moveSet,newPosition);
-                } else { // Non king row
-                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                    moveSet.add(newMove);
-                }
-            }
-        }
+        pawnCapture(moveSet,1,1, ChessGame.TeamColor.BLACK);
 
         //Forward left with enemy
-        newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn()-1);
-        if (board.getPiece(newPosition) != null) {
-            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
-                if (newPosition.getRow() == 8) { // King row
-                    pawnPromotionAdded(moveSet,newPosition);
-                } else { // Non king row
-                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                    moveSet.add(newMove);
-                }
-            }
-        }
+        pawnCapture(moveSet,1,-1, ChessGame.TeamColor.BLACK);
 
         return moveSet;
     }
@@ -261,33 +241,32 @@ public class ChessMovementRule {
         }
 
         //Forward right with enemy
-        newPosition = new ChessPosition(myPosition.getRow()-1,myPosition.getColumn()-1);
-        if (board.getPiece(newPosition) != null) {
-            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
-                if (newPosition.getRow() == 1) { // King row
-                    pawnPromotionAdded(moveSet,newPosition);
-                } else { // Non king row
-                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                    moveSet.add(newMove);
-                }
-            }
-        }
+        pawnCapture(moveSet,-1,-1, ChessGame.TeamColor.WHITE);
 
         //Forward left with enemy
-        newPosition = new ChessPosition(myPosition.getRow()-1,myPosition.getColumn()+1);
-        if (board.getPiece(newPosition) != null) {
-            if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
-                if (newPosition.getRow() == 1) { // King row
-                    pawnPromotionAdded(moveSet,newPosition);
-                } else { // Non king row
-                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                    moveSet.add(newMove);
-                }
-            }
-        }
+        pawnCapture(moveSet,-1,1, ChessGame.TeamColor.WHITE);
 
         return moveSet;
     }
+
+    private void pawnCapture(HashSet<ChessMove> moveSet, int rowMove, int colMove, ChessGame.TeamColor enemyColor) {
+
+        ChessPosition newPosition = new ChessPosition(myPosition.getRow() + rowMove,myPosition.getColumn() + colMove);
+        if (board.getPiece(newPosition) != null) {
+            if (board.getPiece(newPosition).getTeamColor() == enemyColor) {
+                if (newPosition.getRow() == 1) { // King row
+                    pawnPromotionAdded(moveSet,newPosition);
+                } else { // Non king row
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                    moveSet.add(newMove);
+                }
+            }
+        }
+    }
+
+//    private void pawnAdvance(HashSet<ChessMove> moveSet, int rowMove, int colMove, ChessGame.TeamColor enemyColor) {
+//
+//    }
 
     private void pawnPromotionAdded(HashSet<ChessMove> move, ChessPosition position){
         ChessPiece.PieceType[] pieceTypesList = {ChessPiece.PieceType.ROOK,ChessPiece.PieceType.BISHOP,ChessPiece.PieceType.QUEEN,ChessPiece.PieceType.KNIGHT};//ChessPiece.PieceType.values();

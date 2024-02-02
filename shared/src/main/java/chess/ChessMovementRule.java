@@ -190,23 +190,24 @@ public class ChessMovementRule {
         ChessPosition newPosition;// ChessPosition(myPosition.getRow(),myPosition.getColumn());//create new position one up and diagonal
 
         // Open space in front (includes enemy king row to promotion and move two off start position)
-        newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn());
-        if (board.getPiece(newPosition) == null){
-            if (myPosition.getRow() == 2) { // Move forward one or two
-                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                moveSet.add(newMove); // Add one space forward
-                newPosition = new ChessPosition(myPosition.getRow()+2,myPosition.getColumn());
-                if (board.getPiece(newPosition) == null) {
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    moveSet.add(newMove); // Add two spaces forward
-                }
-            } else if (newPosition.getRow() == 8) { // Move forward with promotion
-                pawnPromotionAdded(moveSet,newPosition);
-            } else { // Move forward without promotion
-                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                moveSet.add(newMove);
-            }
-        }
+//        newPosition = new ChessPosition(myPosition.getRow()+1,myPosition.getColumn());
+//        if (board.getPiece(newPosition) == null){
+//            if (myPosition.getRow() == 2) { // Move forward one or two
+//                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+//                moveSet.add(newMove); // Add one space forward
+//                newPosition = new ChessPosition(myPosition.getRow()+2,myPosition.getColumn());
+//                if (board.getPiece(newPosition) == null) {
+//                    newMove = new ChessMove(myPosition, newPosition, null);
+//                    moveSet.add(newMove); // Add two spaces forward
+//                }
+//            } else if (newPosition.getRow() == 8) { // Move forward with promotion
+//                pawnPromotionAdded(moveSet,newPosition);
+//            } else { // Move forward without promotion
+//                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+//                moveSet.add(newMove);
+//            }
+//        }
+        pawnAdvance(moveSet,1,2,2,8);
 
         //Forward right with enemy
         pawnCapture(moveSet,1,1, ChessGame.TeamColor.BLACK);
@@ -222,23 +223,24 @@ public class ChessMovementRule {
         ChessPosition newPosition;// ChessPosition(myPosition.getRow(),myPosition.getColumn());//create new position one up and diagonal
 
         // Open space in front (includes enemy king row to promotion and move two off start position)
-        newPosition = new ChessPosition(myPosition.getRow()-1,myPosition.getColumn());
-        if (board.getPiece(newPosition) == null){
-            if (myPosition.getRow() == 7) { // Move forward one or two
-                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                moveSet.add(newMove); // Add one space forward
-                newPosition = new ChessPosition(myPosition.getRow()-2,myPosition.getColumn());
-                if (board.getPiece(newPosition) == null) {
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    moveSet.add(newMove); // Add two spaces forward
-                }
-            } else if (newPosition.getRow() == 1) { // Move forward with promotion
-                pawnPromotionAdded(moveSet,newPosition);
-            } else { // Move forward without promotion
-                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                moveSet.add(newMove);
-            }
-        }
+//        newPosition = new ChessPosition(myPosition.getRow()-1,myPosition.getColumn());
+//        if (board.getPiece(newPosition) == null){
+//            if (myPosition.getRow() == 7) { // Move forward one or two
+//                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+//                moveSet.add(newMove); // Add one space forward
+//                newPosition = new ChessPosition(myPosition.getRow()-2,myPosition.getColumn());
+//                if (board.getPiece(newPosition) == null) {
+//                    newMove = new ChessMove(myPosition, newPosition, null);
+//                    moveSet.add(newMove); // Add two spaces forward
+//                }
+//            } else if (newPosition.getRow() == 1) { // Move forward with promotion
+//                pawnPromotionAdded(moveSet,newPosition);
+//            } else { // Move forward without promotion
+//                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+//                moveSet.add(newMove);
+//            }
+//        }
+        pawnAdvance(moveSet,-1,7,-2,1);
 
         //Forward right with enemy
         pawnCapture(moveSet,-1,-1, ChessGame.TeamColor.WHITE);
@@ -264,9 +266,25 @@ public class ChessMovementRule {
         }
     }
 
-//    private void pawnAdvance(HashSet<ChessMove> moveSet, int rowMove, int colMove, ChessGame.TeamColor enemyColor) {
-//
-//    }
+    private void pawnAdvance(HashSet<ChessMove> moveSet, int forward, int startPosition, int move2, int kingRow) {
+        ChessPosition newPosition = new ChessPosition(myPosition.getRow() + forward,myPosition.getColumn());
+        if (board.getPiece(newPosition) == null){
+            if (myPosition.getRow() == startPosition) { // Move forward one or two
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                moveSet.add(newMove); // Add one space forward
+                newPosition = new ChessPosition(myPosition.getRow() + move2,myPosition.getColumn());
+                if (board.getPiece(newPosition) == null) {
+                    newMove = new ChessMove(myPosition, newPosition, null);
+                    moveSet.add(newMove); // Add two spaces forward
+                }
+            } else if (newPosition.getRow() == kingRow) { // Move forward with promotion
+                pawnPromotionAdded(moveSet,newPosition);
+            } else { // Move forward without promotion
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                moveSet.add(newMove);
+            }
+        }
+    }
 
     private void pawnPromotionAdded(HashSet<ChessMove> move, ChessPosition position){
         ChessPiece.PieceType[] pieceTypesList = {ChessPiece.PieceType.ROOK,ChessPiece.PieceType.BISHOP,ChessPiece.PieceType.QUEEN,ChessPiece.PieceType.KNIGHT};//ChessPiece.PieceType.values();

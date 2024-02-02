@@ -77,6 +77,22 @@ public class ChessBoard {
         }
     }
 
+    public ChessBoard deepCopy() {
+        ChessBoard newBoard = new ChessBoard();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition newPos = new ChessPosition(i,j);
+                ChessPiece OGPiece = board[i-1][j-1];
+                if(OGPiece != null) {
+                    ChessPiece newPiece = new ChessPiece(OGPiece.getTeamColor(), OGPiece.getPieceType());
+                    newBoard.addPiece(newPos, newPiece);
+                }
+            }
+        }
+
+        return newBoard;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

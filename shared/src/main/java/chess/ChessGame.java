@@ -84,11 +84,17 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    public void makeMove(ChessMove move) throws InvalidMoveException {
+    public void makeMove(ChessMove move) throws InvalidMoveException { // This should implement promotions (I think)
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
-        board.addPiece(end,board.getPiece(start)); //overwrite the piece where you end with the piece moving there
-        board.addPiece(start,null); //remove the piece that started there
+        if(move.getPromotionPiece() == null) {
+            board.addPiece(end, board.getPiece(start)); //overwrite the piece where you end with the piece moving there
+            board.addPiece(start, null); //remove the piece that started there
+        } else {
+            ChessPiece newPiece = new ChessPiece(board.getPiece(start).getTeamColor(), move.getPromotionPiece()); // make promoted piece
+            board.addPiece(end, newPiece);//overwrite the piece where you end with the piece moving there
+            board.addPiece(start, null); //remove the piece that started there
+        }
     }
 
     /**

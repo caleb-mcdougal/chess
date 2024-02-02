@@ -157,7 +157,7 @@ public class ChessMovementRule {
         //piece present
         if (board.getPiece(newPosition) != null) {
             //on the board
-            if(!(newPosition.getRow() > 8 || newPosition.getColumn() > 8 || newPosition.getRow() < 1 || newPosition.getColumn() < 1)) {
+            if(newPosition.getColumn() >= 1 && newPosition.getColumn() <= 8){
                 //enemy piece
                 if (board.getPiece(newPosition).getTeamColor() == enemyColor) {
                     if (newPosition.getRow() == kingRow) { // King row

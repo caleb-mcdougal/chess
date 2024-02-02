@@ -35,11 +35,11 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         //throw new RuntimeException("Not implemented");
-        if(teamTurn == TeamColor.WHITE) {
-            teamTurn = TeamColor.BLACK;
-        } else {
-            teamTurn = TeamColor.WHITE;
-        }
+//        if(teamTurn == TeamColor.WHITE) {
+//            teamTurn = TeamColor.BLACK;
+//        } else {
+//            teamTurn = TeamColor.WHITE;
+//        }
         teamTurn = team;
     }
 
@@ -85,15 +85,24 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException { // This should implement promotions (I think)
+        System.out.println("in makeMove");
+        //Move the piece
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
-        if(move.getPromotionPiece() == null) {
+        if(move.getPromotionPiece() == null) { // move piece no promotion
             board.addPiece(end, board.getPiece(start)); //overwrite the piece where you end with the piece moving there
             board.addPiece(start, null); //remove the piece that started there
-        } else {
+        } else { // move piece with promotion
             ChessPiece newPiece = new ChessPiece(board.getPiece(start).getTeamColor(), move.getPromotionPiece()); // make promoted piece
             board.addPiece(end, newPiece);//overwrite the piece where you end with the piece moving there
             board.addPiece(start, null); //remove the piece that started there
+        }
+
+        //Change the team turn
+        if(teamTurn == TeamColor.WHITE){
+            teamTurn = TeamColor.BLACK;
+        } else {
+            teamTurn = TeamColor.WHITE;
         }
     }
 
@@ -104,6 +113,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        System.out.println("in isInCheck");
         //Find the king position
         ChessPosition kingPos = findKing(teamColor);
 
@@ -112,9 +122,15 @@ public class ChessGame {
             for (int j = 1; j < 9; j++) {
                 ChessPosition pos = new ChessPosition(i,j);
                 if(board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() != teamColor){ //If enemy piece
+                    System.out.println("Enemy piece on: " + pos);
+                    System.out.println(board.getPiece(pos));
+                    System.out.println(board.getPiece(pos).pieceMoves(board,pos));
                     HashSet<ChessMove> moveSet = board.getPiece(pos).pieceMoves(board,pos); // get piece moves
+                    System.out.println("moves acquired");
                     for(ChessMove move : moveSet){
+                        System.out.println("Piece move: " + move);
                         if(move.getEndPosition().equals(kingPos)){ // if possible move ends on king position you are in check
+                            System.out.println("Confirmed in check");
                             return true;
                         }
                     }

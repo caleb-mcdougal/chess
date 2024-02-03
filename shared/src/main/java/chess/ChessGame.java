@@ -59,6 +59,9 @@ public class ChessGame {
      * startPosition
      */
     public HashSet<ChessMove> validMoves(ChessPosition startPosition) {
+        if(board.getPiece(startPosition) == null){
+            return null;
+        }
         ChessPiece piece = board.getPiece(startPosition);
         HashSet<ChessMove> moveSet = piece.pieceMoves(board,startPosition);
         ChessBoard OGBoard = board.deepCopy();
@@ -99,6 +102,10 @@ public class ChessGame {
         }
 
         //Change the team turn
+        changeTeamTurn();
+    }
+
+    private void changeTeamTurn(){
         if(teamTurn == TeamColor.WHITE){
             teamTurn = TeamColor.BLACK;
         } else {

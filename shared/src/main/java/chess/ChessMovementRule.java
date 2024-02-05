@@ -155,9 +155,9 @@ public class ChessMovementRule {
     private void pawnCapture(HashSet<ChessMove> moveSet, int rowMove, int colMove, ChessGame.TeamColor enemyColor, int kingRow) {
         ChessPosition newPosition = new ChessPosition(myPosition.getRow() + rowMove,myPosition.getColumn() + colMove);
         //piece present
-        if (board.getPiece(newPosition) != null) {
+        if (newPosition.getColumn() >= 1 && newPosition.getColumn() <= 8){
             //on the board
-            if(newPosition.getColumn() >= 1 && newPosition.getColumn() <= 8){
+            if(board.getPiece(newPosition) != null){
                 //enemy piece
                 if (board.getPiece(newPosition).getTeamColor() == enemyColor) {
                     if (newPosition.getRow() == kingRow) { // King row

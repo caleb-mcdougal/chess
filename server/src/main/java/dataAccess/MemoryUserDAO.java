@@ -35,4 +35,6 @@ public class MemoryUserDAO implements UserDAO{
     public int clear() {
         return 200;
     }
+
+    //here
 }

@@ -10,5 +10,6 @@ public interface UserDAO {
     public String getEmail();
     public int inputEmail();
     public int clear();
+    //here
 
 }

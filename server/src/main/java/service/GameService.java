@@ -1,5 +1,7 @@
 package service;
 
+import dataAccess.MemoryAuthDAO;
+import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
 
 public class GameService {
@@ -13,8 +15,10 @@ public class GameService {
 //    public AuthData login(UserData user) {
 //
 //    }
-    public void clear() {       //just clearing user for now
-        System.out.println("in UserGame Actions clear");
+    public void clear() {       //Clearing all DAO hashmaps
+//        System.out.println("in UserGame Actions clear");
         MemoryUserDAO.clear();
+        MemoryAuthDAO.clear();
+        MemoryGameDAO.clear();
     }
 }

@@ -1,5 +1,5 @@
 package dataAccess;
 
 public interface GameDAO {
-    public void clear();
+    public static void clear(){}
 }

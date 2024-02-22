@@ -7,12 +7,12 @@ public class MemoryUserDAO implements UserDAO{
     private static HashMap<Integer, String> UserDB;
 
     // Static block to initialize the HashMap for testing
-//    static {
-//        UserDB = new HashMap<>();
-//        UserDB.put(1, "One");
-//        UserDB.put(2, "Two");
-//        UserDB.put(3, "Three");
-//    }
+    static {
+        UserDB = new HashMap<>();
+        UserDB.put(1, "One");
+        UserDB.put(2, "Two");
+        UserDB.put(3, "Three");
+    }
 
 
     public static void clear() {
@@ -22,7 +22,7 @@ public class MemoryUserDAO implements UserDAO{
 //        System.out.println(UserDB);
     }
 
-    public static int getUserDBSize(){
+    public static int getDBSize(){
 //        System.out.println(UserDB);
         return UserDB.size();
     }

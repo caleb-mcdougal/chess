@@ -1,9 +1,30 @@
 package dataAccess;
 
+import java.util.HashMap;
+
 public class MemoryUserDAO implements UserDAO{
-    @Override
-    public int clear() {
-        return 200;
+
+    private static HashMap<Integer, String> UserDB;
+
+    // Static block to initialize the HashMap for testing
+//    static {
+//        UserDB = new HashMap<>();
+//        UserDB.put(1, "One");
+//        UserDB.put(2, "Two");
+//        UserDB.put(3, "Three");
+//    }
+
+
+    public static void clear() {
+//        System.out.println("in MemoryUserDAO clear");
+//        System.out.println(UserDB);
+        UserDB.clear();
+//        System.out.println(UserDB);
+    }
+
+    public static int getUserDBSize(){
+//        System.out.println(UserDB);
+        return UserDB.size();
     }
 
 }

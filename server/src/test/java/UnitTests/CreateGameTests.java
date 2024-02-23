@@ -1,4 +1,4 @@
-package passoffTests.serverTests;
+package UnitTests;
 
 import chess.ChessGame;
 import dataAccess.MemoryGameDAO;

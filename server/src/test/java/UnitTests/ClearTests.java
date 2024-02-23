@@ -1,4 +1,4 @@
-package passoffTests.serverTests;
+package UnitTests;
 
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;

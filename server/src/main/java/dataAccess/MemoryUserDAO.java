@@ -15,14 +15,14 @@ public class MemoryUserDAO implements UserDAO{
     }
 
 
-    public static void clear() {
+    public void clear() {
 //        System.out.println("in MemoryUserDAO clear");
 //        System.out.println(UserDB);
         UserDB.clear();
 //        System.out.println(UserDB);
     }
 
-    public static int getDBSize(){
+    public int getDBSize(){
 //        System.out.println(UserDB);
         return UserDB.size();
     }

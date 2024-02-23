@@ -14,9 +14,12 @@ public class ClearTests{
     public void tryClear(){
         GameService gs = new GameService();
         gs.clear();
-        int UserSize = MemoryUserDAO.getDBSize();
-        int GameSize = MemoryGameDAO.getDBSize();
-        int AuthSize = MemoryAuthDAO.getDBSize();
+        MemoryUserDAO mud = new MemoryUserDAO();
+        int UserSize = mud.getDBSize();
+        MemoryGameDAO mgd = new MemoryGameDAO();
+        int GameSize = mgd.getDBSize();
+        MemoryAuthDAO mad = new MemoryAuthDAO();
+        int AuthSize = mad.getDBSize();
         Assertions.assertEquals(UserSize,0);
         Assertions.assertEquals(GameSize,0);
         Assertions.assertEquals(AuthSize,0);

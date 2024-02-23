@@ -14,14 +14,14 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
 
-    public static void clear() {
+    public void clear() {
 //        System.out.println("in MemoryUserDAO clear");
 //        System.out.println(UserDB);
         AuthDB.clear();
 //        System.out.println(UserDB);
     }
 
-    public static int getDBSize(){
+    public int getDBSize(){
 //        System.out.println(UserDB);
         return AuthDB.size();
     }

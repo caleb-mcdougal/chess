@@ -44,13 +44,13 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public UserData getUser(UserData ud) throws UserTakenException{
-        if(UserPassword.get(ud.username()) == null){ // user doesn't exist
-            return null;
-        }
-        else{ //user does exist
-            throw new UserTakenException("User already exists");
-        }
+    public UserData getUser(UserData ud){
+        return new UserData(ud.username(), UserPassword.get(ud.username()), UserEmail.get(ud.username()));
+    }
+
+    @Override
+    public Boolean userExists(UserData ud) {
+        return UserPassword.get(ud.username()) != null;
     }
 
 }

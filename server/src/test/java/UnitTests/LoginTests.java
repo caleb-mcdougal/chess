@@ -19,11 +19,13 @@ public class LoginTests {
         UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
         MemoryUserDAO mud = new MemoryUserDAO();
 
+        mud.clear();
+
         try {
             AuthData ad = us.register(ud);
         }
         catch(UserTakenException e){
-            System.out.println("Failed due to register");
+            System.out.println("Failed due to register1");
             Assertions.fail();
         }
 
@@ -39,6 +41,8 @@ public class LoginTests {
             Assertions.fail();
         }
 
+        mud.clear();
+
     }
 
     @Test
@@ -48,10 +52,12 @@ public class LoginTests {
         UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
         MemoryUserDAO mud = new MemoryUserDAO();
 
+        mud.clear();
+
         try {
             AuthData ad = us.register(ud);
         } catch (UserTakenException e) {
-            System.out.println("Failed due to register");
+            System.out.println("Failed due to register2");
             Assertions.fail();
         }
 
@@ -59,6 +65,8 @@ public class LoginTests {
         Assertions.assertThrows(NoExistingUserException.class, () -> {
             us.login(ud2);
         });
+
+        mud.clear();
     }
 
     @Test
@@ -68,10 +76,12 @@ public class LoginTests {
         UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
         MemoryUserDAO mud = new MemoryUserDAO();
 
+        mud.clear();
+
         try {
             AuthData ad = us.register(ud);
         } catch (UserTakenException e) {
-            System.out.println("Failed due to register");
+            System.out.println("Failed due to register3");
             Assertions.fail();
         }
 
@@ -79,5 +89,7 @@ public class LoginTests {
         Assertions.assertThrows(IncorrectPassword.class, () -> {
             us.login(ud2);
         });
+
+        mud.clear();
     }
 }

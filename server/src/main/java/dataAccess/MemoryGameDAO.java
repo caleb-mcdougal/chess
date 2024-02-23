@@ -11,16 +11,28 @@ public class MemoryGameDAO implements GameDAO{
     // Static block to initialize the HashMap for testing
     static {
         GameDB = new HashMap<>();
-//        GameDB.put(1, "One");
-//        GameDB.put(2, "Two");
-//        GameDB.put(3, "Three");
     }
-
+    @Override
     public int createGame(String name){
         GameIDIncrementer += 1;
         ChessGame newGame = new ChessGame();
         GameDB.put(GameIDIncrementer, newGame);
         return GameIDIncrementer;
+    }
+
+    @Override
+    public ChessGame getGame() {
+        return null;
+    }
+
+    @Override
+    public ChessGame[] listGames() {
+        return new ChessGame[0];
+    }
+
+    @Override
+    public void updateGame(String gameID) {
+
     }
 
 

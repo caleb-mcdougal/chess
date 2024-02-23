@@ -32,6 +32,11 @@ public class MemoryAuthDAO implements AuthDAO{
         return authToken;
     }
 
+    @Override
+    public void deleteAuth() {
+
+    }
+
 
     @Override
     public void clear() {
@@ -45,4 +50,5 @@ public class MemoryAuthDAO implements AuthDAO{
 //        System.out.println(UserDB);
         return AuthDB.size();
     }
+
 }

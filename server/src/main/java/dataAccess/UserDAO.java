@@ -1,13 +1,12 @@
 package dataAccess;
 
 
+import model.UserData;
+
 import java.util.HashMap;
 
 public interface UserDAO {
     void clear();
-
-//    static HashMap getHashMap() {
-//        return null;
-//    }
-
+    void createUser(UserData ud);
+    UserData getUser(UserData ud) throws UserTakenException;
 }

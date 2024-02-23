@@ -1,8 +1,8 @@
 package UnitTests;
 
-import dataAccess.Unauthorized;
 import dataAccess.MemoryUserDAO;
 import dataAccess.NoExistingUserException;
+import dataAccess.Unauthorized;
 import dataAccess.UserTakenException;
 import model.AuthData;
 import model.UserData;
@@ -11,18 +11,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import service.UserService;
 
-public class LoginTests {
+public class LogoutTests {
     @Test
-    @DisplayName("Login Correctly")
-    public void SimpleLogin() {
+    @DisplayName("Logout Correctly")
+    public void SimpleLogout() {
         UserService us = new UserService();
         UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
         MemoryUserDAO mud = new MemoryUserDAO();
 
         mud.clear();
 
+        AuthData ad = new AuthData("", "");
+
         try {
-            AuthData ad = us.register(ud);
+            AuthData adr = us.register(ud);
         }
         catch(UserTakenException e){
             System.out.println("Failed due to register1");
@@ -30,8 +32,9 @@ public class LoginTests {
         }
 
         try{
-            AuthData ad = us.login(ud);
-            Assertions.assertTrue(true);
+            ad = us.login(ud);
+            System.out.println("login");
+            System.out.println(ad.authToken());
         }
         catch (NoExistingUserException e){
             System.out.println("No existing user");
@@ -41,54 +44,55 @@ public class LoginTests {
             Assertions.fail();
         }
 
-        mud.clear();
 
+        try{
+            us.logout(ad.authToken());
+        } catch (Unauthorized ex) {
+            System.out.println("Incorrect Password");
+            Assertions.fail();
+        }
+
+        mud.clear();
     }
 
     @Test
-    @DisplayName("Login No Existing User")
-    public void NoUser() {
+    @DisplayName("Logout Invalid AuthToken")
+    public void FailLogout() {
         UserService us = new UserService();
         UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
         MemoryUserDAO mud = new MemoryUserDAO();
 
         mud.clear();
 
+        AuthData ad = new AuthData("123", "");
+
         try {
-            AuthData ad = us.register(ud);
-        } catch (UserTakenException e) {
-            System.out.println("Failed due to register2");
+            us.register(ud);
+        }
+        catch(UserTakenException e){
+            System.out.println("Failed due to register1");
             Assertions.fail();
         }
 
-        UserData ud2 = new UserData("McDougal", "123abc", "cdm@gmail.com");
-        Assertions.assertThrows(NoExistingUserException.class, () -> {
-            us.login(ud2);
-        });
-
-        mud.clear();
-    }
-
-    @Test
-    @DisplayName("Login Incorrect Password")
-    public void BadPassword() {
-        UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
-        MemoryUserDAO mud = new MemoryUserDAO();
-
-        mud.clear();
-
-        try {
-            AuthData ad = us.register(ud);
-        } catch (UserTakenException e) {
-            System.out.println("Failed due to register3");
+        try{
+            us.login(ud);
+        }
+        catch (NoExistingUserException e){
+            System.out.println("No existing user");
+            Assertions.fail();
+        } catch (Unauthorized e) {
+            System.out.println("Incorrect Password");
             Assertions.fail();
         }
 
-        UserData ud2 = new UserData("Caleb", "321xyz", "cdm@gmail.com");
-        Assertions.assertThrows(Unauthorized.class, () -> {
-            us.login(ud2);
-        });
+
+        try{
+            us.logout(ad.authToken());
+            Assertions.fail();
+        } catch (Unauthorized ex) {
+            System.out.println("Incorrect Password");
+            Assertions.assertTrue(true);
+        }
 
         mud.clear();
     }

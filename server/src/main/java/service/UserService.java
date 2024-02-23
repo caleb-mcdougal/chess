@@ -20,10 +20,10 @@ public class UserService {
         mud.createUser(user);
 
         MemoryAuthDAO mad = new MemoryAuthDAO();
-        String authToken = mad.createAuth();
+        String authToken = mad.createAuth(user);
         return new AuthData(authToken, user.username());
     }
-    public AuthData login(UserData user) throws NoExistingUserException, IncorrectPassword{
+    public AuthData login(UserData user) throws NoExistingUserException, Unauthorized {
 
         MemoryUserDAO mud = new MemoryUserDAO();
         if(!mud.userExists(user)){
@@ -32,14 +32,17 @@ public class UserService {
 
         UserData ud = mud.getUser(user);
         if(!Objects.equals(ud.password(), user.password())){        //Check password
-            throw new IncorrectPassword("Incorrect Password");
+            throw new Unauthorized("Incorrect Password");
         }
 
         MemoryAuthDAO mad = new MemoryAuthDAO();
-        String authToken = mad.createAuth();
+        String authToken = mad.createAuth(user);
 
         return new AuthData(authToken, user.username());
     }
 
-//    public void logout(UserData user) {}
+    public void logout(String authToken) throws Unauthorized{ // auth must link to user for join game
+        MemoryAuthDAO mad = new MemoryAuthDAO();
+        mad.deleteAuth(authToken);
+    }
 }

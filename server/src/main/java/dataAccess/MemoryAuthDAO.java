@@ -1,53 +1,51 @@
 package dataAccess;
 
+import model.AuthData;
+import model.UserData;
+
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
-    private static HashSet<String> AuthDB; // username, auth
+    private static HashMap<String,String> AuthDB; // auth, username
 
     // Static block to initialize the HashMap for testing
     static {
-        AuthDB = new HashSet<>();
+        AuthDB = new HashMap<>();
 //        AuthDB.put(1, "One");
 //        AuthDB.put(2, "Two");
 //        AuthDB.put(3, "Three");
     }
 
     @Override
-    public boolean validAuth(String authToken) {
-        if (AuthDB.contains(authToken)) {
-            return true;
-        }
-        else{
-            return false;
-        }
+    public boolean validAuth(String authToken, UserData ud) {
+        return Objects.equals(AuthDB.get(authToken), ud.username());
     }
 
     @Override
-    public String createAuth() {
+    public String createAuth(UserData ud) {
         String authToken = UUID.randomUUID().toString();
-        AuthDB.add(authToken);
+        AuthDB.put(authToken, ud.username());
         return authToken;
     }
 
     @Override
-    public void deleteAuth() {
-
+    public void deleteAuth(String authToken) throws Unauthorized{
+        if(!AuthDB.containsKey(authToken)){
+            throw new Unauthorized("AuthToken DNE");
+        }
+        AuthDB.remove(authToken);
     }
 
 
     @Override
     public void clear() {
-//        System.out.println("in MemoryUserDAO clear");
-//        System.out.println(UserDB);
         AuthDB.clear();
-//        System.out.println(UserDB);
     }
 
     public int getDBSize(){
-//        System.out.println(UserDB);
         return AuthDB.size();
     }
 

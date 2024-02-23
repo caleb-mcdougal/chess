@@ -13,6 +13,7 @@ public class Server {
 
         Spark.post("/user", new RegisterHandler());
         Spark.delete("/db", new ClearHandler());
+        Spark.post("/game", new CreateGameHandler());
 
 
         Spark.awaitInitialization();

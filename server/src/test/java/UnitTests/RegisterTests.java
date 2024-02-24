@@ -1,7 +1,7 @@
 package UnitTests;
 
+import dataAccess.BadRequestException;
 import dataAccess.MemoryUserDAO;
-import dataAccess.NoExistingUserException;
 import dataAccess.UserTakenException;
 import model.AuthData;
 import model.UserData;
@@ -22,16 +22,15 @@ public class RegisterTests {
         int emailSize1 = mud.getEmailDBSize();
 
         try {
-            if(!mud.userExists(ud)) {
-                AuthData ad = us.register(ud);
-            }
-            else{
-                throw new UserTakenException("This username is already taken");
-            }
+            AuthData ad = us.register(ud);
         }
         catch (UserTakenException e){
             System.out.println("UserTakenException caught: " + e.getMessage());
         }
+        catch (BadRequestException e){
+            System.out.println("BadReeqestException caught: " + e.getMessage());
+        }
+
 
         int passSize2 = mud.getDBSize();
         int emailSize2 = mud.getEmailDBSize();

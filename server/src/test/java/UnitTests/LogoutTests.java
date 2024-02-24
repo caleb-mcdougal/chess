@@ -1,7 +1,7 @@
 package UnitTests;
 
+import dataAccess.BadRequestException;
 import dataAccess.MemoryUserDAO;
-import dataAccess.NoExistingUserException;
 import dataAccess.Unauthorized;
 import dataAccess.UserTakenException;
 import model.AuthData;
@@ -27,7 +27,11 @@ public class LogoutTests {
             AuthData adr = us.register(ud);
         }
         catch(UserTakenException e){
-            System.out.println("Failed due to register1");
+            System.out.println("Failed due to register1 user taken");
+            Assertions.fail();
+        }
+        catch (BadRequestException e) {
+            System.out.println("Failed due to register1 bad request");
             Assertions.fail();
         }
 
@@ -71,7 +75,11 @@ public class LogoutTests {
             us.register(ud);
         }
         catch(UserTakenException e){
-            System.out.println("Failed due to register1");
+            System.out.println("Failed due to register1 user taken");
+            Assertions.fail();
+        }
+        catch (BadRequestException e) {
+            System.out.println("Failed due to register1 bad request");
             Assertions.fail();
         }
 

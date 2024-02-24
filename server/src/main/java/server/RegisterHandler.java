@@ -2,6 +2,7 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataAccess.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.Unauthorized;
 import dataAccess.UserTakenException;
@@ -28,6 +29,10 @@ public class RegisterHandler implements Route {
         catch(UserTakenException e){
             response.status(403);
             return gson.toJson("Error: already taken");
+        }
+        catch(BadRequestException e){
+            response.status(400);
+            return gson.toJson("Error: bad request");
         }
 
         response.status(200);

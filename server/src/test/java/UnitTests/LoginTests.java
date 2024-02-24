@@ -1,8 +1,8 @@
 package UnitTests;
 
+import dataAccess.BadRequestException;
 import dataAccess.Unauthorized;
 import dataAccess.MemoryUserDAO;
-import dataAccess.NoExistingUserException;
 import dataAccess.UserTakenException;
 import model.AuthData;
 import model.UserData;
@@ -25,7 +25,11 @@ public class LoginTests {
             AuthData ad = us.register(ud);
         }
         catch(UserTakenException e){
-            System.out.println("Failed due to register1");
+            System.out.println("Failed due to register1 user taken");
+            Assertions.fail();
+        }
+        catch (BadRequestException e){
+            System.out.println("Failed due to register1 bad request");
             Assertions.fail();
         }
 
@@ -53,10 +57,16 @@ public class LoginTests {
 
         try {
             AuthData ad = us.register(ud);
-        } catch (UserTakenException e) {
-            System.out.println("Failed due to register2");
+        }
+        catch (UserTakenException e) {
+            System.out.println("Failed due to register2 user taken");
             Assertions.fail();
         }
+        catch (BadRequestException e){
+            System.out.println("Failed due to register2 bad request");
+            Assertions.fail();
+        }
+
 
         UserData ud2 = new UserData("McDougal", "123abc", "cdm@gmail.com");
         Assertions.assertThrows(Unauthorized.class, () -> {
@@ -77,8 +87,13 @@ public class LoginTests {
 
         try {
             AuthData ad = us.register(ud);
-        } catch (UserTakenException e) {
-            System.out.println("Failed due to register3");
+        }
+        catch (UserTakenException e) {
+            System.out.println("Failed due to register3 user taken");
+            Assertions.fail();
+        }
+        catch (BadRequestException e) {
+            System.out.println("Failed due to register3 bad request");
             Assertions.fail();
         }
 

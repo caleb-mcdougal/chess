@@ -23,11 +23,11 @@ public class UserService {
         String authToken = mad.createAuth(user);
         return new AuthData(authToken, user.username());
     }
-    public AuthData login(UserData user) throws NoExistingUserException, Unauthorized {
+    public AuthData login(UserData user) throws Unauthorized { // removed: NoExistingUserException
 
         MemoryUserDAO mud = new MemoryUserDAO();
         if(!mud.userExists(user)){
-            throw new NoExistingUserException("Username unrecognized");
+            throw new Unauthorized("Username unrecognized");
         }
 
         UserData ud = mud.getUser(user);

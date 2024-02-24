@@ -36,10 +36,11 @@ public class LogoutTests {
             System.out.println("login");
             System.out.println(ad.authToken());
         }
-        catch (NoExistingUserException e){
-            System.out.println("No existing user");
-            Assertions.fail();
-        } catch (Unauthorized e) {
+//        catch (NoExistingUserException e){
+//            System.out.println("No existing user");
+//            Assertions.fail();
+//        }
+        catch (Unauthorized e) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }
@@ -77,10 +78,11 @@ public class LogoutTests {
         try{
             us.login(ud);
         }
-        catch (NoExistingUserException e){
-            System.out.println("No existing user");
-            Assertions.fail();
-        } catch (Unauthorized e) {
+//        catch (NoExistingUserException e){
+//            System.out.println("No existing user");
+//            Assertions.fail();
+//        }
+        catch (Unauthorized e) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }

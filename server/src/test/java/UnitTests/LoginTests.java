@@ -33,10 +33,7 @@ public class LoginTests {
             AuthData ad = us.login(ud);
             Assertions.assertTrue(true);
         }
-        catch (NoExistingUserException e){
-            System.out.println("No existing user");
-            Assertions.fail();
-        } catch (Unauthorized e) {
+        catch (Unauthorized e) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }
@@ -62,7 +59,7 @@ public class LoginTests {
         }
 
         UserData ud2 = new UserData("McDougal", "123abc", "cdm@gmail.com");
-        Assertions.assertThrows(NoExistingUserException.class, () -> {
+        Assertions.assertThrows(Unauthorized.class, () -> {
             us.login(ud2);
         });
 

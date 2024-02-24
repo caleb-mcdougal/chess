@@ -12,6 +12,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
 
         Spark.post("/user", new RegisterHandler());
+        Spark.post("/session", new LoginHandler());
         Spark.delete("/db", new ClearHandler());
         Spark.post("/game", new CreateGameHandler());
 

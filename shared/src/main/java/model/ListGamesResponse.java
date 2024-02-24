@@ -2,5 +2,5 @@ package model;
 
 import java.util.HashMap;
 
-public record ListGamesResponse(HashMap games, String message) {
+public record ListGamesResponse(String gamesList, String message) {
 }

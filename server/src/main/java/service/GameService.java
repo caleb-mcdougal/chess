@@ -4,6 +4,7 @@ import dataAccess.*;
 import model.CreateGameRequest;
 import model.CreateGameResponse;
 import model.GameData;
+import model.ListGamesResponse;
 
 import java.util.Objects;
 
@@ -32,11 +33,11 @@ public class GameService {
         MemoryGameDAO mgd = new MemoryGameDAO();
         mgd.clear();
     }
-    public String listGames(String authToken) throws Unauthorized{
+    public ListGamesResponse listGames(String authToken) throws Unauthorized{
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.authExists(authToken);
         MemoryGameDAO mgd = new MemoryGameDAO();
-        return mgd.listGames();
+        return new ListGamesResponse(mgd.listGames(), null);
     }
 
     public void joinGame(String authToken, String color, int gameID) throws BadRequestException, Unauthorized, AlreadyTakenException {

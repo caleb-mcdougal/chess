@@ -1,13 +1,9 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.BadRequestException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.Unauthorized;
-import dataAccess.UserTakenException;
+import dataAccess.AlreadyTakenException;
 import model.*;
-import service.GameService;
 import service.UserService;
 import spark.Request;
 import spark.Response;
@@ -26,7 +22,7 @@ public class RegisterHandler implements Route {
         try {
             ad = us.register(ud);
         }
-        catch(UserTakenException e){
+        catch(AlreadyTakenException e){
             response.status(403);
             return gson.toJson("Error: already taken");
         }

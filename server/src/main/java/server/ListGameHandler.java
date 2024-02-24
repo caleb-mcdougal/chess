@@ -6,6 +6,7 @@ import dataAccess.BadRequestException;
 import dataAccess.Unauthorized;
 import model.CreateGameRequest;
 import model.GameData;
+import model.ListGamesResponse;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -19,10 +20,10 @@ public class ListGameHandler implements Route {
         String authToken = request.headers("authorization");
 
         GameService gs = new GameService();
-        String gamesList;
+        ListGamesResponse serviceResponse;
 
         try {
-            gamesList = gs.listGames(authToken);
+            serviceResponse = gs.listGames(authToken);
         }
         catch(Unauthorized e){
             response.status(401);
@@ -30,6 +31,6 @@ public class ListGameHandler implements Route {
         }
 
         response.status(200);
-        return gson.toJson(gamesList);
+        return gson.toJson(serviceResponse.gamesList());
     }
 }

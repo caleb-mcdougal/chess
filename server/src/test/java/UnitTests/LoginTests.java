@@ -3,7 +3,7 @@ package UnitTests;
 import dataAccess.BadRequestException;
 import dataAccess.Unauthorized;
 import dataAccess.MemoryUserDAO;
-import dataAccess.UserTakenException;
+import dataAccess.AlreadyTakenException;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +24,7 @@ public class LoginTests {
         try {
             AuthData ad = us.register(ud);
         }
-        catch(UserTakenException e){
+        catch(AlreadyTakenException e){
             System.out.println("Failed due to register1 user taken");
             Assertions.fail();
         }
@@ -58,7 +58,7 @@ public class LoginTests {
         try {
             AuthData ad = us.register(ud);
         }
-        catch (UserTakenException e) {
+        catch (AlreadyTakenException e) {
             System.out.println("Failed due to register2 user taken");
             Assertions.fail();
         }
@@ -88,7 +88,7 @@ public class LoginTests {
         try {
             AuthData ad = us.register(ud);
         }
-        catch (UserTakenException e) {
+        catch (AlreadyTakenException e) {
             System.out.println("Failed due to register3 user taken");
             Assertions.fail();
         }

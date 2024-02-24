@@ -2,7 +2,7 @@ package UnitTests;
 
 import dataAccess.BadRequestException;
 import dataAccess.MemoryUserDAO;
-import dataAccess.UserTakenException;
+import dataAccess.AlreadyTakenException;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +24,7 @@ public class RegisterTests {
         try {
             AuthData ad = us.register(ud);
         }
-        catch (UserTakenException e){
+        catch (AlreadyTakenException e){
             System.out.println("UserTakenException caught: " + e.getMessage());
         }
         catch (BadRequestException e){
@@ -46,13 +46,13 @@ public class RegisterTests {
         UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
         MemoryUserDAO mud = new MemoryUserDAO();
 
-        Assertions.assertThrows(UserTakenException.class, () -> {
+        Assertions.assertThrows(AlreadyTakenException.class, () -> {
             AuthData ad = us.register(ud);
             if(!mud.userExists(ud)) {
                 AuthData ad2 = us.register(ud);
             }
             else{
-                throw new UserTakenException("This username is already taken");
+                throw new AlreadyTakenException("This username is already taken");
             }
         });
     }

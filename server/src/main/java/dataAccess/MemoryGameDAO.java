@@ -23,7 +23,10 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public GameData getGame(int gameID) {
+    public GameData getGame(int gameID) throws BadRequestException{
+        if(!GameDB.containsKey(gameID)){
+            throw new BadRequestException("Game does not exist");
+        }
         return GameDB.get(gameID);
     }
 
@@ -37,8 +40,16 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public void updateGame(String gameID) {
-
+    public void updateGame(int gameID, String color, String username) {
+        GameData oldGame = GameDB.get(gameID);
+        GameData gd;
+        if(color.equals("WHITE")){
+            gd = new GameData(gameID, username, oldGame.blackUsername(), oldGame.gameName(), oldGame.game());
+        }
+        else{
+            gd = new GameData(gameID, oldGame.whiteUsername(), username, oldGame.gameName(), oldGame.game());
+        }
+        GameDB.put(gameID, gd);
     }
 
 

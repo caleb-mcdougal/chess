@@ -11,13 +11,13 @@ public class UserService {
     public UserService() {
 
     }
-    public AuthData register(UserData user) throws UserTakenException, BadRequestException{      //Test this
+    public AuthData register(UserData user) throws AlreadyTakenException, BadRequestException{      //Test this
         MemoryUserDAO mud = new MemoryUserDAO();
         if(user.username() == null || user.password() == null || user.email() == null || user.username().isBlank() || user.password().isBlank() || user.email().isBlank()){
             throw new BadRequestException("Must have all user data");
         }
         if(mud.userExists(user)){
-            throw new UserTakenException("This username is already taken");
+            throw new AlreadyTakenException("This username is already taken");
         }
 
         mud.createUser(user);

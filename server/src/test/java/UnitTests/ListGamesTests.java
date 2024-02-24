@@ -5,6 +5,7 @@ import dataAccess.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.Unauthorized;
+import model.CreateGameRequest;
 import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -26,11 +27,11 @@ public class ListGamesTests {
         MemoryAuthDAO mad = new MemoryAuthDAO();
         String authToken = mad.createAuth(ud);
 
-        GameData gd = new GameData(0, "user1", "user2", "game1", game);
+        CreateGameRequest cgr = new CreateGameRequest("g1");
         try{
-            gs.createGame(gd, authToken);
-            gs.createGame(gd, authToken);
-            gs.createGame(gd, authToken);
+            gs.createGame(cgr, authToken);
+            gs.createGame(cgr, authToken);
+            gs.createGame(cgr, authToken);
         }
         catch (Unauthorized e){
             System.out.println("Unaothorized create game");
@@ -63,11 +64,11 @@ public class ListGamesTests {
         MemoryAuthDAO mad = new MemoryAuthDAO();
         String authToken = mad.createAuth(ud);
 
-        GameData gd = new GameData(0, "user1", "user2", "game1", game);
+        CreateGameRequest cgr = new CreateGameRequest("g1");
         try{
-            gs.createGame(gd, authToken);
-            gs.createGame(gd, authToken);
-            gs.createGame(gd, authToken);
+            gs.createGame(cgr, authToken);
+            gs.createGame(cgr, authToken);
+            gs.createGame(cgr, authToken);
         }
         catch (Unauthorized e){
             System.out.println("Unaothorized create game");

@@ -3,7 +3,7 @@ package UnitTests;
 import dataAccess.BadRequestException;
 import dataAccess.MemoryUserDAO;
 import dataAccess.Unauthorized;
-import dataAccess.UserTakenException;
+import dataAccess.AlreadyTakenException;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +26,7 @@ public class LogoutTests {
         try {
             AuthData adr = us.register(ud);
         }
-        catch(UserTakenException e){
+        catch(AlreadyTakenException e){
             System.out.println("Failed due to register1 user taken");
             Assertions.fail();
         }
@@ -74,7 +74,7 @@ public class LogoutTests {
         try {
             us.register(ud);
         }
-        catch(UserTakenException e){
+        catch(AlreadyTakenException e){
             System.out.println("Failed due to register1 user taken");
             Assertions.fail();
         }

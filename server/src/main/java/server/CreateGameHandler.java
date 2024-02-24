@@ -6,6 +6,7 @@ import dataAccess.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.Unauthorized;
 import model.CreateGameRequest;
+import model.CreateGameResponse;
 import model.GameData;
 import service.GameService;
 import spark.Request;
@@ -17,14 +18,13 @@ public class CreateGameHandler implements Route {
     public Object handle(Request request, Response response) throws Exception {
         var gson = new Gson();
 
-        CreateGameRequest cgr = gson.fromJson(request.body(), CreateGameRequest.class); // removed (CreateGameRequest) from before gson
+        CreateGameRequest serviceRequest = gson.fromJson(request.body(), CreateGameRequest.class); // removed (CreateGameRequest) from before gson
         String authToken = request.headers("authorization");
 
-        GameData gd = new GameData(0, "", "", cgr.gameName(), new ChessGame());
         GameService gs = new GameService();
-        int gameID = 0;
+        CreateGameResponse serviceResponse;
         try {
-            gameID = gs.createGame(gd, authToken);
+            serviceResponse = gs.createGame(serviceRequest, authToken);
         }
         catch(Unauthorized e){
             response.status(401);
@@ -36,6 +36,6 @@ public class CreateGameHandler implements Route {
         }
 
         response.status(200);
-        return gson.toJson(gameID);
+        return gson.toJson(serviceResponse.gameID());
     }
 }

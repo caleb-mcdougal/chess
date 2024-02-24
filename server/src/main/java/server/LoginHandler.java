@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.NoExistingUserException;
 import dataAccess.Unauthorized;
 import model.*;
 import service.UserService;

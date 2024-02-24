@@ -4,8 +4,7 @@ import dataAccess.BadRequestException;
 import dataAccess.MemoryUserDAO;
 import dataAccess.Unauthorized;
 import dataAccess.AlreadyTakenException;
-import model.AuthData;
-import model.UserData;
+import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,15 +15,16 @@ public class LogoutTests {
     @DisplayName("Logout Correctly")
     public void SimpleLogout() {
         UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
+        RegisterRequest rr = new RegisterRequest("Caleb", "123abc", "cdm@gmail.com");
+        LoginRequest lrq = new LoginRequest("Caleb", "123abc");
         MemoryUserDAO mud = new MemoryUserDAO();
 
         mud.clear();
 
-        AuthData ad = new AuthData("", "");
+
 
         try {
-            AuthData adr = us.register(ud);
+            us.register(rr);
         }
         catch(AlreadyTakenException e){
             System.out.println("Failed due to register1 user taken");
@@ -35,10 +35,11 @@ public class LogoutTests {
             Assertions.fail();
         }
 
+        LoginResponse lrp = null;
         try{
-            ad = us.login(ud);
+            lrp = us.login(lrq);
             System.out.println("login");
-            System.out.println(ad.authToken());
+            System.out.println(lrp.authToken());
         }
 //        catch (NoExistingUserException e){
 //            System.out.println("No existing user");
@@ -51,7 +52,7 @@ public class LogoutTests {
 
 
         try{
-            us.logout(ad.authToken());
+            us.logout(lrp.authToken());
         } catch (Unauthorized ex) {
             System.out.println("Incorrect Password");
             Assertions.fail();
@@ -64,15 +65,16 @@ public class LogoutTests {
     @DisplayName("Logout Invalid AuthToken")
     public void FailLogout() {
         UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
+        RegisterRequest rr = new RegisterRequest("Caleb", "123abc", "cdm@gmail.com");
+        LoginRequest lrq = new LoginRequest("Caleb", "123abc");
         MemoryUserDAO mud = new MemoryUserDAO();
 
         mud.clear();
 
-        AuthData ad = new AuthData("123", "");
+
 
         try {
-            us.register(ud);
+            us.register(rr);
         }
         catch(AlreadyTakenException e){
             System.out.println("Failed due to register1 user taken");
@@ -84,18 +86,14 @@ public class LogoutTests {
         }
 
         try{
-            us.login(ud);
+            us.login(lrq);
         }
-//        catch (NoExistingUserException e){
-//            System.out.println("No existing user");
-//            Assertions.fail();
-//        }
         catch (Unauthorized e) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }
 
-
+        AuthData ad = new AuthData("123", "");
         try{
             us.logout(ad.authToken());
             Assertions.fail();

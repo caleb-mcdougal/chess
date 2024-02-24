@@ -1,10 +1,7 @@
 package service;
 
 import dataAccess.*;
-import model.CreateGameRequest;
-import model.CreateGameResponse;
-import model.GameData;
-import model.ListGamesResponse;
+import model.*;
 
 import java.util.Objects;
 
@@ -40,24 +37,24 @@ public class GameService {
         return new ListGamesResponse(mgd.listGames(), null);
     }
 
-    public void joinGame(String authToken, String color, int gameID) throws BadRequestException, Unauthorized, AlreadyTakenException {
+    public void joinGame(JoinGameRequest request, String authToken) throws BadRequestException, Unauthorized, AlreadyTakenException {
         //Check authToken
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.authExists(authToken);
 
         //check valid color input
-        if(!Objects.equals(color, "WHITE") && !Objects.equals(color, "BLACK") && !Objects.equals(color, null)){
+        if(!Objects.equals(request.playerColor(), "WHITE") && !Objects.equals(request.playerColor(), "BLACK") && !Objects.equals(request.playerColor(), null)){
             throw new BadRequestException("bad request");
         }
 
         //get and check game from id
         MemoryGameDAO mgd = new MemoryGameDAO();
-        GameData gd = mgd.getGame(gameID);
+        GameData gd = mgd.getGame(request.gameID());
 
         //If joining as player
-        if(color != null) {
+        if(request.playerColor() != null) {
             //check if color is already taken
-            if (Objects.equals(color, "WHITE")) {
+            if (Objects.equals(request.playerColor(), "WHITE")) {
                 if (!gd.whiteUsername().isBlank()) {
                     throw new AlreadyTakenException("Color already taken");
                 }
@@ -67,7 +64,7 @@ public class GameService {
                     throw new AlreadyTakenException("Color already taken");
                 }
             }
-            mgd.updateGame(gameID, color, mad.getUsername(authToken));
+            mgd.updateGame(request.gameID(), request.playerColor(), mad.getUsername(authToken));
         }
         //If spectator then idempotent
     }

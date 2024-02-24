@@ -13,14 +13,13 @@ public class LoginHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         var gson = new Gson();
-        LoginRequest lr = gson.fromJson(request.body(), LoginRequest.class);
+        LoginRequest serviceRequest = gson.fromJson(request.body(), LoginRequest.class);
 
         UserService us = new UserService();
-        UserData ud = new UserData(lr.username(), lr.password(), "");
-        AuthData ad;
+        LoginResponse serviceResponse;
 
         try{
-            ad = us.login(ud);
+            serviceResponse = us.login(serviceRequest);
         }
         catch (Unauthorized e){
             response.status(401);
@@ -30,6 +29,6 @@ public class LoginHandler implements Route {
 
 
         response.status(200);
-        return gson.toJson(ad.authToken());     //spec says this need the username as well
+        return gson.toJson(serviceResponse.authToken());     //spec says this need the username as well
     }
 }

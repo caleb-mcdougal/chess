@@ -1,8 +1,7 @@
 package service;
 
 import dataAccess.*;
-import model.AuthData;
-import model.UserData;
+import model.*;
 
 import java.util.Objects;
 
@@ -11,37 +10,38 @@ public class UserService {
     public UserService() {
 
     }
-    public AuthData register(UserData user) throws AlreadyTakenException, BadRequestException{      //Test this
+    public RegisterResponse register(RegisterRequest request) throws AlreadyTakenException, BadRequestException{      //Test this
         MemoryUserDAO mud = new MemoryUserDAO();
-        if(user.username() == null || user.password() == null || user.email() == null || user.username().isBlank() || user.password().isBlank() || user.email().isBlank()){
+        if(request.username() == null || request.password() == null || request.email() == null || request.username().isBlank() || request.password().isBlank() || request.email().isBlank()){
             throw new BadRequestException("Must have all user data");
         }
-        if(mud.userExists(user)){
+        if(mud.userExists(request.username())){
             throw new AlreadyTakenException("This username is already taken");
         }
 
-        mud.createUser(user);
+        UserData newUser = new UserData(request.username(), request.password(), request.email());
+        mud.createUser(newUser);
 
         MemoryAuthDAO mad = new MemoryAuthDAO();
-        String authToken = mad.createAuth(user);
-        return new AuthData(authToken, user.username());
+        String authToken = mad.createAuth(newUser);
+        return new RegisterResponse(request.username(), authToken, null);
     }
-    public AuthData login(UserData user) throws Unauthorized { // removed: NoExistingUserException
+    public LoginResponse login(LoginRequest request) throws Unauthorized { // removed: NoExistingUserException
 
         MemoryUserDAO mud = new MemoryUserDAO();
-        if(!mud.userExists(user)){
+        if(!mud.userExists(request.username())){
             throw new Unauthorized("Username unrecognized");
         }
 
-        UserData ud = mud.getUser(user);
-        if(!Objects.equals(ud.password(), user.password())){        //Check password
+        UserData ud = mud.getUser(request.username());
+        if(!Objects.equals(ud.password(), request.password())){        //Check password
             throw new Unauthorized("Incorrect Password");
         }
 
         MemoryAuthDAO mad = new MemoryAuthDAO();
-        String authToken = mad.createAuth(user);
+        String authToken = mad.createAuth(ud);
 
-        return new AuthData(authToken, user.username());
+        return new LoginResponse(request.username(), authToken, null);
     }
 
     public void logout(String authToken) throws Unauthorized{ // auth must link to user for join game

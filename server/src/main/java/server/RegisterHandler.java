@@ -14,13 +14,13 @@ public class RegisterHandler implements Route {
     public Object handle(Request request, Response response) throws Exception {
         var gson = new Gson();
 
-        RegisterRequest rr = gson.fromJson(request.body(), RegisterRequest.class); // removed (CreateGameRequest) from before gson
+        RegisterRequest serviceRequest = gson.fromJson(request.body(), RegisterRequest.class); // removed (CreateGameRequest) from before gson
+        RegisterResponse serviceResponse;
 
-        UserData ud = new UserData(rr.username(), rr.password(), rr.email());
         UserService us = new UserService();
-        AuthData ad = new AuthData("", rr.username());
+
         try {
-            ad = us.register(ud);
+            serviceResponse = us.register(serviceRequest);
         }
         catch(AlreadyTakenException e){
             response.status(403);
@@ -32,6 +32,6 @@ public class RegisterHandler implements Route {
         }
 
         response.status(200);
-        return gson.toJson(ad.authToken());     //spec says this need the username as well
+        return gson.toJson(serviceResponse.authToken());     //spec says this need the username as well
     }
 }

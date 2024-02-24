@@ -4,6 +4,8 @@ import dataAccess.BadRequestException;
 import dataAccess.MemoryUserDAO;
 import dataAccess.AlreadyTakenException;
 import model.AuthData;
+import model.RegisterRequest;
+import model.RegisterResponse;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,14 +17,15 @@ public class RegisterTests {
     @DisplayName("Simple Register")
     public void RegisterSingleUser() {
         UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
+        RegisterRequest rrq = new RegisterRequest("Caleb", "123abc", "cdm@gmail.com");
+        RegisterResponse rrp;
 
         MemoryUserDAO mud = new MemoryUserDAO();
         int passSize1 = mud.getDBSize();
         int emailSize1 = mud.getEmailDBSize();
 
         try {
-            AuthData ad = us.register(ud);
+            rrp = us.register(rrq);
         }
         catch (AlreadyTakenException e){
             System.out.println("UserTakenException caught: " + e.getMessage());
@@ -43,13 +46,13 @@ public class RegisterTests {
     @DisplayName("Reregister User")
     public void DoubleRegister() {
         UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
+        RegisterRequest rr = new RegisterRequest("Caleb", "123abc", "cdm@gmail.com");
         MemoryUserDAO mud = new MemoryUserDAO();
 
         Assertions.assertThrows(AlreadyTakenException.class, () -> {
-            AuthData ad = us.register(ud);
-            if(!mud.userExists(ud)) {
-                AuthData ad2 = us.register(ud);
+            RegisterResponse rrp = us.register(rr);
+            if(!mud.userExists(rr.username())) {
+                RegisterResponse rrp2 = us.register(rr);
             }
             else{
                 throw new AlreadyTakenException("This username is already taken");

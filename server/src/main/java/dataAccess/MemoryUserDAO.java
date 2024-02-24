@@ -44,13 +44,13 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public UserData getUser(UserData ud){
-        return new UserData(ud.username(), UserPassword.get(ud.username()), UserEmail.get(ud.username()));
+    public UserData getUser(String username){
+        return new UserData(username, UserPassword.get(username), UserEmail.get(username));
     }
 
     @Override
-    public Boolean userExists(UserData ud) {
-        return UserPassword.get(ud.username()) != null;
+    public Boolean userExists(String username) {
+        return UserPassword.get(username) != null;
     }
 
 }

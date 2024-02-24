@@ -4,8 +4,7 @@ import dataAccess.BadRequestException;
 import dataAccess.Unauthorized;
 import dataAccess.MemoryUserDAO;
 import dataAccess.AlreadyTakenException;
-import model.AuthData;
-import model.UserData;
+import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +15,16 @@ public class LoginTests {
     @DisplayName("Login Correctly")
     public void SimpleLogin() {
         UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
+        RegisterRequest registerRequest = new RegisterRequest("Caleb", "123abc", "cdm@gmail.com");
+        RegisterResponse registerResponse;
+        LoginRequest request = new LoginRequest("Caleb", "123abc");
+        LoginResponse response;
         MemoryUserDAO mud = new MemoryUserDAO();
 
         mud.clear();
 
         try {
-            AuthData ad = us.register(ud);
+            registerResponse = us.register(registerRequest);
         }
         catch(AlreadyTakenException e){
             System.out.println("Failed due to register1 user taken");
@@ -34,7 +36,7 @@ public class LoginTests {
         }
 
         try{
-            AuthData ad = us.login(ud);
+            response = us.login(request);
             Assertions.assertTrue(true);
         }
         catch (Unauthorized e) {
@@ -50,13 +52,14 @@ public class LoginTests {
     @DisplayName("Login No Existing User")
     public void NoUser() {
         UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
+        RegisterRequest rr = new RegisterRequest("Caleb", "123abc", "cdm@gmail.com");
+        RegisterResponse rrp;
         MemoryUserDAO mud = new MemoryUserDAO();
 
         mud.clear();
 
         try {
-            AuthData ad = us.register(ud);
+            rrp = us.register(rr);
         }
         catch (AlreadyTakenException e) {
             System.out.println("Failed due to register2 user taken");
@@ -68,9 +71,9 @@ public class LoginTests {
         }
 
 
-        UserData ud2 = new UserData("McDougal", "123abc", "cdm@gmail.com");
+        LoginRequest lr = new LoginRequest("McDougal", "123abc");
         Assertions.assertThrows(Unauthorized.class, () -> {
-            us.login(ud2);
+            us.login(lr);
         });
 
         mud.clear();
@@ -80,13 +83,14 @@ public class LoginTests {
     @DisplayName("Login Incorrect Password")
     public void BadPassword() {
         UserService us = new UserService();
-        UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
+        RegisterRequest rr = new RegisterRequest("Caleb", "123abc", "cdm@gmail.com");
+        RegisterResponse rrp;
         MemoryUserDAO mud = new MemoryUserDAO();
 
         mud.clear();
 
         try {
-            AuthData ad = us.register(ud);
+            rrp = us.register(rr);
         }
         catch (AlreadyTakenException e) {
             System.out.println("Failed due to register3 user taken");
@@ -97,9 +101,9 @@ public class LoginTests {
             Assertions.fail();
         }
 
-        UserData ud2 = new UserData("Caleb", "321xyz", "cdm@gmail.com");
+        LoginRequest lr = new LoginRequest("Caleb", "321xyz");
         Assertions.assertThrows(Unauthorized.class, () -> {
-            us.login(ud2);
+            us.login(lr);
         });
 
         mud.clear();

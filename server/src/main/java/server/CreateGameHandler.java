@@ -2,7 +2,9 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataAccess.BadRequestException;
 import dataAccess.MemoryAuthDAO;
+import dataAccess.Unauthorized;
 import model.CreateGameRequest;
 import model.GameData;
 import service.GameService;
@@ -18,21 +20,22 @@ public class CreateGameHandler implements Route {
         CreateGameRequest cgr = gson.fromJson(request.body(), CreateGameRequest.class); // removed (CreateGameRequest) from before gson
         String authToken = request.headers("authorization");
 
-        System.out.println(cgr.gameName());
-
-        MemoryAuthDAO mad = new MemoryAuthDAO();
-//        if(!mad.validAuth(authToken)){
-//            //This should return an error
-//            //TODO
-//        }
-//        else {
         GameData gd = new GameData(0, "", "", cgr.gameName(), new ChessGame());
         GameService gs = new GameService();
-        int gameID = gs.createGame(gd, authToken);
+        int gameID = 0;
+        try {
+            gameID = gs.createGame(gd, authToken);
+        }
+        catch(Unauthorized e){
+            response.status(401);
+            return gson.toJson("Error: unauthorized");
+        }
+        catch(BadRequestException e){
+            response.status(400);
+            return gson.toJson("Error: bad request");
+        }
 
         response.status(200);
-//        }
-
         return gson.toJson(gameID);
     }
 }

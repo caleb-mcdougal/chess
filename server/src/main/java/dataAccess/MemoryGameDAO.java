@@ -1,11 +1,12 @@
 package dataAccess;
 
 import chess.ChessGame;
+import model.GameData;
 
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
-    private static HashMap<Integer, ChessGame> GameDB;
+    private static HashMap<Integer, GameData> GameDB;
     private static int GameIDIncrementer = 0;
 
     // Static block to initialize the HashMap for testing
@@ -16,7 +17,8 @@ public class MemoryGameDAO implements GameDAO{
     public int createGame(String name){
         GameIDIncrementer += 1;
         ChessGame newGame = new ChessGame();
-        GameDB.put(GameIDIncrementer, newGame);
+        GameData gd = new GameData(GameIDIncrementer, "", "", name, newGame);
+        GameDB.put(GameIDIncrementer, gd);
         return GameIDIncrementer;
     }
 
@@ -26,8 +28,8 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public ChessGame[] listGames() {
-        return new ChessGame[0];
+    public GameData[] listGames() {
+        return new GameData[0];
     }
 
     @Override

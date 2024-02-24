@@ -1,6 +1,7 @@
 package UnitTests;
 
 import chess.ChessGame;
+import dataAccess.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.Unauthorized;
@@ -32,6 +33,10 @@ public class CreateGameTests {
         }
         catch (Unauthorized e){
             System.out.println("Unaothorized create game");
+            Assertions.fail();
+        }
+        catch(BadRequestException e){
+            System.out.println("bad request create game");
             Assertions.fail();
         }
 

@@ -1,9 +1,7 @@
 package service;
 
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
-import dataAccess.Unauthorized;
+import chess.ChessGame;
+import dataAccess.*;
 import model.GameData;
 
 public class GameService {
@@ -11,13 +9,11 @@ public class GameService {
     public GameService() {
 
     }
-//    public AuthData register(UserData user) {
-//
-//    }
-//    public AuthData login(UserData user) {
-//
-//    }
-    public int createGame(GameData gd, String authToken) throws Unauthorized {
+
+    public int createGame(GameData gd, String authToken) throws Unauthorized, BadRequestException {
+        if(gd.gameName() == null || gd.gameName().isBlank()){
+            throw new BadRequestException("bad request");
+        }
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.authExists(authToken);
         MemoryGameDAO mgd = new MemoryGameDAO();
@@ -31,4 +27,7 @@ public class GameService {
         MemoryGameDAO mgd = new MemoryGameDAO();
         mgd.clear();
     }
+//    public ChessGame[] listGames() {
+//
+//    }
 }

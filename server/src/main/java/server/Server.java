@@ -15,7 +15,9 @@ public class Server {
         Spark.post("/user", new RegisterHandler());
         Spark.post("/session", new LoginHandler());
         Spark.delete("/session", new LogoutHandler());
+        Spark.get("/game", new ListGameHandler());      //String in browser outputs \n not new lines
         Spark.post("/game", new CreateGameHandler());
+        Spark.put("/game", new JoinGameHandler());
 
 
         Spark.awaitInitialization();

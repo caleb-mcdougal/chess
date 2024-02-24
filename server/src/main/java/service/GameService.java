@@ -27,7 +27,10 @@ public class GameService {
         MemoryGameDAO mgd = new MemoryGameDAO();
         mgd.clear();
     }
-//    public ChessGame[] listGames() {
-//
-//    }
+    public String listGames(String authToken) throws Unauthorized{
+        MemoryAuthDAO mad = new MemoryAuthDAO();
+        mad.authExists(authToken);
+        MemoryGameDAO mgd = new MemoryGameDAO();
+        return mgd.listGames();
+    }
 }

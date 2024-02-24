@@ -23,13 +23,17 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public ChessGame getGame() {
-        return null;
+    public GameData getGame(int gameID) {
+        return GameDB.get(gameID);
     }
 
     @Override
-    public GameData[] listGames() {
-        return new GameData[0];
+    public String listGames() {
+        StringBuilder result = new StringBuilder();
+        for (GameData value : GameDB.values()) {
+            result.append(value).append("\n");
+        }
+        return result.toString();
     }
 
     @Override
@@ -39,10 +43,7 @@ public class MemoryGameDAO implements GameDAO{
 
 
     public void clear() {
-//        System.out.println("in MemoryUserDAO clear");
-//        System.out.println(UserDB);
         GameDB.clear();
-//        System.out.println(UserDB);
     }
 
     public int getDBSize(){

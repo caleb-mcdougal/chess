@@ -26,7 +26,10 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public boolean authExists(String authToken) throws Unauthorized{
-        return AuthDB.containsKey(authToken);
+        if (AuthDB.containsKey(authToken)) {
+            return AuthDB.containsKey(authToken);
+        }
+        throw new Unauthorized("Error: unauthorized");
     }
 
 

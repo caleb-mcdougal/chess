@@ -3,6 +3,7 @@ package service;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
+import dataAccess.Unauthorized;
 import model.GameData;
 
 public class GameService {
@@ -16,7 +17,9 @@ public class GameService {
 //    public AuthData login(UserData user) {
 //
 //    }
-    public int createGame(GameData gd) {
+    public int createGame(GameData gd, String authToken) throws Unauthorized {
+        MemoryAuthDAO mad = new MemoryAuthDAO();
+        mad.authExists(authToken);
         MemoryGameDAO mgd = new MemoryGameDAO();
         return mgd.createGame(gd.gameName());
     }

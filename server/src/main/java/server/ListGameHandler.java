@@ -27,7 +27,8 @@ public class ListGameHandler implements Route {
         }
         catch(Unauthorized e){
             response.status(401);
-            return gson.toJson("Error: unauthorized");
+            ListGamesResponse errorResponse = new ListGamesResponse(null, "unauthorized");
+            return gson.toJson(errorResponse);
         }
 
         response.status(200);

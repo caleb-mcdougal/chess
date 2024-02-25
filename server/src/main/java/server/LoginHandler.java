@@ -23,12 +23,11 @@ public class LoginHandler implements Route {
         }
         catch (Unauthorized e){
             response.status(401);
-            return gson.toJson("Error: unauthorized");
+            LoginResponse errorResponse = new LoginResponse(null, null, "unauthroized");
+            return gson.toJson(errorResponse);
         }
 
-
-
         response.status(200);
-        return gson.toJson(serviceResponse.authToken());     //spec says this need the username as well
+        return gson.toJson(serviceResponse);     //spec says this need the username as well
     }
 }

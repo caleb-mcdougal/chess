@@ -6,6 +6,7 @@ import dataAccess.BadRequestException;
 import dataAccess.Unauthorized;
 import model.CreateGameRequest;
 import model.JoinGameRequest;
+import model.JoinGameResponse;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -27,18 +28,21 @@ public class JoinGameHandler implements Route {
         }
         catch(Unauthorized e){
             response.status(401);
-            return gson.toJson("Error: unauthorized");
+            JoinGameResponse errorResponse = new JoinGameResponse("unauthorized");
+            return gson.toJson(errorResponse);
         }
         catch (BadRequestException e){
             response.status(400);
-            return gson.toJson("Error: bad request");
+            JoinGameResponse errorResponse = new JoinGameResponse("bad request");
+            return gson.toJson(errorResponse);
         }
         catch (AlreadyTakenException e){
             response.status(403);
-            return gson.toJson("Error: already taken");
+            JoinGameResponse errorResponse = new JoinGameResponse("already taken");
+            return gson.toJson(errorResponse);
         }
 
         response.status(200);
-        return gson.toJson("");
+        return "{}";
     }
 }

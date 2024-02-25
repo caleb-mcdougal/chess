@@ -15,7 +15,7 @@ public class ClearHandler implements Route {
 
         GameService gs = new GameService();
         gs.clear();
-        response.status(400);
-        return gson.toJson("");
+        response.status(200);
+        return "{}";
     }
 }

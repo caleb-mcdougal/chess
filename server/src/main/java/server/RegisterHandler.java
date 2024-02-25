@@ -24,14 +24,16 @@ public class RegisterHandler implements Route {
         }
         catch(AlreadyTakenException e){
             response.status(403);
-            return gson.toJson("Error: already taken");
+            RegisterResponse errorResponse = new RegisterResponse(null, null, "already taken");
+            return gson.toJson(errorResponse);
         }
         catch(BadRequestException e){
             response.status(400);
-            return gson.toJson("Error: bad request");
+            RegisterResponse errorResponse = new RegisterResponse(null, null, "bad request");
+            return gson.toJson(errorResponse);
         }
 
         response.status(200);
-        return gson.toJson(serviceResponse.authToken());     //spec says this need the username as well
+        return gson.toJson(serviceResponse);     //spec says this need the username as well
     }
 }

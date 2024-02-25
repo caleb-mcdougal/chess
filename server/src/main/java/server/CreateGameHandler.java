@@ -28,12 +28,12 @@ public class CreateGameHandler implements Route {
         }
         catch(Unauthorized e){
             response.status(401);
-            CreateGameResponse errorResponse = new CreateGameResponse(0, "unauthorized");
+            CreateGameResponse errorResponse = new CreateGameResponse(0, "Error: unauthorized");
             return gson.toJson(errorResponse);
         }
         catch(BadRequestException e){
             response.status(400);
-            CreateGameResponse errorResponse = new CreateGameResponse(0, "bad request");
+            CreateGameResponse errorResponse = new CreateGameResponse(0, "Error: bad request");
             return gson.toJson(errorResponse);
         }
 

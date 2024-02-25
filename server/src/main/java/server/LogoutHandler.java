@@ -24,7 +24,7 @@ public class LogoutHandler implements Route {
         }
         catch (Unauthorized e){
             response.status(401);
-            LogoutResponse errorResponse = new LogoutResponse("unauthorized");
+            LogoutResponse errorResponse = new LogoutResponse("Error: unauthorized");
             return gson.toJson(errorResponse);
         }
 

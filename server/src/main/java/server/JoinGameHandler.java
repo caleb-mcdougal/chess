@@ -28,17 +28,17 @@ public class JoinGameHandler implements Route {
         }
         catch(Unauthorized e){
             response.status(401);
-            JoinGameResponse errorResponse = new JoinGameResponse("unauthorized");
+            JoinGameResponse errorResponse = new JoinGameResponse("Error: unauthorized");
             return gson.toJson(errorResponse);
         }
         catch (BadRequestException e){
             response.status(400);
-            JoinGameResponse errorResponse = new JoinGameResponse("bad request");
+            JoinGameResponse errorResponse = new JoinGameResponse("Error: bad request");
             return gson.toJson(errorResponse);
         }
         catch (AlreadyTakenException e){
             response.status(403);
-            JoinGameResponse errorResponse = new JoinGameResponse("already taken");
+            JoinGameResponse errorResponse = new JoinGameResponse("Error: already taken");
             return gson.toJson(errorResponse);
         }
 

@@ -24,12 +24,12 @@ public class RegisterHandler implements Route {
         }
         catch(AlreadyTakenException e){
             response.status(403);
-            RegisterResponse errorResponse = new RegisterResponse(null, null, "already taken");
+            RegisterResponse errorResponse = new RegisterResponse(null, null, "Error: already taken");
             return gson.toJson(errorResponse);
         }
         catch(BadRequestException e){
             response.status(400);
-            RegisterResponse errorResponse = new RegisterResponse(null, null, "bad request");
+            RegisterResponse errorResponse = new RegisterResponse(null, null, "Error: bad request");
             return gson.toJson(errorResponse);
         }
 

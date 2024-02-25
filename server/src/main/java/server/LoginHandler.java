@@ -23,7 +23,7 @@ public class LoginHandler implements Route {
         }
         catch (Unauthorized e){
             response.status(401);
-            LoginResponse errorResponse = new LoginResponse(null, null, "unauthroized");
+            LoginResponse errorResponse = new LoginResponse(null, null, "Error: unauthorized");
             return gson.toJson(errorResponse);
         }
 

@@ -17,11 +17,11 @@ public class ClearTests{
         MemoryUserDAO mud = new MemoryUserDAO();
         int UserSize = mud.getDBSize();
         MemoryGameDAO mgd = new MemoryGameDAO();
-//        int GameSize = mgd.getDBSize();
+        int GameSize = mgd.getDBSize();
         MemoryAuthDAO mad = new MemoryAuthDAO();
         int AuthSize = mad.getDBSize();
         Assertions.assertEquals(UserSize,0);
-//        Assertions.assertEquals(GameSize,0);
+        Assertions.assertEquals(GameSize,0);
         Assertions.assertEquals(AuthSize,0);
     }
 }

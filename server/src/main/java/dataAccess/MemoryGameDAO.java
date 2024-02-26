@@ -64,12 +64,12 @@ public class MemoryGameDAO implements GameDAO{
         gameDB.clear();
     }
 
-    public int getDBSize(){
-        if(gameDB != null) {
-            return gameDB.size();
-        }
-        else {
-            return 0;
-        }
-    }
+//    public int getDBSize(){
+//        if(gameDB != null) {
+//            return gameDB.size();
+//        }
+//        else {
+//            return 0;
+//        }
+//    }
 }

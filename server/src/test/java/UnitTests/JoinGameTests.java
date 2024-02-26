@@ -2,7 +2,13 @@ package UnitTests;
 
 import chess.ChessGame;
 import dataAccess.*;
+import dataAccess.Exceptions.AlreadyTakenException;
+import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.UnauthorizedException;
 import model.*;
+import model.RequestResponse.CreateGameRequest;
+import model.RequestResponse.CreateGameResponse;
+import model.RequestResponse.JoinGameRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

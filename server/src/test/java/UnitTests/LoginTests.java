@@ -1,10 +1,13 @@
 package UnitTests;
 
-import dataAccess.BadRequestException;
-import dataAccess.UnauthorizedException;
+import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.UnauthorizedException;
 import dataAccess.MemoryUserDAO;
-import dataAccess.AlreadyTakenException;
-import model.*;
+import dataAccess.Exceptions.AlreadyTakenException;
+import model.RequestResponse.LoginRequest;
+import model.RequestResponse.LoginResponse;
+import model.RequestResponse.RegisterRequest;
+import model.RequestResponse.RegisterResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

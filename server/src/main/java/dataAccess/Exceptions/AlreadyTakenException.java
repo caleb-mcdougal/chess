@@ -1,4 +1,4 @@
-package dataAccess;
+package dataAccess.Exceptions;
 
 public class AlreadyTakenException extends Exception{
     public AlreadyTakenException(String message) {

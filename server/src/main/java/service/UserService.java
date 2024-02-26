@@ -1,7 +1,14 @@
 package service;
 
 import dataAccess.*;
+import dataAccess.Exceptions.AlreadyTakenException;
+import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.UnauthorizedException;
 import model.*;
+import model.RequestResponse.LoginRequest;
+import model.RequestResponse.LoginResponse;
+import model.RequestResponse.RegisterRequest;
+import model.RequestResponse.RegisterResponse;
 
 import java.util.Objects;
 
@@ -10,7 +17,7 @@ public class UserService {
     public UserService() {
 
     }
-    public RegisterResponse register(RegisterRequest request) throws AlreadyTakenException, BadRequestException{      //Test this
+    public RegisterResponse register(RegisterRequest request) throws AlreadyTakenException, BadRequestException {      //Test this
         MemoryUserDAO mud = new MemoryUserDAO();
         if(request.username() == null || request.password() == null || request.email() == null || request.username().isBlank() || request.password().isBlank() || request.email().isBlank()){
             throw new BadRequestException("Must have all user data");

@@ -1,7 +1,14 @@
 package service;
 
 import dataAccess.*;
+import dataAccess.Exceptions.AlreadyTakenException;
+import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.UnauthorizedException;
 import model.*;
+import model.RequestResponse.CreateGameRequest;
+import model.RequestResponse.CreateGameResponse;
+import model.RequestResponse.JoinGameRequest;
+import model.RequestResponse.ListGamesResponse;
 
 import java.util.Objects;
 

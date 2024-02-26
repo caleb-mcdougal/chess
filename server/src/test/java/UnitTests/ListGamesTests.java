@@ -1,12 +1,12 @@
 package UnitTests;
 
 import chess.ChessGame;
-import dataAccess.BadRequestException;
+import dataAccess.Exceptions.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
-import dataAccess.UnauthorizedException;
-import model.CreateGameRequest;
-import model.ListGamesResponse;
+import dataAccess.Exceptions.UnauthorizedException;
+import model.RequestResponse.CreateGameRequest;
+import model.RequestResponse.ListGamesResponse;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

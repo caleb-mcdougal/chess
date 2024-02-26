@@ -1,9 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.BadRequestException;
-import dataAccess.AlreadyTakenException;
-import model.*;
+import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.AlreadyTakenException;
+import model.RequestResponse.RegisterRequest;
+import model.RequestResponse.RegisterResponse;
 import service.UserService;
 import spark.Request;
 import spark.Response;

@@ -1,6 +1,7 @@
 package dataAccess;
 
 import chess.ChessGame;
+import dataAccess.Exceptions.BadRequestException;
 import model.GameData;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public GameData getGame(int gameID) throws BadRequestException{
+    public GameData getGame(int gameID) throws BadRequestException {
         if(!GameDB.containsKey(gameID)){
             throw new BadRequestException("Game does not exist");
         }

@@ -1,8 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.UnauthorizedException;
-import model.*;
+import dataAccess.Exceptions.UnauthorizedException;
+import model.RequestResponse.LoginRequest;
+import model.RequestResponse.LoginResponse;
 import service.UserService;
 import spark.Request;
 import spark.Response;

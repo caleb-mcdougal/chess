@@ -1,6 +1,6 @@
 package dataAccess;
 
-import chess.ChessGame;
+import dataAccess.Exceptions.BadRequestException;
 import model.GameData;
 
 public interface GameDAO {

@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import model.ClearResponse;
 import service.GameService;
 import spark.Request;
 import spark.Response;

@@ -1,11 +1,11 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.AlreadyTakenException;
-import dataAccess.BadRequestException;
-import dataAccess.UnauthorizedException;
-import model.JoinGameRequest;
-import model.JoinGameResponse;
+import dataAccess.Exceptions.AlreadyTakenException;
+import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.UnauthorizedException;
+import model.RequestResponse.JoinGameRequest;
+import model.RequestResponse.JoinGameResponse;
 import service.GameService;
 import spark.Request;
 import spark.Response;

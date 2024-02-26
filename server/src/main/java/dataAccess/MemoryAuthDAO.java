@@ -8,14 +8,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
-    private static HashMap<String,String> AuthDB; // auth, username
+    private static HashMap<String,String> AuthDB;
 
     // Static block to initialize the HashMap for testing
     static {
         AuthDB = new HashMap<>();
-//        AuthDB.put(1, "One");
-//        AuthDB.put(2, "Two");
-//        AuthDB.put(3, "Three");
     }
 
     @Override
@@ -30,6 +27,7 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public boolean authExists(String authToken) throws UnauthorizedException {
+        //Return if the auth token doesn't exist throw an unauthorized error
         if (AuthDB.containsKey(authToken)) {
             return AuthDB.containsKey(authToken);
         }
@@ -46,6 +44,7 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) throws UnauthorizedException {
+        //If the given auth token exists remove it from the DB otherwise throw unauthorized error
         if(!AuthDB.containsKey(authToken)){
             throw new UnauthorizedException("AuthToken DNE");
         }
@@ -55,11 +54,16 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void clear() {
+        //Delete all auth elements in DB
         AuthDB.clear();
     }
 
     public int getDBSize(){
-        return AuthDB.size();
-    }
+        if(AuthDB != null) {
+            return AuthDB.size();
+        }
+        else {
+            return 0;
+        }    }
 
 }

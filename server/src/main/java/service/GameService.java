@@ -19,16 +19,22 @@ public class GameService {
     }
 
     public CreateGameResponse createGame(CreateGameRequest request, String authToken) throws UnauthorizedException, BadRequestException {
+        //Ensure valid request, check game name
         if(request.gameName() == null || request.gameName().isBlank()){
             throw new BadRequestException("bad request");
         }
+
+        //Ensure valid auth token
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.authExists(authToken);
         MemoryGameDAO mgd = new MemoryGameDAO();
+
+        //Create and return the game
         int gameID = mgd.createGame(request.gameName());
         return new CreateGameResponse(gameID, null);
     }
-    public void clear() {       //Clearing all DAO hashmaps
+    public void clear() {
+        //Clear all DAO data structures
         MemoryUserDAO mud = new MemoryUserDAO();
         mud.clear();
         MemoryAuthDAO mad = new MemoryAuthDAO();
@@ -37,8 +43,11 @@ public class GameService {
         mgd.clear();
     }
     public ListGamesResponse listGames(String authToken) throws UnauthorizedException {
+        //Ensure valid auth token
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.authExists(authToken);
+
+        //Call DAO method to get an array of game data structures
         MemoryGameDAO mgd = new MemoryGameDAO();
         return new ListGamesResponse(mgd.listGames(), null);
     }

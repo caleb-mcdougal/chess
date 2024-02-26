@@ -13,38 +13,43 @@ public class MemoryUserDAO implements UserDAO{
     static {
         UserPassword = new HashMap<>();
         UserEmail = new HashMap<>();
-//        UserDB.put(1, "One");
-//        UserDB.put(2, "Two");
-//        UserDB.put(3, "Three");
     }
 
 
 
     public void clear() {
-//        System.out.println("in MemoryUserDAO clear");
-//        System.out.println(UserDB);
+        //Clear all user information in DB
         UserPassword.clear();
         UserEmail.clear();
-//        System.out.println(UserDB);
     }
 
     public int getDBSize(){
-//        System.out.println(UserDB);
-        return UserPassword.size();
+        if(UserPassword != null) {
+            return UserPassword.size();
+        }
+        else {
+            return 0;
+        }
     }
     public int getEmailDBSize(){
-//        System.out.println(UserDB);
-        return UserEmail.size();
+        if(UserEmail != null) {
+            return UserEmail.size();
+        }
+        else {
+            return 0;
+        }
     }
 
     @Override
     public void createUser(UserData ud) {
+        //Create new user with username linked to password and email in respective DB's
         UserPassword.put(ud.username(), ud.password());
         UserEmail.put(ud.username(), ud.email());
     }
 
     @Override
     public UserData getUser(String username){
+        //Return the user information in userdata object
         return new UserData(username, UserPassword.get(username), UserEmail.get(username));
     }
 

@@ -16,15 +16,21 @@ public class MemoryGameDAO implements GameDAO{
     }
     @Override
     public int createGame(String name){
+        //Increment the static gameID counter variable
         GameIDIncrementer += 1;
+
+        //Create new game in the DB
         ChessGame newGame = new ChessGame();
         GameData gd = new GameData(GameIDIncrementer, null, null, name, newGame);
         GameDB.put(GameIDIncrementer, gd);
+
+        //Return the game ID
         return GameIDIncrementer;
     }
 
     @Override
     public GameData getGame(int gameID) throws BadRequestException {
+        //Return game data information given the gameID if it exists, otherwise throw bad request exception
         if(!GameDB.containsKey(gameID)){
             throw new BadRequestException("Game does not exist");
         }
@@ -38,8 +44,11 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public void updateGame(int gameID, String color, String username) {
+        //get new and old game data fields
         GameData oldGame = GameDB.get(gameID);
         GameData gd;
+
+        //Add the new username to the color indicated
         if(color.equals("WHITE")){
             gd = new GameData(gameID, username, oldGame.blackUsername(), oldGame.gameName(), oldGame.game());
         }
@@ -51,11 +60,11 @@ public class MemoryGameDAO implements GameDAO{
 
 
     public void clear() {
+        //Delete all game DB elements
         GameDB.clear();
     }
 
     public int getDBSize(){
-//        System.out.println(UserDB);
         if(GameDB != null) {
             return GameDB.size();
         }

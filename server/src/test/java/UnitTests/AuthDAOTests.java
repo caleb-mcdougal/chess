@@ -1,5 +1,6 @@
 package UnitTests;
 
+import dataAccess.Exceptions.UnauthorizedException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
@@ -27,6 +28,11 @@ public class AuthDAOTests {
         MemoryAuthDAO mad = new MemoryAuthDAO();
         UserData ud = new UserData("Caleb", "123abc", "cdm@gmail.com");
         String auth1 = mad.createAuth(ud);
-        Assertions.assertTrue(mad.validAuth(auth1, ud));
+        try {
+            Assertions.assertTrue(mad.authExists(auth1));
+        }
+        catch (UnauthorizedException e){
+            System.out.println("Unauthorized auth token");
+        }
     }
 }

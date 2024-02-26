@@ -1,4 +1,4 @@
-package model.RequestResponse;
+package model.Response;
 
 public record ClearResponse(String message) {
 }

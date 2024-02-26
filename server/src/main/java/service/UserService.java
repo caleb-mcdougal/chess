@@ -5,10 +5,10 @@ import dataAccess.Exceptions.AlreadyTakenException;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.UnauthorizedException;
 import model.*;
-import model.RequestResponse.LoginRequest;
-import model.RequestResponse.LoginResponse;
-import model.RequestResponse.RegisterRequest;
-import model.RequestResponse.RegisterResponse;
+import model.Request.LoginRequest;
+import model.Response.LoginResponse;
+import model.Request.RegisterRequest;
+import model.Response.RegisterResponse;
 
 import java.util.Objects;
 

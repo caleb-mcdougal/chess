@@ -82,9 +82,9 @@ public class ChessBoard {
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 ChessPosition newPos = new ChessPosition(i,j);
-                ChessPiece OGPiece = board[i-1][j-1];
-                if(OGPiece != null) {
-                    ChessPiece newPiece = new ChessPiece(OGPiece.getTeamColor(), OGPiece.getPieceType());
+                ChessPiece ogPiece = board[i-1][j-1];
+                if(ogPiece != null) {
+                    ChessPiece newPiece = new ChessPiece(ogPiece.getTeamColor(), ogPiece.getPieceType());
                     newBoard.addPiece(newPos, newPiece);
                 }
             }

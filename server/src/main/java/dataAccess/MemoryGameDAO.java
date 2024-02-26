@@ -7,45 +7,45 @@ import model.GameData;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
-    private static HashMap<Integer, GameData> GameDB;
-    private static int GameIDIncrementer = 0;
+    private static HashMap<Integer, GameData> gameDB;
+    private static int gameIDIncrementer = 0;
 
     // Static block to initialize the HashMap for testing
     static {
-        GameDB = new HashMap<>();
+        gameDB = new HashMap<>();
     }
     @Override
     public int createGame(String name){
         //Increment the static gameID counter variable
-        GameIDIncrementer += 1;
+        gameIDIncrementer += 1;
 
         //Create new game in the DB
         ChessGame newGame = new ChessGame();
-        GameData gd = new GameData(GameIDIncrementer, null, null, name, newGame);
-        GameDB.put(GameIDIncrementer, gd);
+        GameData gd = new GameData(gameIDIncrementer, null, null, name, newGame);
+        gameDB.put(gameIDIncrementer, gd);
 
         //Return the game ID
-        return GameIDIncrementer;
+        return gameIDIncrementer;
     }
 
     @Override
     public GameData getGame(int gameID) throws BadRequestException {
         //Return game data information given the gameID if it exists, otherwise throw bad request exception
-        if(!GameDB.containsKey(gameID)){
+        if(!gameDB.containsKey(gameID)){
             throw new BadRequestException("Game does not exist");
         }
-        return GameDB.get(gameID);
+        return gameDB.get(gameID);
     }
 
     @Override
     public GameData[] listGames() {
-        return GameDB.values().toArray(new GameData[0]);
+        return gameDB.values().toArray(new GameData[0]);
     }
 
     @Override
     public void updateGame(int gameID, String color, String username) {
         //get new and old game data fields
-        GameData oldGame = GameDB.get(gameID);
+        GameData oldGame = gameDB.get(gameID);
         GameData gd;
 
         //Add the new username to the color indicated
@@ -55,18 +55,18 @@ public class MemoryGameDAO implements GameDAO{
         else{
             gd = new GameData(gameID, oldGame.whiteUsername(), username, oldGame.gameName(), oldGame.game());
         }
-        GameDB.put(gameID, gd);
+        gameDB.put(gameID, gd);
     }
 
 
     public void clear() {
         //Delete all game DB elements
-        GameDB.clear();
+        gameDB.clear();
     }
 
     public int getDBSize(){
-        if(GameDB != null) {
-            return GameDB.size();
+        if(gameDB != null) {
+            return gameDB.size();
         }
         else {
             return 0;

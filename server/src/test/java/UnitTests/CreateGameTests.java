@@ -5,7 +5,7 @@ import dataAccess.Exceptions.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.Exceptions.UnauthorizedException;
-import model.RequestResponse.CreateGameRequest;
+import model.Request.CreateGameRequest;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

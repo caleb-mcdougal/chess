@@ -1,4 +1,4 @@
-package model.RequestResponse;
+package model.Request;
 
 import chess.ChessPiece;
 

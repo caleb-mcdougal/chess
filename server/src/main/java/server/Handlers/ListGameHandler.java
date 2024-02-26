@@ -2,7 +2,7 @@ package server.Handlers;
 
 import com.google.gson.Gson;
 import dataAccess.Exceptions.UnauthorizedException;
-import model.RequestResponse.ListGamesResponse;
+import model.Response.ListGamesResponse;
 import service.GameService;
 import spark.Request;
 import spark.Response;

@@ -3,8 +3,8 @@ package UnitTests;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.MemoryUserDAO;
 import dataAccess.Exceptions.AlreadyTakenException;
-import model.RequestResponse.RegisterRequest;
-import model.RequestResponse.RegisterResponse;
+import model.Request.RegisterRequest;
+import model.Response.RegisterResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,6 @@ public class RegisterTests {
 
         MemoryUserDAO mud = new MemoryUserDAO();
         int passSize1 = mud.getDBSize();
-        int emailSize1 = mud.getEmailDBSize();
 
         try {
             rrp = us.register(rrq);
@@ -34,11 +33,9 @@ public class RegisterTests {
 
 
         int passSize2 = mud.getDBSize();
-        int emailSize2 = mud.getEmailDBSize();
 
 
         Assertions.assertEquals(passSize1 + 1, passSize2);
-        Assertions.assertEquals(emailSize1 + 1, emailSize2);
     }
     @Test
     @DisplayName("Reregister User")

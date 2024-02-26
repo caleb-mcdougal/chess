@@ -2,7 +2,7 @@ package server.Handlers;
 
 import com.google.gson.Gson;
 import dataAccess.Exceptions.UnauthorizedException;
-import model.RequestResponse.LogoutResponse;
+import model.Response.LogoutResponse;
 import service.UserService;
 import spark.Request;
 import spark.Response;

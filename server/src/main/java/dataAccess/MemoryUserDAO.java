@@ -6,34 +6,26 @@ import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO{
 
-    private static HashMap<String, String> UserPassword;
-    private static HashMap<String, String> UserEmail;
+    private static HashMap<String, String> userPassword;
+    private static HashMap<String, String> userEmail;
 
     // Static block to initialize the HashMap for testing
     static {
-        UserPassword = new HashMap<>();
-        UserEmail = new HashMap<>();
+        userPassword = new HashMap<>();
+        userEmail = new HashMap<>();
     }
 
 
 
     public void clear() {
         //Clear all user information in DB
-        UserPassword.clear();
-        UserEmail.clear();
+        userPassword.clear();
+        userEmail.clear();
     }
 
     public int getDBSize(){
-        if(UserPassword != null) {
-            return UserPassword.size();
-        }
-        else {
-            return 0;
-        }
-    }
-    public int getEmailDBSize(){
-        if(UserEmail != null) {
-            return UserEmail.size();
+        if(userPassword != null) {
+            return userPassword.size();
         }
         else {
             return 0;
@@ -43,19 +35,19 @@ public class MemoryUserDAO implements UserDAO{
     @Override
     public void createUser(UserData ud) {
         //Create new user with username linked to password and email in respective DB's
-        UserPassword.put(ud.username(), ud.password());
-        UserEmail.put(ud.username(), ud.email());
+        userPassword.put(ud.username(), ud.password());
+        userEmail.put(ud.username(), ud.email());
     }
 
     @Override
     public UserData getUser(String username){
         //Return the user information in userdata object
-        return new UserData(username, UserPassword.get(username), UserEmail.get(username));
+        return new UserData(username, userPassword.get(username), userEmail.get(username));
     }
 
     @Override
     public Boolean userExists(String username) {
-        return UserPassword.get(username) != null;
+        return userPassword.get(username) != null;
     }
 
 }

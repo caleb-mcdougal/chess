@@ -1,4 +1,4 @@
-package model.RequestResponse;
+package model.Response;
 
 public record LoginResponse(String username, String authToken, String message) {
 }

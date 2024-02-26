@@ -57,14 +57,14 @@ public class ChessGame {
         }
         ChessPiece piece = board.getPiece(startPosition);
         HashSet<ChessMove> moveSet = piece.pieceMoves(board,startPosition);
-        ChessBoard OGBoard = board.deepCopy();
+        ChessBoard ogBoard = board.deepCopy();
         HashSet<ChessMove> invalidMoves = new HashSet<>();
         for (ChessMove move : moveSet){
             moveIt(move);
             if (isInCheck(piece.getTeamColor())) { // if moving to check, then invalid move
                 invalidMoves.add(move);
             }
-            board = OGBoard.deepCopy();
+            board = ogBoard.deepCopy();
         }
         moveSet.removeAll(invalidMoves);
         return moveSet;
@@ -163,7 +163,7 @@ public class ChessGame {
         ChessPosition kingPos = findKing(teamColor);
 
         //Try all king moves
-        ChessBoard OGBoard = board.deepCopy();
+        ChessBoard ogBoard = board.deepCopy();
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 ChessPosition currentPosition = new ChessPosition(i,j);
@@ -181,7 +181,7 @@ public class ChessGame {
                         if (!isInCheck(teamColor)) { // if not in check at new position not in checkmate
                             return false;
                         } else { // Reset the board
-                            board = OGBoard.deepCopy();
+                            board = ogBoard.deepCopy();
                         }
                     }
                 }

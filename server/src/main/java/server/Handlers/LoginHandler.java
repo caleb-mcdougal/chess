@@ -1,31 +1,34 @@
-package server;
+package server.Handlers;
 
 import com.google.gson.Gson;
 import dataAccess.Exceptions.UnauthorizedException;
-import model.RequestResponse.LogoutResponse;
+import model.RequestResponse.LoginRequest;
+import model.RequestResponse.LoginResponse;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class LogoutHandler implements Route {
+public class LoginHandler implements Route {
+
     @Override
     public Object handle(Request request, Response response) throws Exception {
         var gson = new Gson();
+        LoginRequest serviceRequest = gson.fromJson(request.body(), LoginRequest.class);
 
         UserService us = new UserService();
-        String authToken = request.headers("authorization");
+        LoginResponse serviceResponse;
 
         try{
-            us.logout(authToken);
+            serviceResponse = us.login(serviceRequest);
         }
         catch (UnauthorizedException e){
             response.status(401);
-            LogoutResponse errorResponse = new LogoutResponse("Error: unauthorized");
+            LoginResponse errorResponse = new LoginResponse(null, null, "Error: unauthorized");
             return gson.toJson(errorResponse);
         }
 
         response.status(200);
-        return "{}";
+        return gson.toJson(serviceResponse);     //spec says this need the username as well
     }
 }

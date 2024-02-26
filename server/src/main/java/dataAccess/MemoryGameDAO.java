@@ -17,7 +17,7 @@ public class MemoryGameDAO implements GameDAO{
     public int createGame(String name){
         GameIDIncrementer += 1;
         ChessGame newGame = new ChessGame();
-        GameData gd = new GameData(GameIDIncrementer, "", "", name, newGame);
+        GameData gd = new GameData(GameIDIncrementer, null, null, name, newGame);
         GameDB.put(GameIDIncrementer, gd);
         return GameIDIncrementer;
     }
@@ -31,12 +31,8 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public String listGames() {
-        StringBuilder result = new StringBuilder();
-        for (GameData value : GameDB.values()) {
-            result.append(value).append("\n");
-        }
-        return result.toString();
+    public GameData[] listGames() {
+        return GameDB.values().toArray(new GameData[0]);
     }
 
     @Override

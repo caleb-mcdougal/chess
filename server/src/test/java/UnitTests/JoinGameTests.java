@@ -15,15 +15,17 @@ public class JoinGameTests {
     public void JoinGameSuccess(){
         GameService gs = new GameService();
 
+        gs.clear();
+
         UserData ud = new UserData("username", "password", "email");
         MemoryAuthDAO mad = new MemoryAuthDAO();
         String authToken = mad.createAuth(ud);
 
         CreateGameRequest cgr = new CreateGameRequest("g1");
-        ListGamesResponse lgr;
+        CreateGameResponse cgrp = null;
         try{
             gs.createGame(cgr, authToken);
-            gs.createGame(cgr, authToken);
+            cgrp = gs.createGame(cgr, authToken);
             gs.createGame(cgr, authToken);
         }
         catch (Unauthorized e){
@@ -35,7 +37,7 @@ public class JoinGameTests {
             Assertions.fail();
         }
 
-        JoinGameRequest jgr = new JoinGameRequest("WHITE", 2);
+        JoinGameRequest jgr = new JoinGameRequest("WHITE", cgrp.gameID());
 
         try {
             gs.joinGame(jgr,authToken);
@@ -56,7 +58,7 @@ public class JoinGameTests {
         MemoryGameDAO mgd = new MemoryGameDAO();
         GameData gd = new GameData(0, null, null, null, new ChessGame());
         try {
-            gd = mgd.getGame(2);
+            gd = mgd.getGame(cgrp.gameID());
         }
         catch(BadRequestException e){
             System.out.println("Bad request check game test 1 fail");
@@ -77,10 +79,10 @@ public class JoinGameTests {
         String authToken = mad.createAuth(ud);
 
         CreateGameRequest cgr = new CreateGameRequest("g1");
-        ListGamesResponse lgr;
+        CreateGameResponse cgrp = null;
         try{
             gs.createGame(cgr, authToken);
-            gs.createGame(cgr, authToken);
+            cgrp = gs.createGame(cgr, authToken);
             gs.createGame(cgr, authToken);
         }
         catch (Unauthorized e){
@@ -92,7 +94,7 @@ public class JoinGameTests {
             Assertions.fail();
         }
 
-        JoinGameRequest jgr = new JoinGameRequest("BLUE", 2); // Invalid input here
+        JoinGameRequest jgr = new JoinGameRequest("BLUE", cgrp.gameID()); // Invalid input here
 
         try {
             gs.joinGame(jgr,authToken);

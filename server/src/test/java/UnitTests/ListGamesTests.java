@@ -6,7 +6,6 @@ import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.Unauthorized;
 import model.CreateGameRequest;
-import model.GameData;
 import model.ListGamesResponse;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +45,7 @@ public class ListGamesTests {
 
         try {
             lgr = gs.listGames(authToken);
-            System.out.println(lgr.gamesList());
+            System.out.println(lgr.games());
         }
         catch (Unauthorized e){
             System.out.println("Unauthorized list games request");
@@ -85,7 +84,7 @@ public class ListGamesTests {
 
         try {
             lgr = gs.listGames("abc-123");
-            System.out.println(lgr.gamesList());
+            System.out.println(lgr.games());
         }
         catch (Unauthorized e){
             System.out.println("Unauthorized list games request");

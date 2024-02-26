@@ -1,4 +1,4 @@
 package model;
 
-public record ListGamesResponse(String gamesList, String message) {
+public record ListGamesResponse(GameData[] games, String message) {
 }

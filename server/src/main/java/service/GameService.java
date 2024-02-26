@@ -19,8 +19,7 @@ public class GameService {
         mad.authExists(authToken);
         MemoryGameDAO mgd = new MemoryGameDAO();
         int gameID = mgd.createGame(request.gameName());
-        CreateGameResponse response = new CreateGameResponse(gameID, null);
-        return response;
+        return new CreateGameResponse(gameID, null);
     }
     public void clear() {       //Clearing all DAO hashmaps
         MemoryUserDAO mud = new MemoryUserDAO();
@@ -55,12 +54,12 @@ public class GameService {
         if(request.playerColor() != null) {
             //check if color is already taken
             if (Objects.equals(request.playerColor(), "WHITE")) {
-                if (!gd.whiteUsername().isBlank()) {
+                if (gd.whiteUsername() != null) {
                     throw new AlreadyTakenException("Color already taken");
                 }
             }
             else{
-                if (!gd.blackUsername().isBlank()) {
+                if (gd.blackUsername() != null) {
                     throw new AlreadyTakenException("Color already taken");
                 }
             }

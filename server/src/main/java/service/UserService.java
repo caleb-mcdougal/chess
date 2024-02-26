@@ -26,16 +26,16 @@ public class UserService {
         String authToken = mad.createAuth(newUser);
         return new RegisterResponse(request.username(), authToken, null);
     }
-    public LoginResponse login(LoginRequest request) throws Unauthorized { // removed: NoExistingUserException
+    public LoginResponse login(LoginRequest request) throws UnauthorizedException { // removed: NoExistingUserException
 
         MemoryUserDAO mud = new MemoryUserDAO();
         if(!mud.userExists(request.username())){
-            throw new Unauthorized("Username unrecognized");
+            throw new UnauthorizedException("Username unrecognized");
         }
 
         UserData ud = mud.getUser(request.username());
         if(!Objects.equals(ud.password(), request.password())){        //Check password
-            throw new Unauthorized("Incorrect Password");
+            throw new UnauthorizedException("Incorrect Password");
         }
 
         MemoryAuthDAO mad = new MemoryAuthDAO();
@@ -44,7 +44,7 @@ public class UserService {
         return new LoginResponse(request.username(), authToken, null);
     }
 
-    public void logout(String authToken) throws Unauthorized{ // auth must link to user for join game
+    public void logout(String authToken) throws UnauthorizedException { // auth must link to user for join game
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.deleteAuth(authToken);
     }

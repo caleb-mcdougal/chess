@@ -1,11 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.Unauthorized;
-import model.AuthData;
-import model.LoginRequest;
+import dataAccess.UnauthorizedException;
 import model.LogoutResponse;
-import model.UserData;
 import service.UserService;
 import spark.Request;
 import spark.Response;
@@ -22,7 +19,7 @@ public class LogoutHandler implements Route {
         try{
             us.logout(authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             response.status(401);
             LogoutResponse errorResponse = new LogoutResponse("Error: unauthorized");
             return gson.toJson(errorResponse);

@@ -2,7 +2,7 @@ package UnitTests;
 
 import dataAccess.BadRequestException;
 import dataAccess.MemoryUserDAO;
-import dataAccess.Unauthorized;
+import dataAccess.UnauthorizedException;
 import dataAccess.AlreadyTakenException;
 import model.*;
 import org.junit.jupiter.api.Assertions;
@@ -45,7 +45,7 @@ public class LogoutTests {
 //            System.out.println("No existing user");
 //            Assertions.fail();
 //        }
-        catch (Unauthorized e) {
+        catch (UnauthorizedException e) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }
@@ -53,7 +53,7 @@ public class LogoutTests {
 
         try{
             us.logout(lrp.authToken());
-        } catch (Unauthorized ex) {
+        } catch (UnauthorizedException ex) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }
@@ -88,7 +88,7 @@ public class LogoutTests {
         try{
             us.login(lrq);
         }
-        catch (Unauthorized e) {
+        catch (UnauthorizedException e) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }
@@ -97,7 +97,7 @@ public class LogoutTests {
         try{
             us.logout(ad.authToken());
             Assertions.fail();
-        } catch (Unauthorized ex) {
+        } catch (UnauthorizedException ex) {
             System.out.println("Incorrect Password");
             Assertions.assertTrue(true);
         }

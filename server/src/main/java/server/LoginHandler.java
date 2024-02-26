@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.Unauthorized;
+import dataAccess.UnauthorizedException;
 import model.*;
 import service.UserService;
 import spark.Request;
@@ -21,7 +21,7 @@ public class LoginHandler implements Route {
         try{
             serviceResponse = us.login(serviceRequest);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             response.status(401);
             LoginResponse errorResponse = new LoginResponse(null, null, "Error: unauthorized");
             return gson.toJson(errorResponse);

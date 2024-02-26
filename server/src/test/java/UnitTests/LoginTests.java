@@ -1,7 +1,7 @@
 package UnitTests;
 
 import dataAccess.BadRequestException;
-import dataAccess.Unauthorized;
+import dataAccess.UnauthorizedException;
 import dataAccess.MemoryUserDAO;
 import dataAccess.AlreadyTakenException;
 import model.*;
@@ -39,7 +39,7 @@ public class LoginTests {
             response = us.login(request);
             Assertions.assertTrue(true);
         }
-        catch (Unauthorized e) {
+        catch (UnauthorizedException e) {
             System.out.println("Incorrect Password");
             Assertions.fail();
         }
@@ -72,7 +72,7 @@ public class LoginTests {
 
 
         LoginRequest lr = new LoginRequest("McDougal", "123abc");
-        Assertions.assertThrows(Unauthorized.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
             us.login(lr);
         });
 
@@ -102,7 +102,7 @@ public class LoginTests {
         }
 
         LoginRequest lr = new LoginRequest("Caleb", "321xyz");
-        Assertions.assertThrows(Unauthorized.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
             us.login(lr);
         });
 

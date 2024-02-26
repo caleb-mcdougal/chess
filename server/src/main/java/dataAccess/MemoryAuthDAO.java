@@ -1,10 +1,8 @@
 package dataAccess;
 
-import model.AuthData;
 import model.UserData;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -30,11 +28,11 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public boolean authExists(String authToken) throws Unauthorized{
+    public boolean authExists(String authToken) throws UnauthorizedException {
         if (AuthDB.containsKey(authToken)) {
             return AuthDB.containsKey(authToken);
         }
-        throw new Unauthorized("Error: unauthorized");
+        throw new UnauthorizedException("Error: unauthorized");
     }
 
 
@@ -46,9 +44,9 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void deleteAuth(String authToken) throws Unauthorized{
+    public void deleteAuth(String authToken) throws UnauthorizedException {
         if(!AuthDB.containsKey(authToken)){
-            throw new Unauthorized("AuthToken DNE");
+            throw new UnauthorizedException("AuthToken DNE");
         }
         AuthDB.remove(authToken);
     }

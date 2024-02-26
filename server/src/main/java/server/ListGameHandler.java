@@ -1,11 +1,7 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
-import dataAccess.BadRequestException;
-import dataAccess.Unauthorized;
-import model.CreateGameRequest;
-import model.GameData;
+import dataAccess.UnauthorizedException;
 import model.ListGamesResponse;
 import service.GameService;
 import spark.Request;
@@ -25,7 +21,7 @@ public class ListGameHandler implements Route {
         try {
             serviceResponse = gs.listGames(authToken);
         }
-        catch(Unauthorized e){
+        catch(UnauthorizedException e){
             response.status(401);
             ListGamesResponse errorResponse = new ListGamesResponse(null, "Error: unauthorized");
             return gson.toJson(errorResponse);

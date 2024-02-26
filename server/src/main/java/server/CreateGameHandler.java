@@ -1,13 +1,10 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.BadRequestException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.Unauthorized;
+import dataAccess.UnauthorizedException;
 import model.CreateGameRequest;
 import model.CreateGameResponse;
-import model.GameData;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -26,7 +23,7 @@ public class CreateGameHandler implements Route {
         try {
             serviceResponse = gs.createGame(serviceRequest, authToken);
         }
-        catch(Unauthorized e){
+        catch(UnauthorizedException e){
             response.status(401);
             CreateGameResponse errorResponse = new CreateGameResponse(null, "Error: unauthorized");
             return gson.toJson(errorResponse);

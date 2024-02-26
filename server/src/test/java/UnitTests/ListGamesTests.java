@@ -4,7 +4,7 @@ import chess.ChessGame;
 import dataAccess.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
-import dataAccess.Unauthorized;
+import dataAccess.UnauthorizedException;
 import model.CreateGameRequest;
 import model.ListGamesResponse;
 import model.UserData;
@@ -34,7 +34,7 @@ public class ListGamesTests {
             gs.createGame(cgr, authToken);
             gs.createGame(cgr, authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unaothorized create game");
             Assertions.fail();
         }
@@ -47,7 +47,7 @@ public class ListGamesTests {
             lgr = gs.listGames(authToken);
             System.out.println(lgr.games());
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unauthorized list games request");
             Assertions.fail();
         }
@@ -73,7 +73,7 @@ public class ListGamesTests {
             gs.createGame(cgr, authToken);
             gs.createGame(cgr, authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unaothorized create game");
             Assertions.fail();
         }
@@ -86,7 +86,7 @@ public class ListGamesTests {
             lgr = gs.listGames("abc-123");
             System.out.println(lgr.games());
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unauthorized list games request");
             Assertions.assertTrue(true);
         }

@@ -3,8 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.AlreadyTakenException;
 import dataAccess.BadRequestException;
-import dataAccess.Unauthorized;
-import model.CreateGameRequest;
+import dataAccess.UnauthorizedException;
 import model.JoinGameRequest;
 import model.JoinGameResponse;
 import service.GameService;
@@ -26,7 +25,7 @@ public class JoinGameHandler implements Route {
         try {
             gs.joinGame(serviceRequest, authToken);
         }
-        catch(Unauthorized e){
+        catch(UnauthorizedException e){
             response.status(401);
             JoinGameResponse errorResponse = new JoinGameResponse("Error: unauthorized");
             return gson.toJson(errorResponse);

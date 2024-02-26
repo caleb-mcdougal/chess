@@ -28,7 +28,7 @@ public class JoinGameTests {
             cgrp = gs.createGame(cgr, authToken);
             gs.createGame(cgr, authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unaothorized create game");
             Assertions.fail();
         }
@@ -42,7 +42,7 @@ public class JoinGameTests {
         try {
             gs.joinGame(jgr,authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unauthorized list games request");
             Assertions.fail();
         }
@@ -85,7 +85,7 @@ public class JoinGameTests {
             cgrp = gs.createGame(cgr, authToken);
             gs.createGame(cgr, authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unaothorized create game");
             Assertions.fail();
         }
@@ -99,7 +99,7 @@ public class JoinGameTests {
         try {
             gs.joinGame(jgr,authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unauthorized list games request");
             Assertions.fail();
         }

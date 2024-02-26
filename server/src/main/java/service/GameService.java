@@ -11,7 +11,7 @@ public class GameService {
 
     }
 
-    public CreateGameResponse createGame(CreateGameRequest request, String authToken) throws Unauthorized, BadRequestException {
+    public CreateGameResponse createGame(CreateGameRequest request, String authToken) throws UnauthorizedException, BadRequestException {
         if(request.gameName() == null || request.gameName().isBlank()){
             throw new BadRequestException("bad request");
         }
@@ -29,14 +29,14 @@ public class GameService {
         MemoryGameDAO mgd = new MemoryGameDAO();
         mgd.clear();
     }
-    public ListGamesResponse listGames(String authToken) throws Unauthorized{
+    public ListGamesResponse listGames(String authToken) throws UnauthorizedException {
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.authExists(authToken);
         MemoryGameDAO mgd = new MemoryGameDAO();
         return new ListGamesResponse(mgd.listGames(), null);
     }
 
-    public void joinGame(JoinGameRequest request, String authToken) throws BadRequestException, Unauthorized, AlreadyTakenException {
+    public void joinGame(JoinGameRequest request, String authToken) throws BadRequestException, UnauthorizedException, AlreadyTakenException {
         //Check authToken
         MemoryAuthDAO mad = new MemoryAuthDAO();
         mad.authExists(authToken);

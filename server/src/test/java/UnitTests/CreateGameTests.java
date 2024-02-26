@@ -4,9 +4,8 @@ import chess.ChessGame;
 import dataAccess.BadRequestException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
-import dataAccess.Unauthorized;
+import dataAccess.UnauthorizedException;
 import model.CreateGameRequest;
-import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +31,7 @@ public class CreateGameTests {
         try{
             gs.createGame(cgr, authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unaothorized create game");
             Assertions.fail();
         }
@@ -61,7 +60,7 @@ public class CreateGameTests {
         try{
             gs.createGame(cgr, "abc-123");
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unaothorized create game");
             Assertions.assertTrue(true);
         }
@@ -87,7 +86,7 @@ public class CreateGameTests {
         try{
             gs.createGame(cgr, authToken);
         }
-        catch (Unauthorized e){
+        catch (UnauthorizedException e){
             System.out.println("Unaothorized create game");
             Assertions.fail();
         }

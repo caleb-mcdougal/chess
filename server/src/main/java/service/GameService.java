@@ -3,9 +3,9 @@ package service;
 import dataAccess.Exceptions.AlreadyTakenException;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.UnauthorizedException;
-import dataAccess.MemoryDAO.MemoryAuthDAO;
-import dataAccess.MemoryDAO.MemoryGameDAO;
-import dataAccess.MemoryDAO.MemoryUserDAO;
+import dataAccess.SQLAuthDAO;
+import dataAccess.SQLGameDAO;
+import dataAccess.SQLUserDAO;
 import model.*;
 import model.Request.CreateGameRequest;
 import model.Response.CreateGameResponse;
@@ -27,37 +27,37 @@ public class GameService {
         }
 
         //Ensure valid auth token
-        MemoryAuthDAO mad = new MemoryAuthDAO();
-        mad.authExists(authToken);
-        MemoryGameDAO mgd = new MemoryGameDAO();
+        SQLAuthDAO sad = new SQLAuthDAO();
+        sad.authExists(authToken);
+        SQLGameDAO sgd = new SQLGameDAO();
 
         //Create and return the game
-        int gameID = mgd.createGame(request.gameName());
+        int gameID = sgd.createGame(request.gameName());
         return new CreateGameResponse(gameID, null);
     }
     public void clear() {
         //Clear all DAO data structures
-        MemoryUserDAO mud = new MemoryUserDAO();
-        mud.clear();
-        MemoryAuthDAO mad = new MemoryAuthDAO();
-        mad.clear();
-        MemoryGameDAO mgd = new MemoryGameDAO();
-        mgd.clear();
+        SQLUserDAO sud = new SQLUserDAO();
+        sud.clear();
+        SQLAuthDAO sad = new SQLAuthDAO();
+        sad.clear();
+        SQLGameDAO sgd = new SQLGameDAO();
+        sgd.clear();
     }
     public ListGamesResponse listGames(String authToken) throws UnauthorizedException {
         //Ensure valid auth token
-        MemoryAuthDAO mad = new MemoryAuthDAO();
-        mad.authExists(authToken);
+        SQLAuthDAO sad = new SQLAuthDAO();
+        sad.authExists(authToken);
 
         //Call DAO method to get an array of game data structures
-        MemoryGameDAO mgd = new MemoryGameDAO();
-        return new ListGamesResponse(mgd.listGames(), null);
+        SQLGameDAO sgd = new SQLGameDAO();
+        return new ListGamesResponse(sgd.listGames(), null);
     }
 
     public void joinGame(JoinGameRequest request, String authToken) throws BadRequestException, UnauthorizedException, AlreadyTakenException {
         //Check authToken
-        MemoryAuthDAO mad = new MemoryAuthDAO();
-        mad.authExists(authToken);
+        SQLAuthDAO sad = new SQLAuthDAO();
+        sad.authExists(authToken);
 
         //check valid color input
         if(!Objects.equals(request.playerColor(), "WHITE") && !Objects.equals(request.playerColor(), "BLACK") && !Objects.equals(request.playerColor(), null)){
@@ -65,8 +65,8 @@ public class GameService {
         }
 
         //get and check game from id
-        MemoryGameDAO mgd = new MemoryGameDAO();
-        GameData gd = mgd.getGame(request.gameID());
+        SQLGameDAO sgd = new SQLGameDAO();
+        GameData gd = sgd.getGame(request.gameID());
 
         //If joining as player
         if(request.playerColor() != null) {
@@ -81,7 +81,7 @@ public class GameService {
                     throw new AlreadyTakenException("Color already taken");
                 }
             }
-            mgd.updateGame(request.gameID(), request.playerColor(), mad.getUsername(authToken));
+            sgd.updateGame(request.gameID(), request.playerColor(), sad.getUsername(authToken));
         }
         //If spectator then idempotent
     }

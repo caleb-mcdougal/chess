@@ -1,9 +1,10 @@
 package service;
 
-import dataAccess.*;
 import dataAccess.Exceptions.AlreadyTakenException;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.UnauthorizedException;
+import dataAccess.MemoryDAO.MemoryAuthDAO;
+import dataAccess.MemoryDAO.MemoryUserDAO;
 import model.*;
 import model.Request.LoginRequest;
 import model.Response.LoginResponse;

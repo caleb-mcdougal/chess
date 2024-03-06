@@ -2,8 +2,8 @@ package UnitTests;
 
 import chess.ChessGame;
 import dataAccess.Exceptions.BadRequestException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
+import dataAccess.MemoryDAO.MemoryAuthDAO;
+import dataAccess.MemoryDAO.MemoryGameDAO;
 import dataAccess.Exceptions.UnauthorizedException;
 import model.Request.CreateGameRequest;
 import model.UserData;

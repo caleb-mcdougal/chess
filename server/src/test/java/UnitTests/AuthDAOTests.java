@@ -1,14 +1,11 @@
 package UnitTests;
 
 import dataAccess.Exceptions.UnauthorizedException;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.MemoryDAO.MemoryAuthDAO;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.GameService;
 
 public class AuthDAOTests {
 

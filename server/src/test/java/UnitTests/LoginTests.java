@@ -2,7 +2,7 @@ package UnitTests;
 
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.UnauthorizedException;
-import dataAccess.MemoryUserDAO;
+import dataAccess.MemoryDAO.MemoryUserDAO;
 import dataAccess.Exceptions.AlreadyTakenException;
 import model.Request.LoginRequest;
 import model.Response.LoginResponse;

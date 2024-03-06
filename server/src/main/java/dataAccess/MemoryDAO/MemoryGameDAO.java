@@ -1,12 +1,13 @@
-package dataAccess;
+package dataAccess.MemoryDAO;
 
 import chess.ChessGame;
 import dataAccess.Exceptions.BadRequestException;
+import dataAccess.GameDAO;
 import model.GameData;
 
 import java.util.HashMap;
 
-public class MemoryGameDAO implements GameDAO{
+public class MemoryGameDAO implements GameDAO {
     private static HashMap<Integer, GameData> gameDB;
     private static int gameIDIncrementer = 0;
 

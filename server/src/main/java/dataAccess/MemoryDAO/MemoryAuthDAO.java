@@ -1,12 +1,13 @@
-package dataAccess;
+package dataAccess.MemoryDAO;
 
+import dataAccess.AuthDAO;
 import dataAccess.Exceptions.UnauthorizedException;
 import model.UserData;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class MemoryAuthDAO implements AuthDAO{
+public class MemoryAuthDAO implements AuthDAO {
     private static HashMap<String,String> authDB;
 
     // Static block to initialize the HashMap for testing

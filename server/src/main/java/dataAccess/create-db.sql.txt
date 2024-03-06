@@ -1,0 +1,16 @@
+
+
+create table gameData
+(
+    gameID int
+    whiteUsername String
+    blackUsername String
+    gameName String
+    game Chessgame
+
+);
+
+table userData
+(
+
+);

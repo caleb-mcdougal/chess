@@ -1,10 +1,10 @@
-package dataAccess.SQLDAO;
+package dataAccess;
 
 import dataAccess.AuthDAO;
 import dataAccess.Exceptions.UnauthorizedException;
 import model.UserData;
 
-public class SQLAuthDAO implements AuthDAO {
+public class SQLAuthDAO extends SQLDAOParent implements AuthDAO {
     @Override
     public String getUsername(String authToken) {
         return null;

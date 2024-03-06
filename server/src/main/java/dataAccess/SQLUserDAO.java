@@ -1,9 +1,9 @@
-package dataAccess.SQLDAO;
+package dataAccess;
 
 import dataAccess.UserDAO;
 import model.UserData;
 
-public class SQLUserDAO implements UserDAO {
+public class SQLUserDAO extends SQLDAOParent implements UserDAO {
     @Override
     public void clear() {
 

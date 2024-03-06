@@ -1,10 +1,10 @@
-package dataAccess.SQLDAO;
+package dataAccess;
 
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.GameDAO;
 import model.GameData;
 
-public class SQLGameDAO implements GameDAO {
+public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     @Override
     public void clear() {
 

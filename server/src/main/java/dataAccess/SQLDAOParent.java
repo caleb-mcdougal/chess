@@ -33,9 +33,7 @@ public class SQLDAOParent {
     };
     public SQLDAOParent(){
         try {
-            System.out.println("HERE");
             configureDatabase();
-            System.out.println("HERE2");
         } catch (DataAccessException e) {
             throw new RuntimeException(e);          //What should I do here?
         }
@@ -49,7 +47,6 @@ public class SQLDAOParent {
         }
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
-                System.out.println("in create statments loop");
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }

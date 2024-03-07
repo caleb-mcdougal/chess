@@ -2,6 +2,7 @@ package service;
 
 import dataAccess.Exceptions.AlreadyTakenException;
 import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.DataAccessException;
 import dataAccess.Exceptions.UnauthorizedException;
 import dataAccess.SQLAuthDAO;
 import dataAccess.SQLUserDAO;
@@ -18,7 +19,7 @@ public class UserService {
     public UserService() {
 
     }
-    public RegisterResponse register(RegisterRequest request) throws AlreadyTakenException, BadRequestException {
+    public RegisterResponse register(RegisterRequest request) throws AlreadyTakenException, BadRequestException, DataAccessException {
         //Ensure username, password, and email are valid input from the user
         SQLUserDAO sud = getSQLUserDAO(request);
 
@@ -44,7 +45,7 @@ public class UserService {
         return sud;
     }
 
-    public LoginResponse login(LoginRequest request) throws UnauthorizedException { // removed: NoExistingUserException
+    public LoginResponse login(LoginRequest request) throws UnauthorizedException, DataAccessException { // removed: NoExistingUserException
         //Check valid username
         SQLUserDAO sud = new SQLUserDAO();
         if(!sud.userExists(request.username())){

@@ -2,6 +2,7 @@ package SQLUnitTests.gameTests;
 
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.SQLAuthDAO;
+import dataAccess.SQLGameDAO;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 public class CreateGameTest {
     @BeforeAll
-    public static void clearAuthDB(){
-        SQLAuthDAO sad = new SQLAuthDAO();
+    public static void clearGameDB(){
+        SQLGameDAO sgd = new SQLGameDAO();
         try {
-            sad.clear();
+            sgd.clear();
         } catch (DataAccessException e) {
             System.out.println("DataAccessException thrown");
             Assertions.fail();

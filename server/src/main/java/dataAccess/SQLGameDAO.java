@@ -15,8 +15,15 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     @Override
-    public void clear() {
-
+    public void clear() throws DataAccessException{
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "DELETE FROM game";
+            try (PreparedStatement stmt = conn.prepareStatement(statement)){
+                stmt.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(500, "Error in clear");
+        }
     }
 
     @Override

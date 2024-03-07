@@ -27,6 +27,7 @@ public class GetGameTest {
     @Test
     @DisplayName("Positive getGame test")
     public void getGamePositiveInsert(){
+        clearGameDB();
         SQLGameDAO sgd = new SQLGameDAO();
 
 
@@ -39,7 +40,7 @@ public class GetGameTest {
             Assertions.fail();
         }
 
-
+        System.out.println("gameID: " + gameID);
         GameData gd = null;
         try{
             gd = sgd.getGame(gameID);
@@ -53,8 +54,10 @@ public class GetGameTest {
 
         GameData gdTest = new GameData(gameID, null, null, "name", new ChessGame());
 
+        System.out.println("gd: " + gd);
+        System.out.println("gdTest: " + gdTest);
         if(!Objects.equals(gd, gdTest)){
-            System.out.println("usernames not the same");
+            System.out.println("GD not the same");
             Assertions.fail();
         }
     }

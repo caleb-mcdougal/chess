@@ -7,7 +7,10 @@ import dataAccess.Exceptions.DataAccessException;
 import dataAccess.GameDAO;
 import model.GameData;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -16,6 +19,11 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     public void clear() throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "DELETE FROM game";
+            try (PreparedStatement stmt = conn.prepareStatement(statement)){
+                stmt.executeUpdate();
+            }
+                                                                                    //Unsure about this
+            statement = "ALTER TABLE game AUTO_INCREMENT = 1";
             try (PreparedStatement stmt = conn.prepareStatement(statement)){
                 stmt.executeUpdate();
             }
@@ -43,27 +51,25 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
                 if (rs.next()) {
                     gameID = rs.getInt(1);
                 }
+                else{
+                    throw new DataAccessException(500, "Create Game Error");
+                }
                 return gameID;
             }
         } catch (SQLException|DataAccessException e) {
-            throw new DataAccessException(500, "countRows Error");
+            throw new DataAccessException(500, "Create Game Error");
         }
     }
 
     @Override
     public GameData getGame(int gameID) throws BadRequestException, DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            String sql = "SELECT whiteUsername, blackUsername, gameName, game FROM game WHERE gameID = ?";
+            String sql = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, gameID);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String whiteUsername = rs.getString("whiteUsername");
-                String blackUsername = rs.getString("blackUsername");
-                String gameName = rs.getString("gameName");
-                String json = rs.getString("game");
-                ChessGame game = new Gson().fromJson(json, ChessGame.class);
-                return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+                return getGameData(rs);
             } else {
                 // Handle case where no rows were returned
                 throw new BadRequestException("Username not found");
@@ -73,9 +79,37 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
         }
     }
 
+    private static GameData getGameData(ResultSet rs) throws SQLException {
+        int gameID = rs.getInt(1);
+        String whiteUsername = rs.getString("whiteUsername");
+        String blackUsername = rs.getString("blackUsername");
+        String gameName = rs.getString("gameName");
+        String json = rs.getString("game");
+        ChessGame game = new Gson().fromJson(json, ChessGame.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+    }
+
     @Override
-    public GameData[] listGames() {
-        return new GameData[0];
+    public GameData[] listGames() throws DataAccessException {
+        int size = countRows();
+        GameData[] gameList = new GameData[size];
+        int count = 0;
+//        List<GameData> gameList = new ArrayList<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            String sql = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+//                      gameList.add(getGameData(rs));
+                        gameList[count] = getGameData(rs);
+                        count += 1;
+                    }
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(500, "Error in get Username");
+        }
+        return gameList;
     }
 
     @Override

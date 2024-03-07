@@ -7,17 +7,14 @@ import dataAccess.SQLAuthDAO;
 import dataAccess.SQLGameDAO;
 import model.GameData;
 import model.UserData;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Objects;
 
 public class GetGameTest {
 
-    @BeforeAll
-    public static void clearGameDB(){
+    @BeforeEach
+    public void clearGameDB(){
         SQLGameDAO sgd = new SQLGameDAO();
         try {
             sgd.clear();

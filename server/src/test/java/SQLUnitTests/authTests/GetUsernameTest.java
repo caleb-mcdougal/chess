@@ -4,18 +4,15 @@ import chess.ChessGame;
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.SQLAuthDAO;
 import model.UserData;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import service.GameService;
 
 import java.util.Objects;
 
 public class GetUsernameTest {
 
-    @BeforeAll
-    public static void clearAuthDB(){
+    @BeforeEach
+    public void clearAuthDB(){
         SQLAuthDAO sad = new SQLAuthDAO();
         try {
             sad.clear();

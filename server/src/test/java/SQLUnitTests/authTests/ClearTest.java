@@ -1,4 +1,4 @@
-package SQLUnitTests;
+package SQLUnitTests.authTests;
 
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.SQLAuthDAO;

@@ -1,4 +1,4 @@
-package SQLUnitTests;
+package SQLUnitTests.authTests;
 
 import dataAccess.DatabaseManager;
 import dataAccess.Exceptions.DataAccessException;
@@ -58,6 +58,39 @@ public class CreateAuthTest {
         }
 
         if(rowCount2 != rowCount1 + 1){
+            System.out.println("No size increase");
+            Assertions.fail();
+        }
+    }
+
+
+    @Test
+    @DisplayName("Negative with null username createAuth test")
+    public void createAuthNegativeInsert(){
+        SQLAuthDAO sad = new SQLAuthDAO();
+
+        int rowCount1 = 0;
+        int rowCount2 = 0;
+
+        try {
+            rowCount1 = sad.countRows();
+        } catch (DataAccessException e) {
+            System.out.println("row count 1 error");
+            Assertions.fail();
+        }
+
+        UserData ud = new UserData(null, "password", "email");
+
+        Assertions.assertThrows(DataAccessException.class, () -> sad.createAuth(ud));
+
+        try {
+            rowCount2 = sad.countRows();
+        } catch (DataAccessException e) {
+            System.out.println("row count 1 error");
+            Assertions.fail();
+        }
+
+        if(rowCount2 == rowCount1 + 1){
             System.out.println("No size increase");
             Assertions.fail();
         }

@@ -9,10 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
-
-public class AuthExistsTest {
-
+public class DeleteAuthTest {
     @BeforeAll
     public static void clearAuthDB(){
         SQLAuthDAO sad = new SQLAuthDAO();
@@ -26,9 +23,12 @@ public class AuthExistsTest {
 
 
     @Test
-    @DisplayName("Positive authExists test")
-    public void authExistsPositiveTest(){
+    @DisplayName("Positive deleteAuth test")
+    public void deleteAuthPositiveTest(){
         SQLAuthDAO sad = new SQLAuthDAO();
+
+        int rowCount1 = 0;
+        int rowCount2 = 0;
 
 
         UserData ud = new UserData("username", "password", "email");
@@ -41,26 +41,42 @@ public class AuthExistsTest {
         }
 
         try {
-            if (sad.authExists(authToken)) {
-                Assertions.assertTrue(true);
-            }
-            else {
-                System.out.println("auth not recognized");
-                Assertions.fail();
-            }
+            rowCount1 = sad.countRows();
+        } catch (DataAccessException e) {
+            System.out.println("row count 1 error");
+            Assertions.fail();
+        }
+
+        try {
+            sad.deleteAuth(authToken);
         } catch (UnauthorizedException e) {
             System.out.println("UE");
             Assertions.fail();
         } catch (DataAccessException e) {
             System.out.println("DAE");
+            Assertions.fail();
+        }
+
+        try {
+            rowCount2 = sad.countRows();
+        } catch (DataAccessException e) {
+            System.out.println("row count 1 error");
+            Assertions.fail();
+        }
+
+        if(rowCount2 != rowCount1 - 1){
+            System.out.println("No size decrease");
             Assertions.fail();
         }
     }
 
     @Test
-    @DisplayName("Negative authExists test")
-    public void authExistsNegativeTest(){
+    @DisplayName("Negative deleteAuth test")
+    public void deleteAuthNegativeTest(){
         SQLAuthDAO sad = new SQLAuthDAO();
+
+        int rowCount1 = 0;
+        int rowCount2 = 0;
 
 
         UserData ud = new UserData("username", "password", "email");
@@ -72,21 +88,34 @@ public class AuthExistsTest {
             Assertions.fail();
         }
 
-        String fakeAuth = "abc-123-fake";
         try {
-            if (sad.authExists(fakeAuth)) {
-                Assertions.fail();
-            }
-            else {
-                System.out.println("auth not recognized");
-                Assertions.assertTrue(true);
-            }
+            rowCount1 = sad.countRows();
+        } catch (DataAccessException e) {
+            System.out.println("row count 1 error");
+            Assertions.fail();
+        }
+
+        String fakeAuth = "123-abc-fake";
+        try {
+            sad.deleteAuth(fakeAuth);
         } catch (UnauthorizedException e) {
             System.out.println("UE");
-            System.out.println("auth not recognized");
+            System.out.println("correctly caught nonexistent auth");
             Assertions.assertTrue(true);
         } catch (DataAccessException e) {
             System.out.println("DAE");
+            Assertions.fail();
+        }
+
+        try {
+            rowCount2 = sad.countRows();
+        } catch (DataAccessException e) {
+            System.out.println("row count 1 error");
+            Assertions.fail();
+        }
+
+        if(rowCount2 == rowCount1 - 1){
+            System.out.println("No size decrease");
             Assertions.fail();
         }
     }

@@ -66,7 +66,7 @@ public class UserService {
         return new LoginResponse(request.username(), authToken, null);
     }
 
-    public void logout(String authToken) throws UnauthorizedException {
+    public void logout(String authToken) throws UnauthorizedException, DataAccessException {
         //Remove given auth token from DB
         SQLAuthDAO sad = new SQLAuthDAO();
         sad.deleteAuth(authToken);

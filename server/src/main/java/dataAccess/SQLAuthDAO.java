@@ -69,7 +69,7 @@ public class SQLAuthDAO extends SQLDAOParent implements AuthDAO {
     }
 
         @Override
-    public void deleteAuth(String authToken) throws UnauthorizedException {
+    public void deleteAuth(String authToken) throws UnauthorizedException, DataAccessException {
 
         try (var conn = DatabaseManager.getConnection()) {
             //Ensure auth token exists in DB
@@ -79,9 +79,17 @@ public class SQLAuthDAO extends SQLDAOParent implements AuthDAO {
             var statement = "DELETE FROM auth WHERE authToken = ?";
             try (PreparedStatement stmt = conn.prepareStatement(statement)){
                 stmt.setString(1,authToken);
+
+                if(stmt.executeUpdate() == 1) {
+                    System.out.println("deleted auth");
+                } else {
+                    System.out.println("Failed to delete auth");
+                    throw new UnauthorizedException("deleteAuth no match");
+                }
+
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(500,"deleteAuth Error");
         }
     }
 

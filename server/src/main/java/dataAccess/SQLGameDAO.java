@@ -7,9 +7,7 @@ import dataAccess.Exceptions.DataAccessException;
 import dataAccess.GameDAO;
 import model.GameData;
 
-import java.sql.Blob;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -27,29 +25,28 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     }
 
     @Override
-    public int createGame(String name) {
+    public int createGame(String name) throws  DataAccessException{
         ChessGame newGame = new ChessGame();
         var json = new Gson().toJson(newGame);
         try (var conn = DatabaseManager.getConnection()) {
             try (var stmt = conn.prepareStatement("INSERT INTO game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
 //                stmt.setString(1,authToken);
+                stmt.setString(1,null);
                 stmt.setString(2,null);
-                stmt.setString(3,null);
-                stmt.setString(4,name);
-                stmt.setString(5, json);
+                stmt.setString(3,name);
+                stmt.setString(4, json);
 
                 stmt.executeUpdate();
 
-                var rs = stmt.getGeneratedKeys();
-                var ID = 0;
+                ResultSet rs = stmt.getGeneratedKeys();
+                var gameID = 0;
                 if (rs.next()) {
-                    ID = rs.getInt(1);
+                    gameID = rs.getInt(1);
                 }
-                return ID;
+                return gameID;
             }
-        } catch (SQLException | DataAccessException e) {
-//            throw new DataAccessException("");                                    //datAccess exception
-            throw new RuntimeException();
+        } catch (SQLException|DataAccessException e) {
+            throw new DataAccessException(500, "countRows Error");
         }
     }
 
@@ -77,5 +74,27 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     @Override
     public void updateGame(int gameID, String color, String username) {
 
+    }
+
+    public int countRows() throws DataAccessException{
+        int rowCount = 0;
+
+        try(var conn = DatabaseManager.getConnection()) {
+            // Create a statement
+            Statement stmt = conn.createStatement();
+
+            // Execute a SQL query to count the number of rows in the table
+            String sql = "SELECT COUNT(*) AS row_count FROM game";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            // Retrieve the row count from the result set
+            if (rs.next()) {
+                rowCount = rs.getInt("row_count");
+            }
+            System.out.println("rowCount: " + rowCount);
+        } catch (SQLException|DataAccessException e) {
+            throw new DataAccessException(500, "countRows Error");
+        }
+        return rowCount;
     }
 }

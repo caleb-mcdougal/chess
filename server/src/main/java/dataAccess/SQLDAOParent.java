@@ -13,7 +13,7 @@ public class SQLDAOParent {
               `whiteUsername` varchar(256),
               `blackUsername` varchar(256),
               `gameName` varchar(256),
-              `game` blob
+              `game` varchar(256)
             )
             """,
             """

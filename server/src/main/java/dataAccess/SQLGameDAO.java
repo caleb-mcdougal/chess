@@ -51,19 +51,26 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     }
 
     @Override
-    public GameData getGame(int gameID) throws BadRequestException {
-//        var json = new Gson();
-//        try (var conn = DatabaseManager.getConnection()) {
-//            String sql = "SELECT ? FROM game WHERE column_name = gameID";
-//            PreparedStatement stmt = conn.prepareStatement(sql);
-//            stmt.setString(1, gameID);
-//            var rs = stmt.executeQuery();
-//            rs.getBlob("game");
-//            return
-//        } catch (SQLException | DataAccessException e) {
-//            throw new RuntimeException(e);
-//        }
-        return null;
+    public GameData getGame(int gameID) throws BadRequestException, DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            String sql = "SELECT whiteUsername, blackUsername, gameName, game FROM game WHERE gameID = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, gameID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String whiteUsername = rs.getString("whiteUsername");
+                String blackUsername = rs.getString("blackUsername");
+                String gameName = rs.getString("gameName");
+                String json = rs.getString("game");
+                ChessGame game = new Gson().fromJson(json, ChessGame.class);
+                return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+            } else {
+                // Handle case where no rows were returned
+                throw new BadRequestException("Username not found");
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(500, "Error in get Username");
+        }
     }
 
     @Override

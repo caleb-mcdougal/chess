@@ -1,13 +1,14 @@
 package dataAccess;
 
+import dataAccess.Exceptions.DataAccessException;
 import dataAccess.Exceptions.UnauthorizedException;
 import model.UserData;
 
 public interface AuthDAO {
 
-    public String getUsername(String authToken);
-    public boolean authExists(String authToken)throws UnauthorizedException;
+    public String getUsername(String authToken) throws DataAccessException;
+    public boolean authExists(String authToken)throws UnauthorizedException, DataAccessException;
     public String createAuth(UserData ud);
     void deleteAuth(String authToken)throws UnauthorizedException;
-    void clear();
+    void clear() throws DataAccessException;
 }

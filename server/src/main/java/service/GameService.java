@@ -2,6 +2,7 @@ package service;
 
 import dataAccess.Exceptions.AlreadyTakenException;
 import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.DataAccessException;
 import dataAccess.Exceptions.UnauthorizedException;
 import dataAccess.SQLAuthDAO;
 import dataAccess.SQLGameDAO;
@@ -20,7 +21,7 @@ public class GameService {
 
     }
 
-    public CreateGameResponse createGame(CreateGameRequest request, String authToken) throws UnauthorizedException, BadRequestException {
+    public CreateGameResponse createGame(CreateGameRequest request, String authToken) throws UnauthorizedException, BadRequestException, DataAccessException {
         //Ensure valid request, check game name
         if(request.gameName() == null || request.gameName().isBlank()){
             throw new BadRequestException("bad request");
@@ -35,7 +36,7 @@ public class GameService {
         int gameID = sgd.createGame(request.gameName());
         return new CreateGameResponse(gameID, null);
     }
-    public void clear() {
+    public void clear() throws DataAccessException{
         //Clear all DAO data structures
         SQLUserDAO sud = new SQLUserDAO();
         sud.clear();
@@ -44,7 +45,7 @@ public class GameService {
         SQLGameDAO sgd = new SQLGameDAO();
         sgd.clear();
     }
-    public ListGamesResponse listGames(String authToken) throws UnauthorizedException {
+    public ListGamesResponse listGames(String authToken) throws UnauthorizedException, DataAccessException {
         //Ensure valid auth token
         SQLAuthDAO sad = new SQLAuthDAO();
         sad.authExists(authToken);
@@ -54,7 +55,7 @@ public class GameService {
         return new ListGamesResponse(sgd.listGames(), null);
     }
 
-    public void joinGame(JoinGameRequest request, String authToken) throws BadRequestException, UnauthorizedException, AlreadyTakenException {
+    public void joinGame(JoinGameRequest request, String authToken) throws BadRequestException, UnauthorizedException, AlreadyTakenException, DataAccessException {
         //Check authToken
         SQLAuthDAO sad = new SQLAuthDAO();
         sad.authExists(authToken);

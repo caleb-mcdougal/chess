@@ -9,7 +9,7 @@ public class SQLDAOParent {
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  game (
-              `gameID` int NOT NULL AUTO_INCREMENT,
+              `gameID` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
               `whiteUsername` varchar(256),
               `blackUsername` varchar(256),
               `gameName` varchar(256),
@@ -19,21 +19,23 @@ public class SQLDAOParent {
             """
             CREATE TABLE IF NOT EXISTS  auth (
               `authToken` varchar(256) NOT NULL,
-              `username` varchar(256) NOT NULL,
+              `username` varchar(256) NOT NULL
             )
             """,
             """
             CREATE TABLE IF NOT EXISTS  user (
               `username` varchar(256) NOT NULL,
               `password` varchar(256) NOT NULL,
-              `email` varchar(256) NOT NULL,
+              `email` varchar(256) NOT NULL
             )
             """
 
     };
     public SQLDAOParent(){
         try {
+            System.out.println("HERE");
             configureDatabase();
+            System.out.println("HERE2");
         } catch (DataAccessException e) {
             throw new RuntimeException(e);          //What should I do here?
         }
@@ -47,12 +49,13 @@ public class SQLDAOParent {
         }
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
+                System.out.println("in create statments loop");
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new DataAccessException(500, String.format("Unable to configure database: %s", ex.getMessage()));
             }
     }
 }

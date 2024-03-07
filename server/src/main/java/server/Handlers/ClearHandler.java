@@ -1,6 +1,7 @@
 package server.Handlers;
 
 import com.google.gson.Gson;
+import dataAccess.Exceptions.DataAccessException;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -13,7 +14,13 @@ public class ClearHandler implements Route {
         var gson = new Gson();
 
         GameService gs = new GameService();
-        gs.clear();
+        try {
+            gs.clear();
+        }
+        catch (DataAccessException e){
+            response.status(500);
+            return e;                           //Double check this
+        }
         response.status(200);
         return "{}";
     }

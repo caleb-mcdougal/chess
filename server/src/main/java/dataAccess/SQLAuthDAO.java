@@ -34,10 +34,10 @@ public class SQLAuthDAO extends SQLDAOParent implements AuthDAO {
     @Override
     public boolean authExists(String authToken) throws UnauthorizedException, DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            String sql = "SELECT ? FROM auth WHERE column_name = authToken";
-            PreparedStatement stmt1 = conn.prepareStatement(sql);
-            stmt1.setString(1, authToken);
-            var rs = stmt1.executeQuery();
+            String sql = "SELECT username FROM auth WHERE authToken = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, authToken);
+            var rs = stmt.executeQuery();
             if (!rs.next()) {
                 System.out.println("Value does not exist in the database.");
                 throw new UnauthorizedException("authtoken DNE");

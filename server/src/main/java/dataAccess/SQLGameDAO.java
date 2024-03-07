@@ -112,8 +112,27 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     }
 
     @Override
-    public void updateGame(int gameID, String color, String username) {
+    public void updateGame(int gameID, String color, String username) throws DataAccessException{
 
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var stmt = conn.prepareStatement("UPDATE game set whiteUsername = ?, blackUsername = ? WHERE gameID = ?")) {
+                if (color.equals("WHITE")){
+                    stmt.setString(1,username);
+                    stmt.setString(2,null);
+                }
+                else if (color.equals("BLACK")){
+                    stmt.setString(1,null);
+                    stmt.setString(2,username);
+                }
+                stmt.setInt(3,gameID);
+
+                if(stmt.executeUpdate() != 1) {
+                    throw new DataAccessException(500, "Create Game Error");
+                }
+            }
+        } catch (SQLException|DataAccessException e) {
+            throw new DataAccessException(500, "Create Game Error");
+        }
     }
 
     public int countRows() throws DataAccessException{

@@ -6,6 +6,7 @@ import dataAccess.SQLAuthDAO;
 import dataAccess.UserDAO;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,18 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class CreateAuthTest {
+
+    @BeforeAll
+    public static void clearAuthDB(){
+        SQLAuthDAO sad = new SQLAuthDAO();
+        try {
+            sad.clear();
+        } catch (DataAccessException e) {
+            System.out.println("DataAccessException thrown");
+            Assertions.fail();
+        }
+    }
+
     @Test
     @DisplayName("Positive no errors createAuth test")
     public void createAuthPositive(){

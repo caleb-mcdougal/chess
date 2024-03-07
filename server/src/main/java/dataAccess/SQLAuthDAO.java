@@ -16,11 +16,16 @@ public class SQLAuthDAO extends SQLDAOParent implements AuthDAO {
     @Override
     public String getUsername(String authToken) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
-            String sql = "SELECT ? FROM auth WHERE column_name = authToken";
+            String sql = "SELECT username FROM auth WHERE authToken = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, authToken);
-            var rs = stmt.executeQuery();
-            return rs.getString("username");
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("username");
+            } else {
+                // Handle case where no rows were returned
+                throw new DataAccessException(500, "Username not found");
+            }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(500, "Error in get Username");
         }
@@ -83,13 +88,9 @@ public class SQLAuthDAO extends SQLDAOParent implements AuthDAO {
     @Override
     public void clear() throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
-            System.out.println("here clear 1");
             var statement = "DELETE FROM auth";
-            System.out.println("here clear 2");
             try (PreparedStatement stmt = conn.prepareStatement(statement)){
-                System.out.println("here clea 3");
                 stmt.executeUpdate();
-                System.out.println("here clear 4");
             }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(500, "Error in clear");

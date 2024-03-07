@@ -57,8 +57,6 @@ public class CreateAuthTest {
             Assertions.fail();
         }
 
-
-
         if(rowCount2 != rowCount1 + 1){
             System.out.println("No size increase");
             Assertions.fail();

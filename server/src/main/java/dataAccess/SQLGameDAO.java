@@ -23,10 +23,10 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
                 stmt.executeUpdate();
             }
                                                                                     //Unsure about this
-            statement = "ALTER TABLE game AUTO_INCREMENT = 1";
-            try (PreparedStatement stmt = conn.prepareStatement(statement)){
-                stmt.executeUpdate();
-            }
+//            statement = "ALTER TABLE game AUTO_INCREMENT = 1";
+//            try (PreparedStatement stmt = conn.prepareStatement(statement)){
+//                stmt.executeUpdate();
+//            }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(500, "Error in clear");
         }
@@ -38,7 +38,6 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
         var json = new Gson().toJson(newGame);
         try (var conn = DatabaseManager.getConnection()) {
             try (var stmt = conn.prepareStatement("INSERT INTO game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
-//                stmt.setString(1,authToken);
                 stmt.setString(1,null);
                 stmt.setString(2,null);
                 stmt.setString(3,name);

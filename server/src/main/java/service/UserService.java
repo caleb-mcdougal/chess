@@ -21,7 +21,11 @@ public class UserService {
     }
     public RegisterResponse register(RegisterRequest request) throws AlreadyTakenException, BadRequestException, DataAccessException {
         //Ensure username, password, and email are valid input from the user
-        SQLUserDAO sud = getSQLUserDAO(request);
+        SQLUserDAO sud = new SQLUserDAO();
+        if(sud.userExists(request.username())){
+            throw new AlreadyTakenException("Username unrecognized");
+        }
+
 
         //Create a new user
         UserData newUser = new UserData(request.username(), request.password(), request.email());
@@ -45,7 +49,7 @@ public class UserService {
         return sud;
     }
 
-    public LoginResponse login(LoginRequest request) throws UnauthorizedException, DataAccessException { // removed: NoExistingUserException
+    public LoginResponse login(LoginRequest request) throws UnauthorizedException, DataAccessException, BadRequestException { // removed: NoExistingUserException
         //Check valid username
         SQLUserDAO sud = new SQLUserDAO();
         if(!sud.userExists(request.username())){

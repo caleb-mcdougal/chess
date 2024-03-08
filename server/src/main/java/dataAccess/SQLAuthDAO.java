@@ -56,10 +56,8 @@ public class SQLAuthDAO extends SQLDAOParent implements AuthDAO {
             try (PreparedStatement stmt = conn.prepareStatement(statement)) {
                 stmt.setString(1, authToken);
                 stmt.setString(2, ud.username());
-                if (stmt.executeUpdate() == 1) {
-                    System.out.println("created auth: " + authToken);
-                } else {
-                    System.out.println("Failed to create auth");
+                if (stmt.executeUpdate() != 1) {
+                    throw new DataAccessException(500,"createAuth Error");
                 }
             }
             } catch (SQLException e) {

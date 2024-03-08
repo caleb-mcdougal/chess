@@ -37,7 +37,7 @@ public class UserService {
         return new RegisterResponse(request.username(), authToken, null);
     }
 
-    private static SQLUserDAO getSQLUserDAO(RegisterRequest request) throws BadRequestException, AlreadyTakenException {
+    private static SQLUserDAO getSQLUserDAO(RegisterRequest request) throws BadRequestException, AlreadyTakenException, DataAccessException {
         //Check user inputs given in request
         SQLUserDAO sud = new SQLUserDAO();
         if(request.username() == null || request.password() == null || request.email() == null || request.username().isBlank() || request.password().isBlank() || request.email().isBlank()){

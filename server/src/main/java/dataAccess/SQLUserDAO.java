@@ -59,7 +59,6 @@ public class SQLUserDAO extends SQLDAOParent implements UserDAO {
                         throw new BadRequestException("Username not found");
                     }
                 }
-
             }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(500, "Error in get Username");
@@ -74,8 +73,18 @@ public class SQLUserDAO extends SQLDAOParent implements UserDAO {
     }
 
     @Override
-    public Boolean userExists(String username) {
-        return null;
+    public Boolean userExists(String username) throws DataAccessException{
+        try (var conn = DatabaseManager.getConnection()) {
+            String sql = "SELECT username, password, email FROM user WHERE username = ?";
+            try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                try(ResultSet rs = stmt.executeQuery()){
+                    return rs.next();
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(500, "Error in get Username");
+        }
     }
 
     public int countRows() throws DataAccessException{

@@ -11,5 +11,5 @@ public interface UserDAO {
     void clear() throws DataAccessException;
     void createUser(UserData ud) throws DataAccessException;
     UserData getUser(String username) throws BadRequestException, DataAccessException;
-    Boolean userExists(String username);
+    Boolean userExists(String username) throws DataAccessException;
 }

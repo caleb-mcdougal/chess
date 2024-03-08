@@ -1,12 +1,10 @@
-package SQLUnitTests.gameTests;
+package DataAccessTests.gameTests;
 
 import chess.ChessGame;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
-import dataAccess.SQLAuthDAO;
 import dataAccess.SQLGameDAO;
 import model.GameData;
-import model.UserData;
 import org.junit.jupiter.api.*;
 
 import java.util.Objects;

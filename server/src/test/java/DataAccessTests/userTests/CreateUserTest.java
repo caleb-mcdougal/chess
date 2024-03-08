@@ -1,8 +1,7 @@
-package SQLUnitTests.userTests;
+package DataAccessTests.userTests;
 
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
-import dataAccess.SQLGameDAO;
 import dataAccess.SQLUserDAO;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package SQLUnitTests.gameTests;
+package DataAccessTests.gameTests;
 
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;

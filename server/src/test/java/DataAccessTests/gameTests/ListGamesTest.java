@@ -1,7 +1,5 @@
-package SQLUnitTests.gameTests;
+package DataAccessTests.gameTests;
 
-import chess.ChessGame;
-import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.SQLGameDAO;
 import model.GameData;

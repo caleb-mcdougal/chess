@@ -1,9 +1,7 @@
-package SQLUnitTests.gameTests;
+package DataAccessTests.gameTests;
 
 import dataAccess.Exceptions.DataAccessException;
-import dataAccess.SQLAuthDAO;
 import dataAccess.SQLGameDAO;
-import model.UserData;
 import org.junit.jupiter.api.*;
 
 public class CreateGameTest {

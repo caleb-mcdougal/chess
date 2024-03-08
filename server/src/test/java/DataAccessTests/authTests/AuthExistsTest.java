@@ -1,12 +1,10 @@
-package SQLUnitTests.authTests;
+package DataAccessTests.authTests;
 
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.Exceptions.UnauthorizedException;
 import dataAccess.SQLAuthDAO;
 import model.UserData;
 import org.junit.jupiter.api.*;
-
-import java.util.Objects;
 
 public class AuthExistsTest {
 

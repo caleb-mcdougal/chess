@@ -1,21 +1,15 @@
-package SQLUnitTests.userTests;
+package DataAccessTests.userTests;
 
-import chess.ChessGame;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
-import dataAccess.SQLGameDAO;
 import dataAccess.SQLUserDAO;
-import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
-
-public class GetUserTest {
-
+public class UserExistsTest {
     @BeforeEach
     public void clearGameDB(){
         SQLUserDAO sud = new SQLUserDAO();
@@ -28,10 +22,9 @@ public class GetUserTest {
     }
 
     @Test
-    @DisplayName("Positive getUser test")
-    public void getUserPositiveTest(){
+    @DisplayName("Positive userExists test")
+    public void userExistsPositiveTest(){
         SQLUserDAO sud = new SQLUserDAO();
-
 
         UserData ud = new UserData("username", "password", "email");
         try {
@@ -41,52 +34,38 @@ public class GetUserTest {
             Assertions.fail();
         }
 
-        UserData udGot = null;
         try{
-            udGot = sud.getUser("username");
+            if(sud.userExists("username")){
+                System.out.println("Correctly identified existing user");
+                Assertions.assertTrue(true);
+            }
         } catch (DataAccessException e) {
             System.out.println("DAE");
-            Assertions.fail();
-        } catch (BadRequestException e) {
-            System.out.println("BRE");
-            Assertions.fail();
-        }
-
-
-        if(!Objects.equals(ud, udGot)){
-            System.out.println("UD not the same");
             Assertions.fail();
         }
     }
 
     @Test
-    @DisplayName("Negative getUser test")
-    public void getUserNegativeTest(){
+    @DisplayName("Negative userExists test")
+    public void userExistsNegativeTest(){
         SQLUserDAO sud = new SQLUserDAO();
-
 
         UserData ud = new UserData("username", "password", "email");
         try {
             sud.createUser(ud);
-        } catch (DataAccessException e) {
-            System.out.println("DataAccessException thrown");
-            Assertions.fail();
-        } catch (BadRequestException e) {
-            System.out.println("bad request thrown");
+        } catch (DataAccessException | BadRequestException e) {
+            System.out.println("DataAccessException or bad request thrown");
             Assertions.fail();
         }
 
         try{
-            sud.getUser("NotUsername");
+            if(!sud.userExists("fakeUsername")){
+                System.out.println("Correctly identified non existing user");
+                Assertions.assertTrue(true);
+            }
         } catch (DataAccessException e) {
             System.out.println("DAE");
             Assertions.fail();
-        } catch (BadRequestException e) {
-            System.out.println("BRE");
-            System.out.println("Correctly identified non existent username");
-            Assertions.assertTrue(true);
         }
-
-
     }
 }

@@ -1,11 +1,9 @@
-package SQLUnitTests.authTests;
+package DataAccessTests.authTests;
 
-import chess.ChessGame;
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.SQLAuthDAO;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import service.GameService;
 
 import java.util.Objects;
 

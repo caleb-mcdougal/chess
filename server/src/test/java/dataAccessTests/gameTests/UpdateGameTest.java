@@ -1,4 +1,4 @@
-package DataAccessTests.gameTests;
+package dataAccessTests.gameTests;
 
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;

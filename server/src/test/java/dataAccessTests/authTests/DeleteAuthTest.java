@@ -1,4 +1,4 @@
-package DataAccessTests.authTests;
+package dataAccessTests.authTests;
 
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.Exceptions.UnauthorizedException;

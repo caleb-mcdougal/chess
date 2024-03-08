@@ -1,13 +1,12 @@
-package DataAccessTests.authTests;
+package dataAccessTests.authTests;
 
 import dataAccess.Exceptions.DataAccessException;
+import dataAccess.Exceptions.UnauthorizedException;
 import dataAccess.SQLAuthDAO;
 import model.UserData;
 import org.junit.jupiter.api.*;
 
-import java.util.Objects;
-
-public class GetUsernameTest {
+public class AuthExistsTest {
 
     @BeforeEach
     public void clearAuthDB(){
@@ -22,8 +21,8 @@ public class GetUsernameTest {
 
 
     @Test
-    @DisplayName("Positive getUsername test")
-    public void getUsernamePositiveInsert(){
+    @DisplayName("Positive authExists test")
+    public void authExistsPositiveTest(){
         SQLAuthDAO sad = new SQLAuthDAO();
 
 
@@ -36,24 +35,26 @@ public class GetUsernameTest {
             Assertions.fail();
         }
 
-
-        String username = null;
-        try{
-            username = sad.getUsername(authToken);
+        try {
+            if (sad.authExists(authToken)) {
+                Assertions.assertTrue(true);
+            }
+            else {
+                System.out.println("auth not recognized");
+                Assertions.fail();
+            }
+        } catch (UnauthorizedException e) {
+            System.out.println("UE");
+            Assertions.fail();
         } catch (DataAccessException e) {
             System.out.println("DAE");
-            Assertions.fail();
-        }
-
-        if(!Objects.equals(username, "username")){
-            System.out.println("usernames not the same");
             Assertions.fail();
         }
     }
 
     @Test
-    @DisplayName("Negative getUsername test")
-    public void getUsernameNegative(){
+    @DisplayName("Negative authExists test")
+    public void authExistsNegativeTest(){
         SQLAuthDAO sad = new SQLAuthDAO();
 
 
@@ -66,18 +67,21 @@ public class GetUsernameTest {
             Assertions.fail();
         }
 
-
-        String username = null;
-        String authFake = "abc-def-123-456";
-        try{
-            username = sad.getUsername(authFake);
-        } catch (DataAccessException e) {
-            System.out.println("DAE correct");
+        String fakeAuth = "abc-123-fake";
+        try {
+            if (sad.authExists(fakeAuth)) {
+                Assertions.fail();
+            }
+            else {
+                System.out.println("auth not recognized");
+                Assertions.assertTrue(true);
+            }
+        } catch (UnauthorizedException e) {
+            System.out.println("UE");
+            System.out.println("auth not recognized");
             Assertions.assertTrue(true);
-        }
-
-        if(Objects.equals(username, "username")){
-            System.out.println("usernames somehow found");
+        } catch (DataAccessException e) {
+            System.out.println("DAE");
             Assertions.fail();
         }
     }

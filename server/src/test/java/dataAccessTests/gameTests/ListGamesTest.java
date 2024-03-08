@@ -1,4 +1,4 @@
-package DataAccessTests.gameTests;
+package dataAccessTests.gameTests;
 
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.SQLGameDAO;

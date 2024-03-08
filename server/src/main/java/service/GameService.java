@@ -33,9 +33,13 @@ public class GameService {
         SQLGameDAO sgd = new SQLGameDAO();
 
         //Create and return the game
+        System.out.println("cg here 1");
         int gameID = sgd.createGame(request.gameName());
+        System.out.println("cg here 2");
         return new CreateGameResponse(gameID, null);
     }
+
+
     public void clear() throws DataAccessException{
         //Clear all DAO data structures
         SQLUserDAO sud = new SQLUserDAO();

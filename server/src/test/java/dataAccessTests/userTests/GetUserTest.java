@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Objects;
 
@@ -49,8 +50,15 @@ public class GetUserTest {
             Assertions.fail();
         }
 
+        System.out.println(ud);
+        System.out.println(udGot);
 
-        if(!Objects.equals(ud, udGot)){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//        if(!Objects.equals(ud, udGot)){
+//            System.out.println("UD not the same");
+//            Assertions.fail();
+//        }
+        if(!encoder.matches(ud.password(), udGot.password())){
             System.out.println("UD not the same");
             Assertions.fail();
         }

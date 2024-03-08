@@ -115,7 +115,6 @@ public class SQLUserDAO extends SQLDAOParent implements UserDAO {
             if (rs.next()) {
                 rowCount = rs.getInt("row_count");
             }
-            System.out.println("rowCount: " + rowCount);
         } catch (SQLException|DataAccessException e) {
             throw new DataAccessException(500, "countRows Error");
         }

@@ -31,13 +31,10 @@ public class UserService {
         if(request.username() == null || request.password() == null || request.email() == null){
             throw new BadRequestException("Fill in all fields");
         }
-        System.out.println("here");
 
         //Create a new user
         UserData newUser = new UserData(request.username(), request.password(), request.email());
         sud.createUser(newUser);
-
-        System.out.println("here2");
 
         //Create and return a new auth token
         SQLAuthDAO sad = new SQLAuthDAO();
@@ -77,10 +74,12 @@ public class UserService {
             throw new UnauthorizedException("Incorrect Password");
         }
 
+
+
         //Create new auth token
         SQLAuthDAO sad = new SQLAuthDAO();
         String authToken = sad.createAuth(ud);
-
+        System.out.println("HERHERHERHER");
         //Return login request object with new auth token
         return new LoginResponse(request.username(), authToken, null);
     }

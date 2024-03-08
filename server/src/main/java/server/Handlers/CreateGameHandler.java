@@ -35,6 +35,7 @@ public class CreateGameHandler implements Route {
             return gson.toJson(errorResponse);
         }
         catch (DataAccessException e){
+            System.out.println("DAE handler");
             response.status(500);
             CreateGameResponse errorResponse = new CreateGameResponse(null, e.getMessage());
             return gson.toJson(errorResponse);

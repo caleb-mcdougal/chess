@@ -1,8 +1,10 @@
 package server.Handlers;
 
 import com.google.gson.Gson;
+import dataAccess.Exceptions.DataAccessException;
 import dataAccess.Exceptions.UnauthorizedException;
 import model.Request.LoginRequest;
+import model.Response.CreateGameResponse;
 import model.Response.LoginResponse;
 import service.UserService;
 import spark.Request;
@@ -25,6 +27,11 @@ public class LoginHandler implements Route {
         catch (UnauthorizedException e){
             response.status(401);
             LoginResponse errorResponse = new LoginResponse(null, null, "Error: unauthorized");
+            return gson.toJson(errorResponse);
+        }
+        catch (DataAccessException e){
+            response.status(500);
+            CreateGameResponse errorResponse = new CreateGameResponse(null, e.getMessage());
             return gson.toJson(errorResponse);
         }
 

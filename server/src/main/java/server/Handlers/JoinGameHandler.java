@@ -3,8 +3,10 @@ package server.Handlers;
 import com.google.gson.Gson;
 import dataAccess.Exceptions.AlreadyTakenException;
 import dataAccess.Exceptions.BadRequestException;
+import dataAccess.Exceptions.DataAccessException;
 import dataAccess.Exceptions.UnauthorizedException;
 import model.Request.JoinGameRequest;
+import model.Response.CreateGameResponse;
 import model.Response.JoinGameResponse;
 import service.GameService;
 import spark.Request;
@@ -38,6 +40,11 @@ public class JoinGameHandler implements Route {
         catch (AlreadyTakenException e){
             response.status(403);
             JoinGameResponse errorResponse = new JoinGameResponse("Error: already taken");
+            return gson.toJson(errorResponse);
+        }
+        catch (DataAccessException e){
+            response.status(500);
+            CreateGameResponse errorResponse = new CreateGameResponse(null, e.getMessage());
             return gson.toJson(errorResponse);
         }
 

@@ -7,6 +7,7 @@ import dataAccess.Exceptions.DataAccessException;
 import dataAccess.UserDAO;
 import model.GameData;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,6 +29,13 @@ public class SQLUserDAO extends SQLDAOParent implements UserDAO {
         }
     }
 
+    private String encryptUserPassword(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        // write the hashed password in database along with the user's other information
+        return encoder.encode(password);
+    }
+
     @Override
     public void createUser(UserData ud) throws DataAccessException, BadRequestException{
         try (var conn = DatabaseManager.getConnection()) {
@@ -38,7 +46,7 @@ public class SQLUserDAO extends SQLDAOParent implements UserDAO {
 
             try (var stmt = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES (?, ?, ?)")) {
                 stmt.setString(1,ud.username());
-                stmt.setString(2,ud.password());
+                stmt.setString(2,encryptUserPassword(ud.password()));
                 stmt.setString(3,ud.email());
 
                 if (stmt.executeUpdate() != 1) {

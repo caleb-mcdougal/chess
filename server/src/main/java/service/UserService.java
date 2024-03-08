@@ -11,6 +11,8 @@ import model.Request.LoginRequest;
 import model.Response.LoginResponse;
 import model.Request.RegisterRequest;
 import model.Response.RegisterResponse;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Objects;
 
@@ -63,8 +65,15 @@ public class UserService {
         }
 
         //Check correct password
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         UserData ud = sud.getUser(request.username());
-        if(!Objects.equals(ud.password(), request.password())){
+        System.out.println(ud.password());
+        System.out.println(encoder.encode(request.password()));
+        System.out.println(request.password());
+//        if(!Objects.equals(ud.password(), encoder.encode(request.password()))){
+//            throw new UnauthorizedException("Incorrect Password");
+//        }
+        if(!encoder.matches(request.password(), ud.password())){
             throw new UnauthorizedException("Incorrect Password");
         }
 

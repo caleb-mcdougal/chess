@@ -31,7 +31,7 @@ public class UserExistsTest {
         UserData ud = new UserData("username", "password", "email");
         try {
             sud.createUser(ud);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | BadRequestException e) {
             System.out.println("DataAccessException or bad request thrown");
             Assertions.fail();
         }
@@ -55,7 +55,7 @@ public class UserExistsTest {
         UserData ud = new UserData("username", "password", "email");
         try {
             sud.createUser(ud);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | BadRequestException e) {
             System.out.println("DataAccessException or bad request thrown");
             Assertions.fail();
         }

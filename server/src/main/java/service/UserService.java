@@ -20,16 +20,22 @@ public class UserService {
 
     }
     public RegisterResponse register(RegisterRequest request) throws AlreadyTakenException, BadRequestException, DataAccessException {
-        //Ensure username, password, and email are valid input from the user
+        //Ensure username is valid input from the user
         SQLUserDAO sud = new SQLUserDAO();
         if(sud.userExists(request.username())){
             throw new AlreadyTakenException("Username unrecognized");
         }
 
+        if(request.username() == null || request.password() == null || request.email() == null){
+            throw new BadRequestException("Fill in all fields");
+        }
+        System.out.println("here");
 
         //Create a new user
         UserData newUser = new UserData(request.username(), request.password(), request.email());
         sud.createUser(newUser);
+
+        System.out.println("here2");
 
         //Create and return a new auth token
         SQLAuthDAO sad = new SQLAuthDAO();

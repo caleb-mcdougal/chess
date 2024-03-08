@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public interface UserDAO {
     void clear() throws DataAccessException;
-    void createUser(UserData ud) throws DataAccessException;
+    void createUser(UserData ud) throws DataAccessException, BadRequestException;
     UserData getUser(String username) throws BadRequestException, DataAccessException;
     Boolean userExists(String username) throws DataAccessException;
 }

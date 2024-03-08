@@ -1,5 +1,6 @@
 package SQLUnitTests.userTests;
 
+import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
 import dataAccess.SQLGameDAO;
 import dataAccess.SQLUserDAO;
@@ -40,7 +41,7 @@ public class CreateUserTest {
         UserData ud = new UserData("username", "password", "email");
         try {
             sud.createUser(ud);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | BadRequestException e) {
             System.out.println("DataAccessException thrown");
             Assertions.fail();
         }

@@ -9,5 +9,5 @@ public interface GameDAO {
     public int createGame(String name) throws DataAccessException;
     public GameData getGame(int gameID)throws BadRequestException, DataAccessException;
     public GameData[] listGames() throws DataAccessException;
-    public void updateGame(int gameID, String color, String username) throws DataAccessException;
+    public void updateGame(int gameID, String color, String username) throws DataAccessException, BadRequestException;
 }

@@ -29,19 +29,24 @@ public class SQLUserDAO extends SQLDAOParent implements UserDAO {
     }
 
     @Override
-    public void createUser(UserData ud) throws DataAccessException{
+    public void createUser(UserData ud) throws DataAccessException, BadRequestException{
         try (var conn = DatabaseManager.getConnection()) {
+
+            if(userExists(ud.username())){
+                throw new BadRequestException("createUser, already exists");
+            }
+
             try (var stmt = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES (?, ?, ?)")) {
                 stmt.setString(1,ud.username());
                 stmt.setString(2,ud.password());
                 stmt.setString(3,ud.email());
 
                 if (stmt.executeUpdate() != 1) {
-                    throw new DataAccessException(500,"createAuth Error");
+                    throw new DataAccessException(500, "createAuth Error");
                 }
             }
         } catch (SQLException|DataAccessException e) {
-            throw new DataAccessException(500, "Create Game Error");
+            throw new DataAccessException(500, "Create User Error");
         }
     }
 

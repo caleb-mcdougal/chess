@@ -43,6 +43,10 @@ public class UpdateGameTest {
             System.out.println("DAE");
             Assertions.fail();
         }
+        catch (BadRequestException e) {
+            System.out.println("BRE");
+            Assertions.fail();
+        }
 
         GameData gd = null;
         try{
@@ -80,6 +84,10 @@ public class UpdateGameTest {
         } catch (DataAccessException e) {
             System.out.println("Correctly caught incorrect input");
             Assertions.assertTrue(true);
+        }
+        catch(BadRequestException e) {
+            System.out.println("BRE");
+            Assertions.fail();
         }
 
     }

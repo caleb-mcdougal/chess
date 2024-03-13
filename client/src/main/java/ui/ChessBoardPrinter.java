@@ -36,9 +36,10 @@ public class ChessBoardPrinter {
                     { " W ", " W ", " W ", " W ", " W ", " W ", " W ", " W "}};
 
 
-    private static String[] edge = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 " };
+    private static final String[] EDGE = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 " };
+
+    private static final String[] HEADER = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h " };
     private static final String EMPTY = "   ";
-    private static Random rand = new Random();
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -53,43 +54,47 @@ public class ChessBoardPrinter {
     }
 
     private static void drawBoardWhite(PrintStream out) {
-        drawHeaders(out);
+        drawHeaders(out, " W ");
         int counter = 0;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
-            drawRow(out, edge[7-i], BOARD[7-i], PIECE_COLORS[7-i], counter);
+            drawRow(out, EDGE[7-i], BOARD[7-i], PIECE_COLORS[7-i], counter);
             counter += 1;
         }
-        drawHeaders(out);
+        drawHeaders(out, " W ");
     }
 
     private static void drawBoardBlack(PrintStream out) {
-        drawHeaders(out);
+        drawHeaders(out, " B ");
         int counter = 1;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
-            drawRow(out, edge[i], BOARD[i], PIECE_COLORS[i], counter);
+            drawRow(out, EDGE[i], BOARD[i], PIECE_COLORS[i], counter);
             counter += 1;
         }
-        drawHeaders(out);
+        drawHeaders(out, " B ");
     }
 
-    private static void drawHeaders(PrintStream out) {
-        setEdge(out);
-        out.print(EMPTY.repeat(1));
+    private static void drawHeaders(PrintStream out, String color) {
+        setEDGE(out);
+        out.print(EMPTY);
 
-        String[] headers = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h " };
-        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-            printHeaderText(out, headers[boardCol]);
+        for (int i = 0; i < BOARD_SIZE_IN_SQUARES; ++i) {
+            if (Objects.equals(color, " W ")) {
+                printHeaderText(out, HEADER[i]);
+            }
+            else{
+                printHeaderText(out, HEADER[7-i]);
+            }
         }
 
-        setEdge(out);
-        out.print(EMPTY.repeat(1));
+        setEDGE(out);
+        out.print(EMPTY);
         setBlack(out);
         out.println();
     }
 
 
     private static void printHeaderText(PrintStream out, String player) {
-        setEdge(out);
+        setEDGE(out);
         out.print(player);
         setBlack(out);
     }
@@ -113,7 +118,7 @@ public class ChessBoardPrinter {
     }
 
     private static void drawEdge(PrintStream out, String rowNum) {
-        setEdge(out);
+        setEDGE(out);
         out.print(rowNum);
     }
 
@@ -149,7 +154,7 @@ public class ChessBoardPrinter {
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
-    private static void setEdge(PrintStream out) {
+    private static void setEDGE(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_YELLOW);
     }

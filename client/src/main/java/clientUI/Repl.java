@@ -5,7 +5,7 @@ import Exceptions.ResponseException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import model.Request.RegisterRequest;
+import model.Request.*;
 
 import static ui.EscapeSequences.*;
 
@@ -21,11 +21,16 @@ public class Repl {
 
 
     public void run() {
-        System.out.print(this.preloginMenu());
+        if (!signedIn) {
+            System.out.print(this.preloginMenu());
+        }
+        else {
+            System.out.print(this.preloginMenu());
+        }
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
+        while (!result.equals("quit") && !signedIn) {
             printPrompt();
             String line = scanner.nextLine();
 
@@ -33,11 +38,24 @@ public class Repl {
                 result = this.eval(line);
                 System.out.print(BLUE + result);
             } catch (Throwable e) {
-                System.out.print("here");
                 var msg = e.toString();
                 System.out.print(msg);
             }
         }
+
+//        while (!result.equals("quit") && signedIn) {
+//            printPrompt();
+//            String line = scanner.nextLine();
+//
+//            try {
+//                result = this.eval(line);
+//                System.out.print(BLUE + result);
+//            } catch (Throwable e) {
+//                var msg = e.toString();
+//                System.out.print(msg);
+//            }
+//        }
+
         System.out.println();
     }
 
@@ -48,7 +66,7 @@ public class Repl {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
-//                case "login" -> rescuePet(params);
+                case "login" -> login(params);
 //                case "quit" -> listPets();
                 default -> preloginMenu();
             };
@@ -57,15 +75,15 @@ public class Repl {
         }
     }
 
-//    public String login(String... params) throws ResponseException {
-//        if (params.length == 2) {
-//            signedIn = true;
-//            LoginRequest request = new LoginRequest(params[0], params[1]);
-//            server.login(request);
-//            return String.format("You signed in as %s.", params[0]);
-//        }
-//        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
-//    }
+    public String login(String... params) throws ResponseException {
+        if (params.length == 2) {
+            signedIn = true;
+            LoginRequest request = new LoginRequest(params[0], params[1]);
+            server.login(request);
+            return String.format("You signed in as %s.", params[0]);
+        }
+        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
+    }
 
     public String register (String... params) throws ResponseException {
         if (params.length == 3) {
@@ -82,6 +100,17 @@ public class Repl {
         return """
                 - register <USERNAME> <PASSWORD> <EMAIL>
                 - login <USERNAME> <PASSWORD>
+                - quit
+                - help
+        """;
+    }
+
+    public String postloginMenu() {
+        return """
+                - create <NAME>
+                - list
+                - join <ID>
+                - logout
                 - quit
                 - help
         """;

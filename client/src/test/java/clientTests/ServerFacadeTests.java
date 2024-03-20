@@ -2,7 +2,9 @@ package clientTests;
 
 import Exceptions.ResponseException;
 import dataAccess.Exceptions.DataAccessException;
+import model.Request.LoginRequest;
 import model.Request.RegisterRequest;
+import model.Response.LoginResponse;
 import model.Response.RegisterResponse;
 import model.UserData;
 import org.junit.jupiter.api.*;
@@ -47,7 +49,7 @@ public class ServerFacadeTests {
     public void registerPositive() {
         var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
-        RegisterRequest request = new RegisterRequest("Caleb2", "password", "email@eemail");
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
         try {
             response = facade.register(request);
@@ -64,7 +66,7 @@ public class ServerFacadeTests {
     public void registerNegative() {
         var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
-        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@eemail");
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         try {
             facade.register(request);
         } catch (ResponseException e) {
@@ -82,4 +84,70 @@ public class ServerFacadeTests {
 
         Assertions.assertTrue(errorCaught);
     }
+
+    @Test
+    public void loginPositive() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+        LoginRequest lRequest = new LoginRequest("Caleb", "password");
+        LoginResponse lResponse = null;
+        try {
+            lResponse = facade.login(lRequest);
+        } catch (ResponseException e) {
+            System.out.println("Error thrown during login");
+            Assertions.fail();
+        }
+        System.out.print(lResponse);
+    }
+
+    @Test
+    public void loginNegative() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+        boolean caughtBadUsername = false;
+        boolean caughtBadPassword = false;
+
+        LoginRequest lRequest = new LoginRequest("badUsername", "password");
+        try {
+            facade.login(lRequest);
+        } catch (ResponseException e) {
+            caughtBadUsername = true;
+        }
+
+        LoginRequest lRequest2 = new LoginRequest("Caleb", "badPassword");
+        try {
+            facade.login(lRequest2);
+        } catch (ResponseException e) {
+            caughtBadPassword = true;
+        }
+
+        Assertions.assertTrue(caughtBadUsername);
+        Assertions.assertTrue(caughtBadPassword);
+
+    }
+
 }

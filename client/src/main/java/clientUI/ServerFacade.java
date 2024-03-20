@@ -57,6 +57,12 @@ public class ServerFacade {
         return response;
     }
 
+    public LoginResponse login(LoginRequest request) throws ResponseException{
+        var path = "/session";
+        LoginResponse response = this.makeRequest("POST", path, null, request, LoginResponse.class);
+        authToken = response.authToken();
+        return response;
+    }
 
 
     private <T> T makeRequest(String method, String path, String header, Object request, Class<T> responseClass) throws ResponseException {

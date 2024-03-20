@@ -64,12 +64,7 @@ public class UserService {
         //Check correct password
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         UserData ud = sud.getUser(request.username());
-        System.out.println(ud.password());
-        System.out.println(encoder.encode(request.password()));
-        System.out.println(request.password());
-//        if(!Objects.equals(ud.password(), encoder.encode(request.password()))){
-//            throw new UnauthorizedException("Incorrect Password");
-//        }
+
         if(!encoder.matches(request.password(), ud.password())){
             throw new UnauthorizedException("Incorrect Password");
         }
@@ -79,7 +74,6 @@ public class UserService {
         //Create new auth token
         SQLAuthDAO sad = new SQLAuthDAO();
         String authToken = sad.createAuth(ud);
-        System.out.println("HERHERHERHER");
         //Return login request object with new auth token
         return new LoginResponse(request.username(), authToken, null);
     }

@@ -2,6 +2,7 @@ package clientTests;
 
 import Exceptions.ResponseException;
 import dataAccess.Exceptions.DataAccessException;
+import model.Request.CreateGameRequest;
 import model.Request.LoginRequest;
 import model.Request.RegisterRequest;
 import model.Response.LoginResponse;
@@ -147,7 +148,67 @@ public class ServerFacadeTests {
 
         Assertions.assertTrue(caughtBadUsername);
         Assertions.assertTrue(caughtBadPassword);
+    }
 
+    @Test
+    public void createGamePositive() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+        CreateGameRequest cgr = new CreateGameRequest("newGame");
+        try {
+            facade.create(cgr);
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Create game failure");
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void createGameNegative() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+        CreateGameRequest cgr = new CreateGameRequest("newGame");
+        try {
+            facade.create(cgr);
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Create game failure");
+            Assertions.fail();
+        }
+
+        boolean caughtNameRepeat = false;
+        try {
+            System.out.println("here");
+            facade.create(cgr);
+        } catch (ResponseException e) {
+            caughtNameRepeat = true;
+        }
+        Assertions.assertTrue(caughtNameRepeat);
     }
 
 }

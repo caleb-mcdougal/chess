@@ -36,7 +36,6 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     public int createGame(String name) throws  DataAccessException{
         ChessGame newGame = new ChessGame();
         var json = new Gson().toJson(newGame);
-        System.out.println("name: " + name);
         try (var conn = DatabaseManager.getConnection()) {
             try (var stmt = conn.prepareStatement("INSERT INTO game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
                 stmt.setString(1,null);
@@ -44,16 +43,13 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
                 stmt.setString(3,name);
                 stmt.setString(4, json);
 
-                System.out.println("prior");
                 stmt.executeUpdate();
-                System.out.println("execute completed");
                 ResultSet rs = stmt.getGeneratedKeys();
                 var gameID = 0;
                 if (rs.next()) {
                     gameID = rs.getInt(1);
                 }
                 else{
-                    System.out.println("in else here");
                     throw new DataAccessException(500, "Create Game Error");
                 }
                 return gameID;
@@ -155,7 +151,7 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
             if (rs.next()) {
                 rowCount = rs.getInt("row_count");
             }
-            System.out.println("rowCount: " + rowCount);
+//            System.out.println("rowCount: " + rowCount);
         } catch (SQLException|DataAccessException e) {
             throw new DataAccessException(500, "countRows Error");
         }

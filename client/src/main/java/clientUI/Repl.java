@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import model.Request.*;
+import model.Response.CreateGameResponse;
 
 import static ui.EscapeSequences.*;
 
@@ -25,12 +26,12 @@ public class Repl {
             System.out.print(this.preloginMenu());
         }
         else {
-            System.out.print(this.preloginMenu());
+            System.out.print(this.postloginMenu());
         }
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit") && !signedIn) {
+        while (!result.equals("quit")) {
             printPrompt();
             String line = scanner.nextLine();
 
@@ -43,19 +44,6 @@ public class Repl {
             }
         }
 
-//        while (!result.equals("quit") && signedIn) {
-//            printPrompt();
-//            String line = scanner.nextLine();
-//
-//            try {
-//                result = this.eval(line);
-//                System.out.print(BLUE + result);
-//            } catch (Throwable e) {
-//                var msg = e.toString();
-//                System.out.print(msg);
-//            }
-//        }
-
         System.out.println();
     }
 
@@ -67,8 +55,9 @@ public class Repl {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
+                case "create" -> create(params);
 //                case "quit" -> listPets();
-                default -> preloginMenu();
+                default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
@@ -95,6 +84,34 @@ public class Repl {
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }
 
+    public String create (String... params) throws ResponseException {
+        if (params.length == 1) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to create a game");
+            }
+            CreateGameRequest request = new CreateGameRequest(params[0]);
+            CreateGameResponse response = server.create(request);
+            System.out.println("create game message:");
+            System.out.println(response.message());
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
+            return String.format("You created a game named: %s.", params[0]);
+        }
+        throw new ResponseException(400, "Expected: <NAME>");
+    }
+
+
+
+
+    public String help(){
+        if (signedIn){
+            return postloginMenu();
+        }
+        else{
+            return preloginMenu();
+        }
+    }
 
     public String preloginMenu() {
         return """

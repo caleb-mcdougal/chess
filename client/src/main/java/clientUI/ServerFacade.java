@@ -1,10 +1,9 @@
+package clientUI;
+
 import Exceptions.ResponseException;
 import com.google.gson.Gson;
-import model.Request.CreateGameRequest;
-import model.Request.RegisterRequest;
-import model.Response.ClearResponse;
-import model.Response.CreateGameResponse;
-import model.Response.RegisterResponse;
+import model.Request.*;
+import model.Response.*;
 
 import java.io.*;
 import java.net.*;
@@ -57,6 +56,8 @@ public class ServerFacade {
         authToken = response.authToken();
         return response;
     }
+
+
 
     private <T> T makeRequest(String method, String path, String header, Object request, Class<T> responseClass) throws ResponseException {
         try {

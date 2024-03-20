@@ -1,11 +1,11 @@
+package clientUI;
+
 import Exceptions.ResponseException;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
-import model.Request.LoginRequest;
 import model.Request.RegisterRequest;
-import ui.EscapeSequences;
 
 import static ui.EscapeSequences.*;
 
@@ -33,6 +33,7 @@ public class Repl {
                 result = this.eval(line);
                 System.out.print(BLUE + result);
             } catch (Throwable e) {
+                System.out.print("here");
                 var msg = e.toString();
                 System.out.print(msg);
             }
@@ -49,7 +50,7 @@ public class Repl {
                 case "register" -> register(params);
 //                case "login" -> rescuePet(params);
 //                case "quit" -> listPets();
-                default -> helpPrelogin();
+                default -> preloginMenu();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
@@ -74,10 +75,6 @@ public class Repl {
             return String.format("You registered as %s.", params[0]);
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
-    }
-
-    public String helpPrelogin (String... params) {
-        return preloginMenu();
     }
 
 

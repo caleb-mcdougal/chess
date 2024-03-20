@@ -30,7 +30,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        Client
+                                        clientUI.Client
                                     </mainClass>
                                 </manifest>
                             </archive>

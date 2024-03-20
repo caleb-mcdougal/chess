@@ -1,12 +1,14 @@
 package clientTests;
 
 import Exceptions.ResponseException;
+import dataAccess.Exceptions.DataAccessException;
 import model.Request.RegisterRequest;
 import model.Response.RegisterResponse;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import clientUI.*;
+import service.GameService;
 
 import java.net.HttpURLConnection;
 import java.util.Locale;
@@ -30,6 +32,16 @@ public class ServerFacadeTests {
     }
 
     //I need a before each clear DB, otherwise I am detecting the users registered in previous tests
+    @BeforeEach
+    public void clearDB() {
+        GameService gs = new GameService();
+        try {
+            gs.clear();
+        } catch (DataAccessException e) {
+            System.out.println("Failure in pretest DB clear");
+            Assertions.fail();
+        }
+    }
 
     @Test
     public void registerPositive() {
@@ -60,13 +72,14 @@ public class ServerFacadeTests {
             Assertions.fail();
         }
 
+        boolean errorCaught = false;
+
         try {
             facade.register(request);
         } catch (ResponseException e) {
-            Assertions.assertTrue(true);
+            errorCaught = true;
         }
 
-        System.out.println("didn't catch double register");
-        Assertions.fail();
+        Assertions.assertTrue(errorCaught);
     }
 }

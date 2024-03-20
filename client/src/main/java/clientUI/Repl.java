@@ -56,6 +56,7 @@ public class Repl {
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "create" -> create(params);
+                case "list" -> list(params);
 //                case "quit" -> listPets();
                 default -> help();
             };
@@ -85,6 +86,23 @@ public class Repl {
     }
 
     public String create (String... params) throws ResponseException {
+        if (params.length == 1) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to create a game");
+            }
+            CreateGameRequest request = new CreateGameRequest(params[0]);
+            CreateGameResponse response = server.create(request);
+            System.out.println("create game message:");
+            System.out.println(response.message());
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
+            return String.format("You created a game named: %s.", params[0]);
+        }
+        throw new ResponseException(400, "Expected: <NAME>");
+    }
+
+    public String list (String... params) throws ResponseException {
         if (params.length == 1) {
             if (!signedIn){
                 throw new ResponseException(400, "Login to create a game");

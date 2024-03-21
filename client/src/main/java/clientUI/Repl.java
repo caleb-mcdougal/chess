@@ -5,8 +5,12 @@ import Exceptions.ResponseException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import model.GameData;
 import model.Request.*;
 import model.Response.CreateGameResponse;
+import model.Response.ListGamesResponse;
+import model.Response.LoginResponse;
+import model.Response.RegisterResponse;
 
 import static ui.EscapeSequences.*;
 
@@ -69,7 +73,10 @@ public class Repl {
         if (params.length == 2) {
             signedIn = true;
             LoginRequest request = new LoginRequest(params[0], params[1]);
-            server.login(request);
+            LoginResponse response = server.login(request);
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
             return String.format("You signed in as %s.", params[0]);
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
@@ -79,7 +86,10 @@ public class Repl {
         if (params.length == 3) {
             signedIn = true;
             RegisterRequest request = new RegisterRequest(params[0], params[1], params[2]);
-            server.register(request);
+            RegisterResponse response = server.register(request);
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
             return String.format("You registered as %s.", params[0]);
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
@@ -92,8 +102,6 @@ public class Repl {
             }
             CreateGameRequest request = new CreateGameRequest(params[0]);
             CreateGameResponse response = server.create(request);
-            System.out.println("create game message:");
-            System.out.println(response.message());
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
@@ -103,23 +111,33 @@ public class Repl {
     }
 
     public String list (String... params) throws ResponseException {
-        if (params.length == 1) {
+        if (params.length == 0) {
             if (!signedIn){
-                throw new ResponseException(400, "Login to create a game");
+                throw new ResponseException(400, "Login to list games");
             }
-            CreateGameRequest request = new CreateGameRequest(params[0]);
-            CreateGameResponse response = server.create(request);
-            System.out.println("create game message:");
-            System.out.println(response.message());
+            ListGamesResponse response = server.list();
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
-            return String.format("You created a game named: %s.", params[0]);
+            return listToString(response);
         }
         throw new ResponseException(400, "Expected: <NAME>");
     }
 
-
+    private String listToString(ListGamesResponse response){
+        GameData[] games = response.games();
+        StringBuilder SB = new StringBuilder();
+        for (int i = 0; i < games.length; i++) {
+            SB.append("Name: ");
+            SB.append(games[i].gameName());
+            SB.append(", White: ");
+            SB.append(games[i].whiteUsername());
+            SB.append(", Black: ");
+            SB.append(games[i].blackUsername());
+            SB.append("\n");
+        }
+        return SB.toString();
+    }
 
 
     public String help(){

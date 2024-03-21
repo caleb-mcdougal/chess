@@ -5,6 +5,7 @@ import dataAccess.Exceptions.DataAccessException;
 import model.Request.CreateGameRequest;
 import model.Request.LoginRequest;
 import model.Request.RegisterRequest;
+import model.Response.ListGamesResponse;
 import model.Response.LoginResponse;
 import model.Response.RegisterResponse;
 import model.UserData;
@@ -223,6 +224,70 @@ public class ServerFacadeTests {
             caughtNoSignIn = true;
         }
         Assertions.assertTrue(caughtNoSignIn);
+    }
+
+    @Test
+    public void listGamePositive() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+        ListGamesResponse responseLG = null;
+        try {
+            responseLG = facade.list();
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            System.out.println("List game failure");
+            Assertions.fail();
+        }
+
+        Assertions.assertEquals(responseLG.games().length, 0, "No games should exist");
+
+        CreateGameRequest cgr = new CreateGameRequest("newGame");
+        try {
+            facade.create(cgr);
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Create game failure");
+            Assertions.fail();
+        }
+
+        try {
+            responseLG = facade.list();
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            System.out.println("List game failure");
+            Assertions.fail();
+        }
+
+        Assertions.assertEquals(responseLG.games().length, 1, "1 game should exist");
+    }
+
+    @Test
+    public void listGameNegative() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+
+        boolean caughtNoSignIn = false;
+
+        try {
+            facade.list();
+        } catch (ResponseException e) {
+            caughtNoSignIn = true;
+        }
+
+        Assertions.assertTrue(caughtNoSignIn, "Sign in should be required for listgame");
+
     }
 
 }

@@ -130,19 +130,14 @@ public class Repl {
         for (int i = 0; i < games.length; i++) {
             SB.append(i + 1).append(". ");
             SB.append(games[i].gameName());
-            boolean whiteName = false;
-            if (games[i].whiteUsername() != null){
+//            if (games[i].whiteUsername() != null){
                 SB.append(" WHITE: ");
                 SB.append(games[i].whiteUsername());
-                whiteName = true;
-            }
-            if (games[i].blackUsername() != null){
-                if (whiteName) {
-                    SB.append(",");
-                }
-                SB.append(" BLACK: ");
+//            }
+//            if (games[i].blackUsername() != null){
+                SB.append("  BLACK: ");
                 SB.append(games[i].blackUsername());
-            }
+//            }
             SB.append("\n");
         }
         return SB.toString();
@@ -185,7 +180,6 @@ public class Repl {
             if (!signedIn){
                 throw new ResponseException(400, "Login to observe a game");
             }
-            signedIn = false;
             int gameID = getDBGameID(Integer.parseInt(params[0]));
             JoinGameRequest request = new JoinGameRequest(null, gameID);
             JoinGameResponse response = server.join(request);
@@ -204,6 +198,7 @@ public class Repl {
             if (!signedIn){
                 throw new ResponseException(400, "Already logged out");
             }
+            signedIn = false;
             LogoutResponse response = server.logout();
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
@@ -244,6 +239,13 @@ public class Repl {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + GREEN);
+        if(signedIn){
+            System.out.print("\n" + RESET + "[LOGGED_IN]");
+        }
+        else{
+            System.out.print("\n" + RESET + "[LOGGED_OUT]");
+        }
+//        System.out.print("\n" + RESET + ">>> " + GREEN);
+        System.out.print(">>> " + GREEN);
     }
 }

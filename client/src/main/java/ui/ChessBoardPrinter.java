@@ -53,6 +53,18 @@ public class ChessBoardPrinter {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
+    public void printBoards() {
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+
+//        out.print(ERASE_SCREEN);
+
+        drawBoardWhite(out);
+        drawBoardBlack(out);
+
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_WHITE);
+    }
+
     private static void drawBoardWhite(PrintStream out) {
         drawHeaders(out, " W ");
         int counter = 0;

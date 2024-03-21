@@ -2,9 +2,12 @@ package clientTests;
 
 import Exceptions.ResponseException;
 import dataAccess.Exceptions.DataAccessException;
+import model.GameData;
 import model.Request.CreateGameRequest;
+import model.Request.JoinGameRequest;
 import model.Request.LoginRequest;
 import model.Request.RegisterRequest;
+import model.Response.CreateGameResponse;
 import model.Response.ListGamesResponse;
 import model.Response.LoginResponse;
 import model.Response.RegisterResponse;
@@ -277,17 +280,112 @@ public class ServerFacadeTests {
     public void listGameNegative() {
         var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
-
         boolean caughtNoSignIn = false;
-
         try {
             facade.list();
         } catch (ResponseException e) {
             caughtNoSignIn = true;
         }
-
         Assertions.assertTrue(caughtNoSignIn, "Sign in should be required for listgame");
-
     }
+
+    @Test
+    public void joinGamePositive() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+
+        CreateGameRequest cgr = new CreateGameRequest("newGame");
+        CreateGameResponse cgResponse = null;
+        try {
+            cgResponse = facade.create(cgr);
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Create game failure");
+            Assertions.fail();
+        }
+
+        JoinGameRequest jgRequest = new JoinGameRequest("WHITE", cgResponse.gameID());
+        try{
+            facade.join(jgRequest);
+        } catch (ResponseException e) {
+            System.out.println("Response error thrown in join game");
+            Assertions.fail();
+        }
+    }
+
+    private String listToString(ListGamesResponse response){
+        GameData[] games = response.games();
+        StringBuilder SB = new StringBuilder();
+        for (int i = 0; i < games.length; i++) {
+            SB.append("GameID: ");
+            SB.append(games[i].gameID());
+            SB.append(", Name: ");
+            SB.append(games[i].gameName());
+            SB.append(", White: ");
+            SB.append(games[i].whiteUsername());
+            SB.append(", Black: ");
+            SB.append(games[i].blackUsername());
+            SB.append("\n");
+        }
+        return SB.toString();
+    }
+
+    @Test
+    public void joinGameNegative() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+
+        CreateGameRequest cgr = new CreateGameRequest("newGame");
+        try {
+            facade.create(cgr);
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Create game failure");
+            Assertions.fail();
+        }
+
+        boolean caughtInvalidID = false;
+        JoinGameRequest jgRequest = new JoinGameRequest("WHITE", 123456789);
+        try{
+            facade.join(jgRequest);
+        } catch (ResponseException e) {
+            caughtInvalidID = true;
+        }
+
+        Assertions.assertTrue(caughtInvalidID);
+        try {
+            ListGamesResponse lgResponse = facade.list();
+            System.out.println(listToString(lgResponse));
+        } catch (ResponseException e) {
+            System.out.println("error printing list for join test");
+            Assertions.fail();
+        }
+    }
+
+
 
 }

@@ -7,10 +7,7 @@ import java.util.Scanner;
 
 import model.GameData;
 import model.Request.*;
-import model.Response.CreateGameResponse;
-import model.Response.ListGamesResponse;
-import model.Response.LoginResponse;
-import model.Response.RegisterResponse;
+import model.Response.*;
 
 import static ui.EscapeSequences.*;
 
@@ -61,6 +58,7 @@ public class Repl {
                 case "login" -> login(params);
                 case "create" -> create(params);
                 case "list" -> list(params);
+                case "join" -> join(params);
 //                case "quit" -> listPets();
                 default -> help();
             };
@@ -121,24 +119,56 @@ public class Repl {
             }
             return listToString(response);
         }
-        throw new ResponseException(400, "Expected: <NAME>");
+        throw new ResponseException(400, "Expected no additional arguments");
     }
 
     private String listToString(ListGamesResponse response){
         GameData[] games = response.games();
         StringBuilder SB = new StringBuilder();
         for (int i = 0; i < games.length; i++) {
-            SB.append("Name: ");
+            SB.append(i + 1).append(". ");
             SB.append(games[i].gameName());
-            SB.append(", White: ");
-            SB.append(games[i].whiteUsername());
-            SB.append(", Black: ");
-            SB.append(games[i].blackUsername());
+            SB.append(", Join as: ");
+            if (games[i].whiteUsername() == null){
+                SB.append("WHITE ");
+            }
+            if (games[i].blackUsername() == null){
+                SB.append("BLACK");
+            }
             SB.append("\n");
         }
         return SB.toString();
     }
 
+    public String join (String... params) throws ResponseException {
+        if (params.length == 2) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to join a game");
+            }
+            int gameID = getDBGameID(Integer.parseInt(params[0]));
+            JoinGameRequest request = new JoinGameRequest(params[1], gameID);
+            JoinGameResponse response = server.join(request);
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
+            return String.format("Joined game: %s", Integer.parseInt(params[0]));
+        }
+        throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
+    }
+
+    private int getDBGameID(int gameRow) throws ResponseException {
+        ListGamesResponse response = null;
+        try {
+            response = server.list();
+        } catch (ResponseException e) {
+            throw new ResponseException(400, "Enter a valid game row number");
+        }
+        if (response.message() != null){
+            throw new ResponseException(400, response.message());
+        }
+        GameData[] games = response.games();
+        return games[gameRow - 1].gameID();
+    }
 
     public String help(){
         if (signedIn){
@@ -162,7 +192,8 @@ public class Repl {
         return """
                 - create <NAME>
                 - list
-                - join <ID>
+                - join <ID> [WHITE|BLACK]
+                - observe <ID>
                 - logout
                 - quit
                 - help

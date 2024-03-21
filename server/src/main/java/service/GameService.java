@@ -60,32 +60,45 @@ public class GameService {
     public void joinGame(JoinGameRequest request, String authToken) throws BadRequestException, UnauthorizedException, AlreadyTakenException, DataAccessException {
         //Check authToken
         SQLAuthDAO sad = new SQLAuthDAO();
+        System.out.println("authToken in joinGame: " + authToken);
         sad.authExists(authToken);
+        System.out.println("request: " + request.toString());
+
+        String playerColor = null;
+        if (!Objects.equals(request.playerColor(), null)) {
+            playerColor = request.playerColor().toUpperCase();
+        }
+        System.out.println("playerColor" + playerColor);
 
         //check valid color input
-        if(!Objects.equals(request.playerColor(), "WHITE") && !Objects.equals(request.playerColor(), "BLACK") && !Objects.equals(request.playerColor(), null)){
-            throw new BadRequestException("bad request");
+        if(!Objects.equals(playerColor, "WHITE") && !Objects.equals(playerColor, "BLACK") && !Objects.equals(playerColor, null)){
+            throw new BadRequestException("Input Valid Color");
         }
 
         //get and check game from id
         SQLGameDAO sgd = new SQLGameDAO();
+        System.out.println("pre getGameSQL");
         GameData gd = sgd.getGame(request.gameID());
+        System.out.println("post getGameSQL");
 
         //If joining as player
-        if(request.playerColor() != null) {
+        if(playerColor != null) {
             //check if color is already taken
-            if (Objects.equals(request.playerColor(), "WHITE")) {
+            if (Objects.equals(playerColor, "WHITE")) {
                 if (gd.whiteUsername() != null) {
+                    System.out.println("WHITE already taken");
                     throw new AlreadyTakenException("Color already taken");
                 }
             }
             else{
                 if (gd.blackUsername() != null) {
+                    System.out.println("BLACK already taken");
                     throw new AlreadyTakenException("Color already taken");
                 }
             }
-            sgd.updateGame(request.gameID(), request.playerColor(), sad.getUsername(authToken));
+            sgd.updateGame(request.gameID(), playerColor, sad.getUsername(authToken));
         }
         //If spectator then idempotent
+        System.out.println("end of join game");
     }
 }

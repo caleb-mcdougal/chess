@@ -65,6 +65,7 @@ public class ChessBoardPrinter {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
+
     private static void drawBoardWhite(PrintStream out) {
         drawHeaders(out, " W ");
         int counter = 0;

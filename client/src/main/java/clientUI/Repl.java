@@ -61,7 +61,7 @@ public class Repl {
                 case "list" -> list(params);
                 case "join" -> join(params);
                 case "observe" -> observe(params);
-//                case "quit" -> listPets();
+                case "logout" -> logout(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -183,8 +183,9 @@ public class Repl {
     public String observe (String... params) throws ResponseException {
         if (params.length == 1) {
             if (!signedIn){
-                throw new ResponseException(400, "Login to join a game");
+                throw new ResponseException(400, "Login to observe a game");
             }
+            signedIn = false;
             int gameID = getDBGameID(Integer.parseInt(params[0]));
             JoinGameRequest request = new JoinGameRequest(null, gameID);
             JoinGameResponse response = server.join(request);
@@ -196,6 +197,20 @@ public class Repl {
             return String.format("Observing game: %s", Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <ID>");
+    }
+
+    public String logout (String... params) throws ResponseException {
+        if (params.length == 0) {
+            if (!signedIn){
+                throw new ResponseException(400, "Already logged out");
+            }
+            LogoutResponse response = server.logout();
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
+            return "Logged out";
+        }
+        throw new ResponseException(400, "Expected no additional arguments");
     }
 
     public String help(){

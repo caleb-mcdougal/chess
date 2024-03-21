@@ -393,4 +393,62 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void logoutPositive() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+        try {
+            facade.logout();
+        } catch (ResponseException e) {
+            System.out.println("logout failed");
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void logoutNegative() {
+        var serverUrl = "http://localhost:8080";
+        clientUI.ServerFacade facade = new ServerFacade(serverUrl);
+        RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
+        RegisterResponse response = null;
+        try {
+            response = facade.register(request);
+        } catch (ResponseException e) {
+            System.out.println("Response exception in register positive");
+            Assertions.fail();
+        }
+        Assertions.assertFalse(
+                response.message() != null && response.message().toLowerCase(Locale.ROOT).contains("error"),
+                "Response gave an error message");
+
+        try {
+            facade.logout();
+        } catch (ResponseException e) {
+            System.out.println("logout failed");
+            Assertions.fail();
+        }
+
+        boolean caughtNotLoggedIn = false;
+        CreateGameRequest cgRequest = new CreateGameRequest("newGame");
+        try {
+            facade.create(cgRequest);
+        } catch (ResponseException e) {
+            caughtNotLoggedIn = true;
+        }
+
+        Assertions.assertTrue(caughtNotLoggedIn, "Allowed create game will not logged in");
+    }
+
 }

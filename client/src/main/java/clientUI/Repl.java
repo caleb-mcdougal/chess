@@ -62,6 +62,7 @@ public class Repl {
                 case "join" -> join(params);
                 case "observe" -> observe(params);
                 case "logout" -> logout(params);
+                case "quit" -> "quit";
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -71,12 +72,12 @@ public class Repl {
 
     public String login(String... params) throws ResponseException {
         if (params.length == 2) {
-            signedIn = true;
             LoginRequest request = new LoginRequest(params[0], params[1]);
             LoginResponse response = server.login(request);
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
+            signedIn = true;
             return String.format("You signed in as %s.", params[0]);
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");

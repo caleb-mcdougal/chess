@@ -113,10 +113,6 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
 
     @Override
     public void updateGame(int gameID, String color, String username) throws DataAccessException, BadRequestException{
-        System.out.println("in updateGame");
-        System.out.println(gameID);
-        System.out.println(color);
-        System.out.println(username);
         try (var conn = DatabaseManager.getConnection()) {
             GameData oldGame = getGame(gameID);
 

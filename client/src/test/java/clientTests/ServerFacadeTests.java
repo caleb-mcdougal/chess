@@ -329,14 +329,21 @@ public class ServerFacadeTests {
         GameData[] games = response.games();
         StringBuilder SB = new StringBuilder();
         for (int i = 0; i < games.length; i++) {
-            SB.append("GameID: ");
-            SB.append(games[i].gameID());
-            SB.append(", Name: ");
+            SB.append(i + 1).append(". ");
             SB.append(games[i].gameName());
-            SB.append(", White: ");
-            SB.append(games[i].whiteUsername());
-            SB.append(", Black: ");
-            SB.append(games[i].blackUsername());
+            boolean whiteName = false;
+            if (games[i].whiteUsername() != null){
+                SB.append(" WHITE: ");
+                SB.append(games[i].whiteUsername());
+                whiteName = true;
+            }
+            if (games[i].blackUsername() != null){
+                if (whiteName) {
+                    SB.append(",");
+                }
+                SB.append(" BLACK: ");
+                SB.append(games[i].blackUsername());
+            }
             SB.append("\n");
         }
         return SB.toString();
@@ -385,7 +392,5 @@ public class ServerFacadeTests {
             Assertions.fail();
         }
     }
-
-
 
 }

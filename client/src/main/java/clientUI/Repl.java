@@ -8,6 +8,7 @@ import java.util.Scanner;
 import model.GameData;
 import model.Request.*;
 import model.Response.*;
+import ui.ChessBoardPrinter;
 
 import static ui.EscapeSequences.*;
 
@@ -59,6 +60,7 @@ public class Repl {
                 case "create" -> create(params);
                 case "list" -> list(params);
                 case "join" -> join(params);
+                case "observe" -> observe(params);
 //                case "quit" -> listPets();
                 default -> help();
             };
@@ -128,12 +130,18 @@ public class Repl {
         for (int i = 0; i < games.length; i++) {
             SB.append(i + 1).append(". ");
             SB.append(games[i].gameName());
-            SB.append(", Join as: ");
-            if (games[i].whiteUsername() == null){
-                SB.append("WHITE ");
+            boolean whiteName = false;
+            if (games[i].whiteUsername() != null){
+                SB.append(" WHITE: ");
+                SB.append(games[i].whiteUsername());
+                whiteName = true;
             }
-            if (games[i].blackUsername() == null){
-                SB.append("BLACK");
+            if (games[i].blackUsername() != null){
+                if (whiteName) {
+                    SB.append(",");
+                }
+                SB.append(" BLACK: ");
+                SB.append(games[i].blackUsername());
             }
             SB.append("\n");
         }
@@ -151,6 +159,8 @@ public class Repl {
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
+            ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
+            boardPrinter.printBoards();
             return String.format("Joined game: %s", Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
@@ -168,6 +178,24 @@ public class Repl {
         }
         GameData[] games = response.games();
         return games[gameRow - 1].gameID();
+    }
+
+    public String observe (String... params) throws ResponseException {
+        if (params.length == 1) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to join a game");
+            }
+            int gameID = getDBGameID(Integer.parseInt(params[0]));
+            JoinGameRequest request = new JoinGameRequest(null, gameID);
+            JoinGameResponse response = server.join(request);
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
+            ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
+            boardPrinter.printBoards();
+            return String.format("Observing game: %s", Integer.parseInt(params[0]));
+        }
+        throw new ResponseException(400, "Expected: <ID>");
     }
 
     public String help(){

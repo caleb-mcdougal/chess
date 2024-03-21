@@ -24,12 +24,14 @@ import java.util.Locale;
 public class ServerFacadeTests {
 
     private static Server server;
+    private static String serverUrl;
 
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        int port = server.run(0);
+        serverUrl = "http://localhost:" + port;
         System.out.println("Started test HTTP server on " + port);
     }
 
@@ -52,7 +54,7 @@ public class ServerFacadeTests {
 
     @Test
     public void registerPositive() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -69,7 +71,7 @@ public class ServerFacadeTests {
 
     @Test
     public void registerNegative() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         try {
@@ -92,7 +94,7 @@ public class ServerFacadeTests {
 
     @Test
     public void loginPositive() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -119,7 +121,7 @@ public class ServerFacadeTests {
 
     @Test
     public void loginNegative() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -156,7 +158,7 @@ public class ServerFacadeTests {
 
     @Test
     public void createGamePositive() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -217,7 +219,7 @@ public class ServerFacadeTests {
 
     @Test
     public void createGameNoSignIn() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         CreateGameRequest cgr = new CreateGameRequest("newGame");
         boolean caughtNoSignIn = false;
@@ -231,7 +233,7 @@ public class ServerFacadeTests {
 
     @Test
     public void listGamePositive() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -278,7 +280,7 @@ public class ServerFacadeTests {
 
     @Test
     public void listGameNegative() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         boolean caughtNoSignIn = false;
         try {
@@ -291,7 +293,7 @@ public class ServerFacadeTests {
 
     @Test
     public void joinGamePositive() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -351,7 +353,7 @@ public class ServerFacadeTests {
 
     @Test
     public void joinGameNegative() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -395,7 +397,7 @@ public class ServerFacadeTests {
 
     @Test
     public void logoutPositive() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;
@@ -419,7 +421,7 @@ public class ServerFacadeTests {
 
     @Test
     public void logoutNegative() {
-        var serverUrl = "http://localhost:8080";
+//        var serverUrl = "http://localhost:8080";
         clientUI.ServerFacade facade = new ServerFacade(serverUrl);
         RegisterRequest request = new RegisterRequest("Caleb", "password", "email@email");
         RegisterResponse response = null;

@@ -16,6 +16,7 @@ public class Repl {
 
     private final ServerFacade server;
     private boolean signedIn;
+    private boolean inGame;
 
     public Repl(String serverURL) {
         server = new ServerFacade(serverURL);
@@ -155,6 +156,7 @@ public class Repl {
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
+            inGame = true;
             ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
             boardPrinter.printBoards();
             return String.format("Joined game: %s", Integer.parseInt(params[0]));
@@ -187,6 +189,7 @@ public class Repl {
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
+            inGame = true;
             ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
             boardPrinter.printBoards();
             return String.format("Observing game: %s", Integer.parseInt(params[0]));
@@ -200,6 +203,7 @@ public class Repl {
                 throw new ResponseException(400, "Already logged out");
             }
             signedIn = false;
+            inGame = false;
             LogoutResponse response = server.logout();
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
@@ -211,7 +215,12 @@ public class Repl {
 
     public String help(){
         if (signedIn){
-            return postloginMenu();
+            if (inGame){
+                return inGameMenu();
+            }
+            else {
+                return postloginMenu();
+            }
         }
         else{
             return preloginMenu();
@@ -235,6 +244,17 @@ public class Repl {
                 - observe <ID>
                 - logout
                 - quit
+                - help
+        """;
+    }
+
+    public String inGameMenu() {
+        return """
+                - redraw
+                - leave
+                - move
+                - resign
+                - highlight
                 - help
         """;
     }

@@ -17,39 +17,6 @@ public class ServerFacade {
         authToken = null;
     }
 
-//    public Pet addPet(Pet pet) throws Exceptions.ResponseException {
-//        var path = "/pet";
-//        return this.makeRequest("POST", path, pet, Pet.class);
-//    }
-//
-//    public void deletePet(int id) throws Exceptions.ResponseException {
-//        var path = String.format("/pet/%s", id);
-//        this.makeRequest("DELETE", path, null, null);
-//    }
-//
-//    public void deleteAllPets() throws Exceptions.ResponseException {
-//        var path = "/pet";
-//        this.makeRequest("DELETE", path, null, null);
-//    }
-//
-//    public Pet[] listPets() throws Exceptions.ResponseException {
-//        var path = "/pet";
-//        record listPetResponse(Pet[] pet) {
-//        }
-//        var response = this.makeRequest("GET", path, null, listPetResponse.class);
-//        return response.pet();
-//    }
-
-//    public CreateGameResponse addGame(CreateGameRequest request) throws ResponseException {
-//        var path = "/game";
-//        return this.makeRequest("POST", path, request, CreateGameResponse.class);
-//    }
-//
-//    public ClearResponse clear() throws ResponseException {
-//        var path = "/db";
-//        return this.makeRequest("DELETE", path, null, );
-//    }
-
     public RegisterResponse register(RegisterRequest request) throws ResponseException{
         var path = "/user";
         RegisterResponse response = this.makeRequest("POST", path, null, request, RegisterResponse.class);

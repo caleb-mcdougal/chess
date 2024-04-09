@@ -75,7 +75,7 @@ public class WSServer {
             error(username,"Invalid Game ID");
         }
 
-        connections.add(authToken, session);
+        connections.add(username, session);
 
         try{
             String message = username + " has joined the game as " + command.getPlayerColor();
@@ -84,7 +84,7 @@ public class WSServer {
 
             assert gameData != null;
             LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            connections.sendServerMessageAll(username, loadGame);
+            connections.sendMessageToRoot(username, loadGame);
         } catch (IOException e) {
             error(username,"Error sending WS message");
         }
@@ -93,7 +93,7 @@ public class WSServer {
     private void error(String username, String errorMessage){
         ServerMessageError serverMessageError = new ServerMessageError(ServerMessage.ServerMessageType.ERROR, errorMessage);
         try {
-            connections.sendErrorMessage(username, serverMessageError);
+            connections.sendMessageToRoot(username, serverMessageError);
         } catch (IOException e) {
             System.out.println("Error sending WS error notification");
             throw new RuntimeException(e);

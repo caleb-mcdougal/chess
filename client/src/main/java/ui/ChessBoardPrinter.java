@@ -130,7 +130,8 @@ public class ChessBoardPrinter {
 //        System.out.println("here printBoards");
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-//        out.print(ERASE_SCREEN);
+        out.print(ERASE_SCREEN);
+        out.println();
         if (teamColor.equalsIgnoreCase("BLACK")) {
             drawBoardBlack(out);
         }

@@ -2,7 +2,6 @@ package server.WebSocket;
 
 import org.eclipse.jetty.websocket.api.Session;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.serverMessages.ServerMessageError;
 //import webSocketMessages.Notification;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class ConnectionManager {
         }
     }
 
-    public void sendErrorMessage(String visitorName, ServerMessage serverMessage) throws IOException {
+    public void sendMessageToRoot(String visitorName, ServerMessage serverMessage) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {

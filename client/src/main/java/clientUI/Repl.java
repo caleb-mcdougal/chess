@@ -51,18 +51,21 @@ public class Repl implements ServerMessageObserver{
 
     private void displayNotification(String serverMessage){
         Notification notification = new Gson().fromJson(serverMessage, Notification.class);
-        System.out.print(BLUE + notification.getMessage());
+        System.out.println(BLUE + notification.getMessage());
+        printPrompt();
     }
 
     private void displayError(String serverMessage){
         ServerMessageError serverMessageError = new Gson().fromJson(serverMessage, ServerMessageError.class);
         System.out.println(serverMessageError.getErrorMessage());
+        printPrompt();
     }
 
     private void loadGame(String  serverMessage){
         LoadGame loadGame = new Gson().fromJson(serverMessage, LoadGame.class);
         ChessBoardPrinter boardPrinter = new ChessBoardPrinter(loadGame.getGame().getBoard());
         boardPrinter.printBoards(teamColor);
+        printPrompt();
     }
 
     //HTTP Below

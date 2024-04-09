@@ -14,6 +14,7 @@ import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.ServerMessageError;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.JoinObserver;
 import webSocketMessages.userCommands.JoinPlayer;
 
 import static ui.EscapeSequences.*;
@@ -235,12 +236,13 @@ public class Repl implements ServerMessageObserver{
             int gameID = getDBGameID(Integer.parseInt(params[0]));
             JoinGameRequest request = new JoinGameRequest(null, gameID);
             JoinGameResponse response = server.join(request);
+            JoinObserver joinObserver = new JoinObserver(server.getAuthToken(), gameID);
+            WSCommunicator.sendUserCommand(joinObserver);
+            teamColor = null;
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
             inGame = true;
-//            ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
-//            boardPrinter.printBoards();
             return String.format("Observing game: %s", Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <ID>");

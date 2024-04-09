@@ -130,16 +130,20 @@ public class ChessBoardPrinter {
 //        System.out.println("here printBoards");
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
+//        System.out.println("team color:");
+//        System.out.println(Objects.requireNonNullElse(teamColor, "null"));
+
         out.print(ERASE_SCREEN);
         out.println();
-        if (teamColor.equalsIgnoreCase("BLACK")) {
-            drawBoardBlack(out);
+        if (teamColor != null) {
+            if (teamColor.equalsIgnoreCase("BLACK")) {
+                drawBoardBlack(out);
+            }
         }
         else{
             drawBoardWhite(out);
         }
-
-
+        System.out.println("here");
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);

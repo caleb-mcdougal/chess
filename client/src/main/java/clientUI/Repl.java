@@ -9,27 +9,59 @@ import model.GameData;
 import model.Request.*;
 import model.Response.*;
 import ui.ChessBoardPrinter;
+import webSocketMessages.serverMessages.ServerMessageError;
+import webSocketMessages.serverMessages.Notification;
+import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.JoinPlayer;
 
 import static ui.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements ServerMessageObserver{
 
     private final ServerFacade server;
+    private final WebSocketCommunicator WSCommunicator;
     private boolean signedIn;
     private boolean inGame;
 
-    public Repl(String serverURL) {
+    public Repl(String serverURL) throws ResponseException {
         server = new ServerFacade(serverURL);
+        WSCommunicator = new WebSocketCommunicator(serverURL, this);
         signedIn = false;
     }
 
+    //Websocket Below
+
+    @Override
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(message);
+            case ERROR -> displayError(message);
+            case LOAD_GAME -> loadGame(message);
+        }
+    }
+
+    private void displayNotification(ServerMessage serverMessage){
+        Notification notification = (Notification) serverMessage;
+        System.out.println(notification.getMessage());
+    }
+
+    private void displayError(ServerMessage serverMessage){
+        ServerMessageError serverMessageError = (ServerMessageError) serverMessage;
+        System.out.println(serverMessageError.getErrorMessage());
+    }
+
+    private void loadGame(ServerMessage serverMessage){
+
+    }
+
+    //HTTP Below
 
     public void run() {
         if (!signedIn) {
             System.out.print(this.preloginMenu());
         }
         else {
-            System.out.print(this.postloginMenu());
+            System.out.print(this.postLoginMenu());
         }
 
         Scanner scanner = new Scanner(System.in);
@@ -86,12 +118,12 @@ public class Repl {
 
     public String register (String... params) throws ResponseException {
         if (params.length == 3) {
-            signedIn = true;
             RegisterRequest request = new RegisterRequest(params[0], params[1], params[2]);
             RegisterResponse response = server.register(request);
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
+            signedIn = true;
             return String.format("You registered as %s.", params[0]);
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
@@ -153,6 +185,8 @@ public class Repl {
             int gameID = getDBGameID(Integer.parseInt(params[0]));
             JoinGameRequest request = new JoinGameRequest(params[1], gameID);
             JoinGameResponse response = server.join(request);
+            JoinPlayer joinPlayer = new JoinPlayer(server.getAuthToken(), gameID, params[1]);
+            WSCommunicator.sendUserCommand(joinPlayer);
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
@@ -213,13 +247,14 @@ public class Repl {
         throw new ResponseException(400, "Expected no additional arguments");
     }
 
+
     public String help(){
         if (signedIn){
             if (inGame){
                 return inGameMenu();
             }
             else {
-                return postloginMenu();
+                return postLoginMenu();
             }
         }
         else{
@@ -236,7 +271,7 @@ public class Repl {
         """;
     }
 
-    public String postloginMenu() {
+    public String postLoginMenu() {
         return """
                 - create <NAME>
                 - list
@@ -261,7 +296,12 @@ public class Repl {
 
     private void printPrompt() {
         if(signedIn){
-            System.out.print("\n" + RESET + "[LOGGED_IN]");
+            if(inGame){
+                System.out.print("\n" + RESET + "[IN_GAME]");
+            }
+            else {
+                System.out.print("\n" + RESET + "[LOGGED_IN]");
+            }
         }
         else{
             System.out.print("\n" + RESET + "[LOGGED_OUT]");

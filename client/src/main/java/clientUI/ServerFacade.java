@@ -104,4 +104,8 @@ public class ServerFacade {
         return status / 100 == 2;
     }
 
+    public String getAuthToken(){
+        return authToken;
+    }
+
 }

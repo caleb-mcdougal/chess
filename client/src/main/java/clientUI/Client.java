@@ -1,9 +1,11 @@
 package clientUI;
 
+import Exceptions.ResponseException;
 import chess.*;
-//import webSocketMessages.serverMessages.ServerMessage;
 
-public class Client {//implements ServerMessageObserver{
+
+public class Client { // this should be in websocket communicator
+
     public static void main(String[] args) {
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
@@ -13,16 +15,13 @@ public class Client {//implements ServerMessageObserver{
             serverUrl = args[0];
         }
 
-        new Repl(serverUrl).run();
+        //Not sure what to do with this try catch
+        try {
+            new Repl(serverUrl).run();
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-//    @Override
-//    public void notify(ServerMessage message) {
-//        switch (message.getServerMessageType()) {
-//            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
-//            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-//            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
-//        }
-//    }
 
 }

@@ -1,11 +1,9 @@
 package webSocketMessages.serverMessages;
 
-import chess.ChessGame;
-
-public class Error extends ServerMessage{
+public class ServerMessageError extends ServerMessage{
 
     private String errorMessage;
-    public Error(ServerMessageType type, String errorMessage) {
+    public ServerMessageError(ServerMessageType type, String errorMessage) {
         super(type);
         this.errorMessage = errorMessage;
     }

@@ -5,21 +5,30 @@ import chess.ChessGame;
 public class JoinPlayer extends UserGameCommand{
 
     private int gameID;
-    private ChessGame.TeamColor playerColor;
-    private CommandType commandType;
+//    private ChessGame.TeamColor playerColor;
+    private String playerColor;
+//    private CommandType commandType;
 
-    public JoinPlayer(String authToken, int gameID, ChessGame.TeamColor playerColor) {
+    public JoinPlayer(String authToken, int gameID, String color) {
         super(authToken);
         this.gameID = gameID;
-        this.playerColor = playerColor;
-        commandType = CommandType.JOIN_PLAYER;
+//        if(color.equalsIgnoreCase("WHITE")){
+//            this.playerColor = ChessGame.TeamColor.WHITE;
+//        } else if (color.equalsIgnoreCase("BLACK")) {
+//            this.playerColor = ChessGame.TeamColor.BLACK;
+//        }
+//        else{
+//            throw new RuntimeException("invalid color in WS join player");
+//        }
+        this.playerColor = color;
+//        this.commandType = CommandType.JOIN_PLAYER;
     }
 
     public int getGameID() {
         return gameID;
     }
 
-    public ChessGame.TeamColor getPlayerColor() {
+    public String getPlayerColor() {
         return playerColor;
     }
 

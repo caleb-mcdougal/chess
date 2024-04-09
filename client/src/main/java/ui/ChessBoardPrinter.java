@@ -1,5 +1,8 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessPiece;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -53,6 +56,29 @@ public class ChessBoardPrinter {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
+//    public ChessBoardPrinter(ChessBoard BOARD){
+//        String[][] board = BoardToStringList(BOARD);
+//        this.BOARD = board;
+//    }
+
+    private String[][] BoardToStringList(ChessBoard board){
+        ChessPiece[][] pieces = board.getBoard();
+        String[][] strings = new String[8][8];
+        for (int i = 0; i < pieces.length; i++) {
+            for (int j = 0; j < pieces.length; j++) {
+                switch (pieces[i][j].getPieceType()){
+                    case ROOK -> strings[i][j] = " R ";
+//                    case ROOK -> strings[i][j] = " R ";
+//                    case ROOK -> strings[i][j] = " R ";
+//                    case ROOK -> strings[i][j] = " R ";
+//                    case ROOK -> strings[i][j] = " R ";
+//                    case ROOK -> strings[i][j] = " R ";
+                }
+            }
+        }
+        return strings;
+    }
+
     public void printBoards() {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
@@ -63,6 +89,10 @@ public class ChessBoardPrinter {
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
+    }
+
+    public void printHighlight() {
+
     }
 
 

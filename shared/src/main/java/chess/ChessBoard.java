@@ -112,4 +112,8 @@ public class ChessBoard {
                 "board=" + Arrays.toString(board) +
                 '}';
     }
+
+    public ChessPiece[][] getBoard() {
+        return board;
+    }
 }

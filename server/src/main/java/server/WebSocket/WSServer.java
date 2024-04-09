@@ -1,5 +1,4 @@
 package server.WebSocket;
-import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
@@ -10,7 +9,9 @@ import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import spark.Spark;
 import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.serverMessages.ServerMessageError;
 import webSocketMessages.userCommands.JoinPlayer;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -53,17 +54,46 @@ public class WSServer {
     }
 
     private void join(Session session, String authToken, String msg) {
+        String username = null;
         try {
-            connections.add(authToken, session);
             SQLAuthDAO sad = new SQLAuthDAO();
-            String username = sad.getUsername(authToken);
-            JoinPlayer command = new Gson().fromJson(msg, JoinPlayer.class);
-            String notification = username + " has joined the game";
-            GameData gameData = new SQLGameDAO().getGame(command.getGameID());
+            username = sad.getUsername(authToken);
+
+        }
+        catch (DataAccessException e) {
+            error(username,"Invalid AuthToken");
+        }
+
+        JoinPlayer command = new Gson().fromJson(msg, JoinPlayer.class);
+        GameData gameData = null;
+        try {
+            gameData = new SQLGameDAO().getGame(command.getGameID());
+        } catch (BadRequestException | DataAccessException e) {
+            error(username,"Invalid Game ID");
+        }
+
+        connections.add(authToken, session);
+
+        try{
+            String message = username + " has joined the game as " + command.getPlayerColor();
+            Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.sendServerMessageAll(username,notification);
+
+            assert gameData != null;
             LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            connections.sendServerMessage(username, loadGame);
-        } catch (BadRequestException | IOException | DataAccessException e) {
-            // TODO This should call ERROR
+            connections.sendServerMessageAll(username, loadGame);
+        } catch (IOException e) {
+            error(username,"Error sending WS message");
+        }
+    }
+
+    private void error(String username, String errorMessage){
+        ServerMessageError serverMessageError = new ServerMessageError(ServerMessage.ServerMessageType.ERROR, errorMessage);
+        try {
+            connections.sendErrorMessage(username, serverMessageError);
+        } catch (IOException e) {
+            System.out.println("Error sending WS error notification");
+            throw new RuntimeException(e);
         }
     }
 }

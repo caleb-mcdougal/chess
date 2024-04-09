@@ -1,36 +1,59 @@
-//package clientUI;
-//
-//import webSocketMessages.serverMessages.*;
-//import com.google.gson.Gson;
-//import javax.websocket.*;
-//import java.net.URI;
-//
-//public class WebSocketCommunicator extends Endpoint {
-//    private Session session;
-//
-//    public WebSocketCommunicator() throws Exception {
+package clientUI;
+
+import Exceptions.ResponseException;
+import webSocketMessages.serverMessages.*;
+import com.google.gson.Gson;
+import webSocketMessages.userCommands.UserGameCommand;
+
+import javax.websocket.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+public class WebSocketCommunicator extends Endpoint {
+    private Session session;
+    private Repl repl;
+
+    public WebSocketCommunicator(String url, Repl repl) throws ResponseException {
 //        URI uri = new URI("ws://localhost:8080/connect");
 //        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 //        this.session = container.connectToServer(this, uri);
-//
-//        this.session.addMessageHandler(new MessageHandler.Whole<String>() {
-//            public void onMessage(String message) {
-//                System.out.println(message);
-//            }
-//        });
-//    }
-//
-//    public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
-//    public void onOpen(Session session, EndpointConfig endpointConfig) {}
-//
-//    public void onMessage(String message) {
-//        try {
-//            ServerMessage message =
-//                    gson.fromJson(message, ServerMessage.class);
-//            observer.notify(message);
-//        } catch(Exception ex) {
-//            observer.notify(new ErrorMessage(ex.getMessage()));
-//        }
-//    }
-//
-//}
+        try {
+            url = url.replace("http", "ws");
+            URI socketURI = new URI(url + "/connect");
+
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            this.session = container.connectToServer(this, socketURI);
+            this.repl = repl;
+
+
+            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+
+                @Override
+                public void onMessage(String message) {
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    repl.notify(serverMessage);
+                }
+
+            });
+        }
+        catch (DeploymentException | IOException | URISyntaxException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void sendUserCommand(UserGameCommand userGameCommand){
+        String ugc = new Gson().toJson(userGameCommand);
+        try {
+            send(ugc);
+        } catch (Exception e) {
+            throw new RuntimeException("Error sending UserGameCommand");
+        }
+    }
+
+
+    public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
+    public void onOpen(Session session, EndpointConfig endpointConfig) {}
+
+
+}

@@ -33,7 +33,7 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
     }
 
     @Override
-    public int createGame(String name) throws  DataAccessException{
+    public int createGame(String name) throws DataAccessException{
         ChessGame newGame = new ChessGame();
         var json = new Gson().toJson(newGame);
         try (var conn = DatabaseManager.getConnection()) {
@@ -45,7 +45,7 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
 
                 stmt.executeUpdate();
                 ResultSet rs = stmt.getGeneratedKeys();
-                var gameID = 0;
+                int gameID = 0;
                 if (rs.next()) {
                     gameID = rs.getInt(1);
                 }

@@ -31,8 +31,8 @@ public class WebSocketCommunicator extends Endpoint {
 
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                    repl.notify(serverMessage);
+//                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    repl.notify(message);
                 }
 
             });
@@ -52,7 +52,8 @@ public class WebSocketCommunicator extends Endpoint {
     }
 
 
-    public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
+    public void send(String msg) throws Exception {
+        this.session.getBasicRemote().sendText(msg);}
     public void onOpen(Session session, EndpointConfig endpointConfig) {}
 
 

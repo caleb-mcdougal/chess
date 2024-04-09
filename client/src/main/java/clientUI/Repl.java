@@ -5,10 +5,12 @@ import Exceptions.ResponseException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import com.google.gson.Gson;
 import model.GameData;
 import model.Request.*;
 import model.Response.*;
 import ui.ChessBoardPrinter;
+import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.ServerMessageError;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -23,35 +25,44 @@ public class Repl implements ServerMessageObserver{
     private boolean signedIn;
     private boolean inGame;
 
+    private String teamColor;
+
     public Repl(String serverURL) throws ResponseException {
         server = new ServerFacade(serverURL);
         WSCommunicator = new WebSocketCommunicator(serverURL, this);
         signedIn = false;
+        teamColor = null;
     }
 
     //Websocket Below
 
     @Override
-    public void notify(ServerMessage message) {
-        switch (message.getServerMessageType()) {
+    public void notify(String message) {
+//        System.out.println("in notify");
+//        System.out.println(message);
+        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+//        System.out.println("here");
+        switch (serverMessage.getServerMessageType()) {
             case NOTIFICATION -> displayNotification(message);
             case ERROR -> displayError(message);
-            case LOAD_GAME -> loadGame(message);
+            case LOAD_GAME -> loadGame( message);
         }
     }
 
-    private void displayNotification(ServerMessage serverMessage){
-        Notification notification = (Notification) serverMessage;
-        System.out.println(notification.getMessage());
+    private void displayNotification(String serverMessage){
+        Notification notification = new Gson().fromJson(serverMessage, Notification.class);
+        System.out.print(BLUE + notification.getMessage());
     }
 
-    private void displayError(ServerMessage serverMessage){
-        ServerMessageError serverMessageError = (ServerMessageError) serverMessage;
+    private void displayError(String serverMessage){
+        ServerMessageError serverMessageError = new Gson().fromJson(serverMessage, ServerMessageError.class);
         System.out.println(serverMessageError.getErrorMessage());
     }
 
-    private void loadGame(ServerMessage serverMessage){
-
+    private void loadGame(String  serverMessage){
+        LoadGame loadGame = new Gson().fromJson(serverMessage, LoadGame.class);
+        ChessBoardPrinter boardPrinter = new ChessBoardPrinter(loadGame.getGame().getBoard());
+        boardPrinter.printBoards(teamColor);
     }
 
     //HTTP Below
@@ -187,16 +198,17 @@ public class Repl implements ServerMessageObserver{
             JoinGameResponse response = server.join(request);
             JoinPlayer joinPlayer = new JoinPlayer(server.getAuthToken(), gameID, params[1]);
             WSCommunicator.sendUserCommand(joinPlayer);
+            teamColor = params[1];
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
             inGame = true;
-            ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
-            boardPrinter.printBoards();
             return String.format("Joined game: %s", Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
     }
+
+
 
     private int getDBGameID(int gameRow) throws ResponseException {
         ListGamesResponse response = null;
@@ -224,8 +236,8 @@ public class Repl implements ServerMessageObserver{
                 throw new ResponseException(400, response.message());
             }
             inGame = true;
-            ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
-            boardPrinter.printBoards();
+//            ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
+//            boardPrinter.printBoards();
             return String.format("Observing game: %s", Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <ID>");

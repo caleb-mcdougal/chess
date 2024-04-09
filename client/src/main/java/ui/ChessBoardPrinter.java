@@ -18,25 +18,25 @@ public class ChessBoardPrinter {
     private static final int SQUARE_SIZE_IN_CHARS = 1;
     private static final int LINE_WIDTH_IN_CHARS = 1;
 
-    private static String[][] BOARD =
-            {{ " R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R " },
-             { " P ", " P ", " P ", " P ", " P ", " P ", " P ", " P "},
-                    { null, null, null, null, null, null, null, null },
-                    { null, null, null, null, null, null, null, null },
-                    { null, null, null, null, null, null, null, null },
-                    { null, null, null, null, null, null, null, null },
-                    { " P ", " P ", " P ", " P ", " P ", " P ", " P ", " P "},
-                    { " R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R " }};
+    private String[][] BOARD;// =
+//            {{ " R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R " },
+//             { " P ", " P ", " P ", " P ", " P ", " P ", " P ", " P "},
+//                    { null, null, null, null, null, null, null, null },
+//                    { null, null, null, null, null, null, null, null },
+//                    { null, null, null, null, null, null, null, null },
+//                    { null, null, null, null, null, null, null, null },
+//                    { " P ", " P ", " P ", " P ", " P ", " P ", " P ", " P "},
+//                    { " R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R " }};
 
-    private static String[][] PIECE_COLORS =
-            {{ " B ", " B ", " B ", " B ", " B ", " B ", " B ", " B "},
-                    { " B ", " B ", " B ", " B ", " B ", " B ", " B ", " B "},
-                    { null, null, null, null, null, null, null, null },
-                    { null, null, null, null, null, null, null, null },
-                    { null, null, null, null, null, null, null, null },
-                    { null, null, null, null, null, null, null, null },
-                    { " W ", " W ", " W ", " W ", " W ", " W ", " W ", " W "},
-                    { " W ", " W ", " W ", " W ", " W ", " W ", " W ", " W "}};
+    private String[][] PIECE_COLORS;// =
+//            {{ " B ", " B ", " B ", " B ", " B ", " B ", " B ", " B "},
+//                    { " B ", " B ", " B ", " B ", " B ", " B ", " B ", " B "},
+//                    { null, null, null, null, null, null, null, null },
+//                    { null, null, null, null, null, null, null, null },
+//                    { null, null, null, null, null, null, null, null },
+//                    { null, null, null, null, null, null, null, null },
+//                    { " W ", " W ", " W ", " W ", " W ", " W ", " W ", " W "},
+//                    { " W ", " W ", " W ", " W ", " W ", " W ", " W ", " W "}};
 
 
     private static final String[] EDGE = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 " };
@@ -44,48 +44,101 @@ public class ChessBoardPrinter {
     private static final String[] HEADER = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h " };
     private static final String EMPTY = "   ";
 
-    public static void main(String[] args) {
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-
-        out.print(ERASE_SCREEN);
-
-        drawBoardWhite(out);
-        drawBoardBlack(out);
-
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
-    }
-
-//    public ChessBoardPrinter(ChessBoard BOARD){
-//        String[][] board = BoardToStringList(BOARD);
-//        this.BOARD = board;
+    //Confused about static signature required on methods if i change this main to be static
+//    public void main(String[] args) {
+//        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+//
+//        out.print(ERASE_SCREEN);
+//
+//        drawBoardWhite(out);
+//        drawBoardBlack(out);
+//
+//        out.print(SET_BG_COLOR_BLACK);
+//        out.print(SET_TEXT_COLOR_WHITE);
 //    }
 
-    private String[][] BoardToStringList(ChessBoard board){
+    public ChessBoardPrinter(ChessBoard BOARD){
+//        System.out.println(BOARD.toString());
+        this.BOARD = BoardToStringListPieces(BOARD);
+        this.PIECE_COLORS = BoardToStringListColors(BOARD);
+    }
+
+    private String[][] BoardToStringListPieces(ChessBoard board){
+//        System.out.println("herebts");
+
         ChessPiece[][] pieces = board.getBoard();
-        String[][] strings = new String[8][8];
+//        for (int i = 0; i < 8; i++) {
+//            for (int j = 0; j < 8; j++) {
+//                if(pieces[i][j] != null) {
+//                    System.out.println(pieces[i][j].toString());
+//                }
+//                else{
+//                    System.out.println("null");
+//                }
+//            }
+//        }
+//        System.out.println("herebts");
+        String[][] pieceType = new String[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+//                System.out.println(pieces[i][j].getPieceType().toString());
+//                System.out.println("herebtsloop");
+                if (pieces[i][j] != null) {
+                    switch (pieces[i][j].getPieceType()) {
+                        case ROOK -> pieceType[i][j] = " R ";
+                        case KNIGHT -> pieceType[i][j] = " N ";
+                        case BISHOP -> pieceType[i][j] = " B ";
+                        case QUEEN -> pieceType[i][j] = " Q ";
+                        case KING -> pieceType[i][j] = " K ";
+                        case PAWN -> pieceType[i][j] = " P ";
+                        default -> pieceType[i][j] = null;
+                    }
+                }
+                else{
+                    pieceType[i][j] = null;
+                }
+//                System.out.println("herebtsloop");
+            }
+        }
+//        System.out.println("herebts end");
+        return pieceType;
+    }
+
+    private String[][] BoardToStringListColors(ChessBoard board){
+//        System.out.println("here colors");
+        ChessPiece[][] pieces = board.getBoard();
+        String[][] pieceColor = new String[8][8];
         for (int i = 0; i < pieces.length; i++) {
             for (int j = 0; j < pieces.length; j++) {
-                switch (pieces[i][j].getPieceType()){
-                    case ROOK -> strings[i][j] = " R ";
-//                    case ROOK -> strings[i][j] = " R ";
-//                    case ROOK -> strings[i][j] = " R ";
-//                    case ROOK -> strings[i][j] = " R ";
-//                    case ROOK -> strings[i][j] = " R ";
-//                    case ROOK -> strings[i][j] = " R ";
+                if (pieces[i][j] != null) {
+                    switch (pieces[i][j].getTeamColor()) {
+                        case BLACK -> pieceColor[i][j] = " B ";
+                        case WHITE -> pieceColor[i][j] = " W ";
+                        default -> pieceColor[i][j] = null;
+                    }
+                }
+                else{
+                    pieceColor[i][j] = null;
                 }
             }
         }
-        return strings;
+        return pieceColor;
     }
 
-    public void printBoards() {
+    public void printBoards(String teamColor) {
+//        System.out.println("here printBoards");
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
 //        out.print(ERASE_SCREEN);
+        if (teamColor.equalsIgnoreCase("BLACK")) {
+            drawBoardBlack(out);
+        }
+        else{
+            drawBoardWhite(out);
+        }
 
-        drawBoardWhite(out);
-        drawBoardBlack(out);
+
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
@@ -96,7 +149,7 @@ public class ChessBoardPrinter {
     }
 
 
-    private static void drawBoardWhite(PrintStream out) {
+    private void drawBoardWhite(PrintStream out) {
         drawHeaders(out, " W ");
         int counter = 0;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
@@ -106,7 +159,7 @@ public class ChessBoardPrinter {
         drawHeaders(out, " W ");
     }
 
-    private static void drawBoardBlack(PrintStream out) {
+    private void drawBoardBlack(PrintStream out) {
         drawHeaders(out, " B ");
         int counter = 1;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {

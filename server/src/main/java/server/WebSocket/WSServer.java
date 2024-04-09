@@ -1,4 +1,5 @@
 package server.WebSocket;
+import chess.ChessBoard;
 import com.google.gson.Gson;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
@@ -33,7 +34,7 @@ public class WSServer {
     public void onConnect(Session session) {
         System.out.println("A client has connected");
         //Create a manager class to keep track of session
-        this.connections.add("test", session);
+//        this.connections.add("test", session);
     }
 
     @OnWebSocketMessage
@@ -68,6 +69,8 @@ public class WSServer {
         GameData gameData = null;
         try {
             gameData = new SQLGameDAO().getGame(command.getGameID());
+            ChessBoard board = gameData.game().getBoard();
+            System.out.println(board.toString());
         } catch (BadRequestException | DataAccessException e) {
             error(username,"Invalid Game ID");
         }

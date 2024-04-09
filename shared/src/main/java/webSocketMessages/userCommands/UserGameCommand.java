@@ -14,6 +14,14 @@ public class UserGameCommand {
         this.authToken = authToken;
     }
 
+    @Override
+    public String toString() {
+        return "UserGameCommand{" +
+                "commandType=" + commandType +
+                ", authToken='" + authToken + '\'' +
+                '}';
+    }
+
     public enum CommandType {
         JOIN_PLAYER,
         JOIN_OBSERVER,

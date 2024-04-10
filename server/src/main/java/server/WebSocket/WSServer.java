@@ -13,10 +13,7 @@ import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.serverMessages.ServerMessageError;
-import webSocketMessages.userCommands.JoinObserver;
-import webSocketMessages.userCommands.JoinPlayer;
-import webSocketMessages.userCommands.MakeMove;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
 
@@ -50,7 +47,7 @@ public class WSServer {
             case JOIN_PLAYER -> join(session, command.getAuthString(), msg);
             case JOIN_OBSERVER -> observe(session, command.getAuthString(), msg);
             case MAKE_MOVE -> move(command.getAuthString(), msg);
-//                case LEAVE -> leave(conn, msg);
+            case LEAVE -> leave(command.getAuthString(), msg);
 //                case RESIGN -> resign(conn, msg);
         }
 
@@ -213,6 +210,27 @@ public class WSServer {
             case PAWN -> pieceString = "PAWN";
         }
         return username + " moved their " + pieceString + " from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
+    }
+
+    private void leave(String authToken, String msg) {
+        String username = null;
+        try {
+            username = getUsername(authToken);
+        } catch (BadRequestException e) {
+            throw new RuntimeException(e);
+        }
+
+        Leave command = new Gson().fromJson(msg, Leave.class);
+
+        connections.remove(username, command.getGameID());
+
+        try{
+            String message = username + " has left the game";
+            Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.sendServerMessageAll(username,notification, command.getGameID());
+        } catch (IOException e) {
+            error(username,"Error sending WS message", command.getGameID());
+        }
     }
 
     private String getUsername(String authToken) throws BadRequestException {

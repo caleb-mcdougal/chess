@@ -117,6 +117,7 @@ public class Repl implements ServerMessageObserver{
                 case "logout" -> logout(params);
                 case "move" -> move(params);
                 case "leave" -> leave(params);
+                case "resign" -> resign(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -309,23 +310,6 @@ public class Repl implements ServerMessageObserver{
         throw new ResponseException(400, "Expected <a-h><1-8> for both start and end positions");
     }
 
-    public String leave (String... params) throws ResponseException {
-        if (params.length == 0) {
-            if (!signedIn){
-                throw new ResponseException(400, "Login to join a game");
-            }
-            if (!inGame){
-                throw new ResponseException(400, "You are not in a game");
-            }
-//            Leave leave =
-            ListGamesResponse response = server.list();
-            if (response.message() != null){
-                throw new ResponseException(400, response.message());
-            }
-            return listToString(response);
-        }
-        throw new ResponseException(400, "Expected no additional arguments");
-    }
 
     private ChessMove inputToMove(String start, String end) throws ResponseException {
 //        System.out.println("before loop");
@@ -367,6 +351,38 @@ public class Repl implements ServerMessageObserver{
             }
         }
         throw new ResponseException(400, "Not a valid Move");
+    }
+
+    public String leave (String... params) throws ResponseException {
+        if (params.length == 0) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to join a game");
+            }
+            if (!inGame){
+                throw new ResponseException(400, "You are not in a game");
+            }
+            Leave leave = new Leave(server.getAuthToken(), gameID);
+            WSCommunicator.sendUserCommand(leave);
+            inGame = false;
+            return "You left the game";
+        }
+        throw new ResponseException(400, "Expected no additional arguments");
+    }
+
+
+    public String resign (String... params) throws ResponseException {
+        if (params.length == 0) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to join a game");
+            }
+            if (!inGame){
+                throw new ResponseException(400, "You are not in a game");
+            }
+            Resign resign = new Resign(server.getAuthToken(), gameID);
+            WSCommunicator.sendUserCommand(resign);
+            return "You lost";
+        }
+        throw new ResponseException(400, "Expected no additional arguments");
     }
 
 

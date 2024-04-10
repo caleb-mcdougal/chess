@@ -27,8 +27,9 @@ public class ConnectionManager {
         }
     }
 
-    public void remove(String visitorName) {
-        connections.remove(visitorName);
+    public void remove(String visitorName, Integer gameID) {
+        ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
+        gameMap.remove(visitorName);
     }
 
     public void sendServerMessageAll(String excludeVisitorName, ServerMessage serverMessage, Integer gameID) throws IOException {

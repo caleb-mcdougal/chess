@@ -65,12 +65,15 @@ public class ChessGame {
      * startPosition
      */
     public HashSet<ChessMove> validMoves(ChessPosition startPosition) {
-        //System.out.println("in validMoves");
+//        System.out.println("in validMoves");
         if(board.getPiece(startPosition) == null){
             return null;
         }
+//        System.out.println("in validMoves");
         ChessPiece piece = board.getPiece(startPosition);
+//        System.out.println("in validMoves");
         HashSet<ChessMove> moveSet = piece.pieceMoves(board,startPosition);
+//        System.out.println("in validMoves");
         ChessBoard ogBoard = board.deepCopy();
         HashSet<ChessMove> invalidMoves = new HashSet<>();
         for (ChessMove move : moveSet){
@@ -139,7 +142,6 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        System.out.println("in isInCheck");
         //Find the king position
         ChessPosition kingPos = findKing(teamColor);
 

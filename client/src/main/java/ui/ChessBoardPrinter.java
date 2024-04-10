@@ -131,19 +131,17 @@ public class ChessBoardPrinter {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
 //        System.out.println("team color:");
+//        System.out.println(teamColor);
 //        System.out.println(Objects.requireNonNullElse(teamColor, "null"));
 
         out.print(ERASE_SCREEN);
         out.println();
-        if (teamColor != null) {
-            if (teamColor.equalsIgnoreCase("BLACK")) {
-                drawBoardBlack(out);
-            }
-        }
-        else{
+        if (teamColor == null || teamColor.equalsIgnoreCase("WHITE")) {
             drawBoardWhite(out);
         }
-        System.out.println("here");
+        else{
+            drawBoardBlack(out);
+        }
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
@@ -158,7 +156,7 @@ public class ChessBoardPrinter {
         drawHeaders(out, " W ");
         int counter = 0;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
-            drawRow(out, EDGE[7-i], BOARD[7-i], PIECE_COLORS[7-i], counter);
+            drawRow(out, EDGE[7-i], BOARD[7-i], PIECE_COLORS[7-i], counter, "WHITE");
             counter += 1;
         }
         drawHeaders(out, " W ");
@@ -168,7 +166,7 @@ public class ChessBoardPrinter {
         drawHeaders(out, " B ");
         int counter = 1;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
-            drawRow(out, EDGE[i], BOARD[i], PIECE_COLORS[i], counter);
+            drawRow(out, EDGE[i], BOARD[i], PIECE_COLORS[i], counter, "BLACK");
             counter += 1;
         }
         drawHeaders(out, " B ");
@@ -200,18 +198,31 @@ public class ChessBoardPrinter {
         setBlack(out);
     }
 
-    private static void drawRow(PrintStream out, String rowNum, String[] boardRow, String[] colorRow, int counter) {
+    private static void drawRow(PrintStream out, String rowNum, String[] boardRow, String[] colorRow, int counter, String color) {
         drawEdge(out, rowNum);
-        for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
-            if (counter % 2 == 0){
-                out.print(SET_BG_COLOR_WHITE);
-                printPiece(out, boardRow[i], colorRow[i]);
+        if (Objects.equals(color, "WHITE")) {
+            for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
+                if (counter % 2 == 0) {
+                    out.print(SET_BG_COLOR_WHITE);
+                    printPiece(out, boardRow[i], colorRow[i]);
+                } else {
+                    out.print(SET_BG_COLOR_BLACK);
+                    printPiece(out, boardRow[i], colorRow[i]);
+                }
+                counter += 1;
             }
-            else{
-                out.print(SET_BG_COLOR_BLACK);
-                printPiece(out, boardRow[i], colorRow[i]);
+        }
+        else{
+            for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
+                if (counter % 2 == 0) {
+                    out.print(SET_BG_COLOR_WHITE);
+                    printPiece(out, boardRow[7-i], colorRow[7-i]);
+                } else {
+                    out.print(SET_BG_COLOR_BLACK);
+                    printPiece(out, boardRow[7-i], colorRow[7-i]);
+                }
+                counter += 1;
             }
-            counter += 1;
         }
         drawEdge(out, rowNum);
         setBlack(out);

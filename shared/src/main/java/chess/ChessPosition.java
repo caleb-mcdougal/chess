@@ -21,7 +21,6 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        //throw new RuntimeException("Not implemented");
         return row;
     }
 
@@ -30,16 +29,13 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        //throw new RuntimeException("Not implemented");
         return col;
     }
 
     @Override
     public String toString() {
-        return "ChessPosition{" +
-                "row=" + row +
-                ", col=" + col +
-                '}';
+        String[] colList = {"a","b","c","d","e","f","g","h"};
+        return  colList[col-1] + row;
     }
 
     @Override

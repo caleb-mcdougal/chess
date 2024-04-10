@@ -128,11 +128,27 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
                 stmt.setInt(3,gameID);
 
                 if(stmt.executeUpdate() != 1) {
-                    throw new DataAccessException(500, "Create Game Error");
+                    throw new DataAccessException(500, "Update Game Error");
                 }
             }
         } catch (SQLException|DataAccessException e) {
-            throw new DataAccessException(500, "Create Game Error");
+            throw new DataAccessException(500, "Update Game Error");
+        }
+    }
+
+    public void updateGameBoard(int gameID, ChessGame game) throws DataAccessException, BadRequestException{
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var stmt = conn.prepareStatement("UPDATE game set game = ? WHERE gameID = ?")) {
+                var json = new Gson().toJson(game);
+                stmt.setString(1, json);
+                stmt.setInt(2,gameID);
+
+                if(stmt.executeUpdate() != 1) {
+                    throw new DataAccessException(500, "Update Game Board Error");
+                }
+            }
+        } catch (SQLException|DataAccessException e) {
+            throw new DataAccessException(500, "Create Game Board Error");
         }
     }
 

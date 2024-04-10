@@ -110,7 +110,6 @@ public class WSServer {
 
     private void move(Session session, String authToken, String msg) {
         String username = getUsername(authToken);
-        System.out.println("here");
         MakeMove command = new Gson().fromJson(msg, MakeMove.class);
         GameData gameData = null;
         SQLGameDAO sgd = new SQLGameDAO();
@@ -120,7 +119,6 @@ public class WSServer {
             error(username,"Invalid Game ID");
             return;
         }
-        System.out.println("here");
         assert gameData != null;
         try {
             gameData.game().makeMove(command.getMove());
@@ -128,38 +126,67 @@ public class WSServer {
             error(username, "Not your turn");
             return;
         }
-        System.out.println("here");
         try {
             sgd.updateGameBoard(command.getGameID(), gameData.game());
         } catch (DataAccessException | BadRequestException e) {
             System.out.println("Error accessing DB for make move");
             throw new RuntimeException(e);
         }
-        System.out.println("here");
 
         try{
             String message = getMoveMessage(username, command.getMove(), gameData);
-            System.out.println("here");
             Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
             LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());//This is pulling the old board from the DB need to update DB first
 
             connections.sendMessageToRoot(username, loadGame);
             connections.sendServerMessageAll(username, loadGame);
             connections.sendServerMessageAll(username,notification);
+
+            String checkMessage = getCheckAndMateMessage(command.getMove(), gameData);
+            if(checkMessage != null){
+                Notification checkNotification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
+                connections.sendServerMessageAll(username, checkNotification);
+                connections.sendMessageToRoot(username, checkNotification);
+            }
         } catch (IOException e) {
             error(username,"Error sending WS message");
         }
     }
 
+    private String getCheckAndMateMessage(ChessMove move, GameData gameData){
+        //Get opponent color
+        if(gameData.game().getBoard().getPiece(move.getEndPosition()).getTeamColor() == ChessGame.TeamColor.WHITE){
+            //check for check or mate
+            if(gameData.game().isInCheckmate(ChessGame.TeamColor.BLACK)){
+                //create and return message
+                return gameData.blackUsername() + " is in checkmate";
+            }
+            else if (gameData.game().isInCheck(ChessGame.TeamColor.BLACK)){
+                return gameData.blackUsername() + " is in check";
+            }
+            else{
+                return null;
+            }
+        }
+        else{
+            if(gameData.game().isInCheckmate(ChessGame.TeamColor.WHITE)){
+                return gameData.whiteUsername() + " is in checkmate";
+            }
+            else if (gameData.game().isInCheck(ChessGame.TeamColor.WHITE)){
+                return gameData.whiteUsername() + " is in check";
+            }
+            else{
+                return null;
+            }
+        }
+
+    }
+
     private String getMoveMessage(String username, ChessMove move, GameData gameData){
-        System.out.println("in getMoveMessage");
         ChessPiece piece = gameData.game().getBoard().getPiece(move.getEndPosition());
-        System.out.println("start positions");
         System.out.println(move.getStartPosition().toString());
-        System.out.println("piece:");
         System.out.println(piece.toString());
         String pieceString = null;
-        System.out.println("in getMoveMessage");
         switch (piece.getPieceType()){
             case ROOK -> pieceString = "ROOK";
             case KNIGHT -> pieceString = "KNIGHT";
@@ -168,7 +195,6 @@ public class WSServer {
             case KING -> pieceString = "KING";
             case PAWN -> pieceString = "PAWN";
         }
-        System.out.println("in getMoveMessage");
         return username + " moved their " + pieceString + " from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
     }
 

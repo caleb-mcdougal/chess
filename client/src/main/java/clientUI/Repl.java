@@ -15,13 +15,9 @@ import model.GameData;
 import model.Request.*;
 import model.Response.*;
 import ui.ChessBoardPrinter;
-import webSocketMessages.serverMessages.LoadGame;
-import webSocketMessages.serverMessages.ServerMessageError;
-import webSocketMessages.serverMessages.Notification;
-import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.JoinObserver;
-import webSocketMessages.userCommands.JoinPlayer;
-import webSocketMessages.userCommands.MakeMove;
+import webSocketMessages.serverMessages.*;
+import webSocketMessages.userCommands.*;
+
 
 import static ui.EscapeSequences.*;
 
@@ -120,6 +116,7 @@ public class Repl implements ServerMessageObserver{
                 case "observe" -> observe(params);
                 case "logout" -> logout(params);
                 case "move" -> move(params);
+                case "leave" -> leave(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -143,6 +140,12 @@ public class Repl implements ServerMessageObserver{
 
     public String register (String... params) throws ResponseException {
         if (params.length == 3) {
+            if (signedIn){
+                throw new ResponseException(400, "Logout to register a new user");
+            }
+            if (inGame){
+                throw new ResponseException(400, "Logout to register a new user");
+            }
             RegisterRequest request = new RegisterRequest(params[0], params[1], params[2]);
             RegisterResponse response = server.register(request);
             if (response.message() != null){
@@ -159,6 +162,9 @@ public class Repl implements ServerMessageObserver{
             if (!signedIn){
                 throw new ResponseException(400, "Login to create a game");
             }
+            if (inGame){
+                throw new ResponseException(400, "Leave the current game to create a new game");
+            }
             CreateGameRequest request = new CreateGameRequest(params[0]);
             CreateGameResponse response = server.create(request);
             if (response.message() != null){
@@ -173,6 +179,9 @@ public class Repl implements ServerMessageObserver{
         if (params.length == 0) {
             if (!signedIn){
                 throw new ResponseException(400, "Login to list games");
+            }
+            if (inGame){
+                throw new ResponseException(400, "Leave the current game to see a list of games");
             }
             ListGamesResponse response = server.list();
             if (response.message() != null){
@@ -270,6 +279,9 @@ public class Repl implements ServerMessageObserver{
             if (!signedIn){
                 throw new ResponseException(400, "Already logged out");
             }
+            if (inGame){
+                throw new ResponseException(400, "Leave the current game to logout");
+            }
             signedIn = false;
             inGame = false;
             LogoutResponse response = server.logout();
@@ -294,7 +306,25 @@ public class Repl implements ServerMessageObserver{
             WSCommunicator.sendUserCommand(makeMove);
             return "\n";
         }
-        throw new ResponseException(400, "Expected ROW: <1-8> COLUMN: <a-h> of start and end positions");
+        throw new ResponseException(400, "Expected <a-h><1-8> for both start and end positions");
+    }
+
+    public String leave (String... params) throws ResponseException {
+        if (params.length == 0) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to join a game");
+            }
+            if (!inGame){
+                throw new ResponseException(400, "You are not in a game");
+            }
+//            Leave leave =
+            ListGamesResponse response = server.list();
+            if (response.message() != null){
+                throw new ResponseException(400, response.message());
+            }
+            return listToString(response);
+        }
+        throw new ResponseException(400, "Expected no additional arguments");
     }
 
     private ChessMove inputToMove(String start, String end) throws ResponseException {

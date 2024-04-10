@@ -15,8 +15,14 @@ public class ChessGame {
     private ChessGame.TeamColor teamTurn;
     private ChessBoard board;
 
+    public static ChessGame CreateNew(){
+        var game = new ChessGame();
+        game.board = ChessBoard.CreateNew();
+        game.teamTurn = TeamColor.WHITE;
+        return game;
+    }
+
     public ChessGame() {
-        this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
     }
 

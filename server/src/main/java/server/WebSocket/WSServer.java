@@ -49,7 +49,7 @@ public class WSServer {
         switch (command.getCommandType()) {
             case JOIN_PLAYER -> join(session, command.getAuthString(), msg);
             case JOIN_OBSERVER -> observe(session, command.getAuthString(), msg);
-            case MAKE_MOVE -> move(session, command.getAuthString(), msg);
+            case MAKE_MOVE -> move(command.getAuthString(), msg);
 //                case LEAVE -> leave(conn, msg);
 //                case RESIGN -> resign(conn, msg);
         }
@@ -57,73 +57,90 @@ public class WSServer {
     }
 
     private void join(Session session, String authToken, String msg) {
-        String username = getUsername(authToken);
+        String username = null;
+        try {
+            username = getUsername(authToken);
+        } catch (BadRequestException e) {
+            throw new RuntimeException(e);
+        }
 
         JoinPlayer command = new Gson().fromJson(msg, JoinPlayer.class);
         GameData gameData = null;
         try {
             gameData = new SQLGameDAO().getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            error(username,"Invalid Game ID");
+            error(username,"Invalid Game ID", command.getGameID());
         }
 
-        connections.add(username, session);
+        assert gameData != null;
+        connections.add(username, session, gameData.gameID());
 
         try{
             String message = username + " has joined the game as " + command.getPlayerColor();
             Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
-            connections.sendServerMessageAll(username,notification);
+            connections.sendServerMessageAll(username,notification, gameData.gameID());
 
-            assert gameData != null;
             LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            connections.sendMessageToRoot(username, loadGame);
+            connections.sendMessageToRoot(username, loadGame, gameData.gameID());
         } catch (IOException e) {
-            error(username,"Error sending WS message");
+            error(username,"Error sending WS message", command.getGameID());
         }
     }
 
     private void observe(Session session, String authToken, String msg) {
-        String username = getUsername(authToken);
+        String username = null;
+        try {
+            username = getUsername(authToken);
+        } catch (BadRequestException e) {
+            throw new RuntimeException(e);
+        }
 
         JoinObserver command = new Gson().fromJson(msg, JoinObserver.class);
         GameData gameData = null;
         try {
             gameData = new SQLGameDAO().getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            error(username,"Invalid Game ID");
+            error(username,"Invalid Game ID", command.getGameID());
         }
 
-        connections.add(username, session);
+        assert gameData != null;
+        connections.add(username, session, gameData.gameID());
 
         try{
             String message = username + " has joined the game as an observer";
             Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
-            connections.sendServerMessageAll(username,notification);
+            connections.sendServerMessageAll(username,notification, gameData.gameID());
 
-            assert gameData != null;
             LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-            connections.sendMessageToRoot(username, loadGame);
+            connections.sendMessageToRoot(username, loadGame, gameData.gameID());
         } catch (IOException e) {
-            error(username,"Error sending WS message");
+            error(username,"Error sending WS message",command.getGameID());
         }
     }
 
-    private void move(Session session, String authToken, String msg) {
-        String username = getUsername(authToken);
+    private void move(String authToken, String msg) {
+        //Not sure what do about username throwing error to error because it needs gameID to throw error
+        String username = null;
+        try {
+            username = getUsername(authToken);
+        } catch (BadRequestException e) {
+            throw new RuntimeException(e);
+        }
+
         MakeMove command = new Gson().fromJson(msg, MakeMove.class);
         GameData gameData = null;
         SQLGameDAO sgd = new SQLGameDAO();
         try {
             gameData = sgd.getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            error(username,"Invalid Game ID");
+            error(username,"Invalid Game ID", command.getGameID());
             return;
         }
         assert gameData != null;
         try {
             gameData.game().makeMove(command.getMove());
         } catch (InvalidMoveException e) {
-            error(username, "Not your turn");
+            error(username, "Not your turn", command.getGameID());
             return;
         }
         try {
@@ -138,18 +155,18 @@ public class WSServer {
             Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
             LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());//This is pulling the old board from the DB need to update DB first
 
-            connections.sendMessageToRoot(username, loadGame);
-            connections.sendServerMessageAll(username, loadGame);
-            connections.sendServerMessageAll(username,notification);
+            connections.sendMessageToRoot(username, loadGame, gameData.gameID());
+            connections.sendServerMessageAll(username, loadGame, gameData.gameID());
+            connections.sendServerMessageAll(username,notification, gameData.gameID());
 
             String checkMessage = getCheckAndMateMessage(command.getMove(), gameData);
             if(checkMessage != null){
                 Notification checkNotification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
-                connections.sendServerMessageAll(username, checkNotification);
-                connections.sendMessageToRoot(username, checkNotification);
+                connections.sendServerMessageAll(username, checkNotification, gameData.gameID());
+                connections.sendMessageToRoot(username, checkNotification, gameData.gameID());
             }
         } catch (IOException e) {
-            error(username,"Error sending WS message");
+            error(username,"Error sending WS message", command.getGameID());
         }
     }
 
@@ -198,7 +215,7 @@ public class WSServer {
         return username + " moved their " + pieceString + " from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
     }
 
-    private String getUsername(String authToken) {
+    private String getUsername(String authToken) throws BadRequestException {
         String username = null;
         try {
             SQLAuthDAO sad = new SQLAuthDAO();
@@ -206,15 +223,15 @@ public class WSServer {
 
         }
         catch (DataAccessException e) {
-            error(username,"Invalid AuthToken");
+            throw new BadRequestException("Invalid AuthToken");
         }
         return username;
     }
 
-    private void error(String username, String errorMessage){
+    private void error(String username, String errorMessage, Integer gameID){
         ServerMessageError serverMessageError = new ServerMessageError(ServerMessage.ServerMessageType.ERROR, errorMessage);
         try {
-            connections.sendMessageToRoot(username, serverMessageError);
+            connections.sendMessageToRoot(username, serverMessageError, gameID);
         } catch (IOException e) {
             System.out.println("Error sending WS error notification");
             throw new RuntimeException(e);

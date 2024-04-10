@@ -21,7 +21,7 @@ public class MemoryGameDAO implements GameDAO {
         gameIDIncrementer += 1;
 
         //Create new game in the DB
-        ChessGame newGame = new ChessGame();
+        ChessGame newGame = ChessGame.CreateNew();
         GameData gd = new GameData(gameIDIncrementer, null, null, name, newGame);
         gameDB.put(gameIDIncrementer, gd);
 

@@ -10,10 +10,18 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private ChessPiece[][] board;
+
+    public static ChessBoard CreateNew(){
+        var board = new ChessBoard();
+        board.resetBoard();
+        return board;
+    }
+
     public ChessBoard() {
         this.board = new ChessPiece[8][8];
-        resetBoard();
     }
+
+
 
     /**
      * Adds a chess piece to the chessboard

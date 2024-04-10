@@ -9,21 +9,32 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
-    public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+//    public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer, ConcurrentHashMap<String, Connection>> connections = new ConcurrentHashMap<>();
 
-    public void add(String visitorName, Session session) {
+    public void add(String visitorName, Session session, Integer gameID) {
         //Might need to add a check if the user is already in a game?
-        var connection = new Connection(visitorName, session);
-        connections.put(visitorName, connection);
+        if(connections.containsKey(gameID)){ // If the game already has a map get it and the visitor with a new connection
+            ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
+            var connection = new Connection(visitorName, session);
+            gameMap.put(visitorName, connection);
+        }
+        else{
+            var connection = new Connection(visitorName, session); // If there is not a map already, create a new one and with visitor and connection and add it to outer map
+            ConcurrentHashMap<String, Connection> gameMap = new ConcurrentHashMap<>();
+            gameMap.put(visitorName,connection);
+            connections.put(gameID,gameMap);
+        }
     }
 
     public void remove(String visitorName) {
         connections.remove(visitorName);
     }
 
-    public void sendServerMessageAll(String excludeVisitorName, ServerMessage serverMessage) throws IOException {
+    public void sendServerMessageAll(String excludeVisitorName, ServerMessage serverMessage, Integer gameID) throws IOException {
+        ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
         var removeList = new ArrayList<Connection>();
-        for (var c : connections.values()) {
+        for (var c : gameMap.values()) {
             if (c.session.isOpen()) {
                 if (!c.visitorName.equals(excludeVisitorName)) {
                     c.send(new Gson().toJson(serverMessage));
@@ -35,13 +46,14 @@ public class ConnectionManager {
 
         // Clean up any connections that were left open.
         for (var c : removeList) {
-            connections.remove(c.visitorName);
+            gameMap.remove(c.visitorName);
         }
     }
 
-    public void sendMessageToRoot(String visitorName, ServerMessage serverMessage) throws IOException {
+    public void sendMessageToRoot(String visitorName, ServerMessage serverMessage, Integer gameID) throws IOException {
+        ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
         var removeList = new ArrayList<Connection>();
-        for (var c : connections.values()) {
+        for (var c : gameMap.values()) {
             if (c.session.isOpen()) {
                 if (c.visitorName.equals(visitorName)) {
                     c.send(new Gson().toJson(serverMessage));
@@ -53,7 +65,7 @@ public class ConnectionManager {
 
         // Clean up any connections that were left open.
         for (var c : removeList) {
-            connections.remove(c.visitorName);
+            gameMap.remove(c.visitorName);
         }
     }
 }

@@ -34,7 +34,7 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
 
     @Override
     public int createGame(String name) throws DataAccessException{
-        ChessGame newGame = new ChessGame();
+        ChessGame newGame = ChessGame.CreateNew();
         var json = new Gson().toJson(newGame);
         try (var conn = DatabaseManager.getConnection()) {
             try (var stmt = conn.prepareStatement("INSERT INTO game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {

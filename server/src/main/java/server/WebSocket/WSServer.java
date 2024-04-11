@@ -34,16 +34,12 @@ public class WSServer {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         System.out.println("A client has connected");
-        //Create a manager class to keep track of session
-//        this.connections.add("test", session);
     }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String msg) throws Exception {
         var gson = new Gson();
         UserGameCommand command = gson.fromJson(msg, UserGameCommand.class);
-
-        //Part of the manager class (getter)
 
         switch (command.getCommandType()) {
             case JOIN_PLAYER -> join(session, command.getAuthString(), msg);
@@ -57,20 +53,6 @@ public class WSServer {
 
     private void join(Session session, String authToken, String msg) {
         JoinPlayer command = new Gson().fromJson(msg, JoinPlayer.class);
-
-//        //Check for valid authToken
-//        SQLAuthDAO sad = new SQLAuthDAO();
-//        try {
-//            sad.authExists(authToken);
-//        } catch (UnauthorizedException e) {
-//            ServerMessageError serverMessageError =
-//                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid AuthToken");
-//            sendMsgToRoot(session, serverMessageError);
-//        } catch (DataAccessException e) {
-//            ServerMessageError serverMessageError =
-//                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "DB error accessing AuthToken join");
-//            sendMsgToRoot(session, serverMessageError);
-//        }
 
         //Check for username attached to auth, both may not be necessary
         String username = null;
@@ -134,29 +116,6 @@ public class WSServer {
     }
 
     private void observe(Session session, String authToken, String msg) {
-//        String username = null;
-//        try {
-//            username = getUsername(authToken);
-//        } catch (BadRequestException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        JoinObserver command = new Gson().fromJson(msg, JoinObserver.class);
-//        GameData gameData = null;
-//        try {
-//            gameData = new SQLGameDAO().getGame(command.getGameID());
-//        } catch (BadRequestException | DataAccessException e) {
-//            sendErrorMessage(username,"Invalid Game ID", command.getGameID());
-//            return;
-//        }
-//
-//        assert gameData != null;
-//        if(gameData.game().gameEnded()){
-//            sendErrorMessage(username,"This game is already over", command.getGameID());
-//            return;
-//        }
-
-
         //Check for valid authToken
         SQLAuthDAO sad = new SQLAuthDAO();
         try {
@@ -394,8 +353,6 @@ public class WSServer {
             return;
         }
 
-
-
         String message = username + " has left the game";
         Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.sendServerMessageAll(username,notification, command.getGameID());
@@ -485,23 +442,6 @@ public class WSServer {
         return username;
     }
 
-    private void sendErrorMessage(String username, String errorMessage, Integer gameID){
-        System.out.println("in sendErrorMessage");
-        ServerMessageError serverMessageError = new ServerMessageError(ServerMessage.ServerMessageType.ERROR, errorMessage);
-        connections.sendMessageToRoot(username, serverMessageError, gameID);
-
-    }
-
-//    private void sendMsgToRoot(Session session, ServerMessage serverMessage){
-//        String msg = new Gson().toJson(serverMessage, ServerMessage.class);
-//        try {
-//            session.getRemote().sendString(msg);
-//        } catch (IOException e) {
-//            System.out.println("Error sending WS message to root");
-////            throw new RuntimeException(e);
-//        }
-//    }
-
     private void sendLoadToRoot(Session session, LoadGame loadGame){
         String msg = new Gson().toJson(loadGame, LoadGame.class);
         try {
@@ -528,8 +468,6 @@ public class WSServer {
             System.out.println("Error sending WS message to root");
         }
     }
-
-
 
 }
 

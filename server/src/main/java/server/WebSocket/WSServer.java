@@ -59,9 +59,7 @@ public class WSServer {
         try {
             username = getUsername(authToken);
         } catch (BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Color already taken");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Color already taken");
         }
 
 
@@ -70,35 +68,27 @@ public class WSServer {
         try {
             gameData = new SQLGameDAO().getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Couldn't access gameData Join");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Couldn't access gameData Join");
             return;
         }
 
         //Check that username and color we have here match DB
         if(command.getPlayerColor().equalsIgnoreCase("white")){
             if(!Objects.equals(gameData.whiteUsername(), username)){
-                ServerMessageError serverMessageError =
-                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Color mismatch");
-                sendErrorToRoot(session, serverMessageError);
+                sendErrorToRoot(session, "Color mismatch");
                 return;
             }
         }
         else{
             if(!Objects.equals(gameData.blackUsername(), username)){
-                ServerMessageError serverMessageError =
-                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Color mismatch");
-                sendErrorToRoot(session, serverMessageError);
+                sendErrorToRoot(session, "Color mismatch");
                 return;
             }
         }
 
         //See if the game has already ended
         if(gameData.game().gameEnded()){
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "This game is already over");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "This game is already over");
             return;
         }
 
@@ -121,16 +111,10 @@ public class WSServer {
         try {
             sad.authExists(authToken);
         } catch (UnauthorizedException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid AuthToken");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Invalid AuthToken");
         } catch (DataAccessException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "DB error accessing AuthToken join");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "DB error accessing AuthToken join");
         }
-
-
 
         JoinObserver command = new Gson().fromJson(msg, JoinObserver.class);
 
@@ -138,9 +122,7 @@ public class WSServer {
         try {
             username = getUsername(authToken);
         } catch (BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Color already taken");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Color already taken");
         }
 
 
@@ -149,18 +131,13 @@ public class WSServer {
         try {
             gameData = new SQLGameDAO().getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Couldn't access gameData Join");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Couldn't access gameData Join");
             return;
         }
 
-
         //See if the game has already ended
         if(gameData.game().gameEnded()){
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "This game is already over");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "This game is already over");
             return;
         }
 
@@ -181,9 +158,7 @@ public class WSServer {
         try {
             username = getUsername(authToken);
         } catch (BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Color already taken");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Color already taken");
         }
 
         MakeMove command = new Gson().fromJson(msg, MakeMove.class);
@@ -195,40 +170,30 @@ public class WSServer {
             sgd = new SQLGameDAO();
             gameData = sgd.getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Couldn't access gameData Join");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Couldn't access gameData Join");
             return;
         }
 
         //See if the game has already ended
         if(gameData.game().gameEnded()){
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "This game is already over");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "This game is already over");
             return;
         }
 
         //Team color shananigans
         if(Objects.equals(gameData.whiteUsername(), username)){ // if user is white
             if(gameData.game().getTeamTurn() == ChessGame.TeamColor.BLACK){ // if it is blacks turn send error
-                ServerMessageError serverMessageError =
-                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid move");
-                sendErrorToRoot(session, serverMessageError);
+                sendErrorToRoot(session, "Invalid move");
                 return;
             }
         } else if (Objects.equals(gameData.blackUsername(), username)) { // if user is black
             if(gameData.game().getTeamTurn() == ChessGame.TeamColor.WHITE){ // if it is whites turn send error
-                ServerMessageError serverMessageError =
-                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid move");
-                sendErrorToRoot(session, serverMessageError);
+                sendErrorToRoot(session, "Invalid move");
                 return;
             }
         }
         else{ // observer is trying to move a piece
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Observer cannot move pieces");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Observer cannot move pieces");
             return;
         }
 
@@ -236,19 +201,15 @@ public class WSServer {
         try {
             gameData.game().makeMove(command.getMove());
         } catch (InvalidMoveException e) {
-            System.out.println("in move caught bad move");
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid move");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Invalid move");
             return;
         }
 
         try {
             sgd.updateGameBoard(command.getGameID(), gameData.game());
         } catch (DataAccessException | BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Update board DB error in move");
-            sendErrorToRoot(session, serverMessageError);
+
+            sendErrorToRoot(session, "Update board DB error in move");
             return;
         }
 
@@ -318,9 +279,7 @@ public class WSServer {
         try {
             username = getUsername(authToken);
         } catch (BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid AuthToken");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Invalid AuthToken");
             return;
         }
 
@@ -330,9 +289,7 @@ public class WSServer {
         try {
             gameData = sgd.getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Error accessing DB in leave");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Error accessing DB in leave");
             return;
         }
 
@@ -347,9 +304,7 @@ public class WSServer {
         try {
             sgd.updateGame(gameData.gameID(), color, null);
         } catch (DataAccessException | BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Error accessing DB in leave");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Error accessing DB in leave");
             return;
         }
 
@@ -366,9 +321,7 @@ public class WSServer {
         try {
             username = getUsername(authToken);
         } catch (BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid AuthToken");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Invalid AuthToken");
             return;
         }
 
@@ -379,33 +332,25 @@ public class WSServer {
         try {
             gameData = sgd.getGame(command.getGameID());
         } catch (BadRequestException | DataAccessException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Error accessing DB in resign");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Error accessing DB in resign");
             return;
         }
 
         //See if the game has already ended
         if(gameData.game().gameEnded()){
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "This game is already over");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "This game is already over");
             return;
         }
         //Team color shananigans
         if(!Objects.equals(gameData.whiteUsername(), username) && !Objects.equals(gameData.blackUsername(), username)){ // if user is white
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Observer is trying to resign");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Observer is trying to resign");
             return;
         }
         gameData.game().endGame();
         try {
             sgd.updateGameBoard(command.getGameID(), gameData.game());
         } catch (DataAccessException | BadRequestException e) {
-            ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Error accessing DB in resign");
-            sendErrorToRoot(session, serverMessageError);
+            sendErrorToRoot(session, "Error accessing DB in resign");
             return;
         }
 
@@ -460,8 +405,10 @@ public class WSServer {
         }
     }
 
-    private void sendErrorToRoot(Session session, ServerMessageError error){
-        String msg = new Gson().toJson(error, ServerMessageError.class);
+    private void sendErrorToRoot(Session session, String message){
+        ServerMessageError serverMessageError =
+                new ServerMessageError(ServerMessage.ServerMessageType.ERROR, message);
+        String msg = new Gson().toJson(serverMessageError, ServerMessageError.class);
         try {
             session.getRemote().sendString(msg);
         } catch (IOException e) {

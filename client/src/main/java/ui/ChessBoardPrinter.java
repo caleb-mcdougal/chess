@@ -27,11 +27,11 @@ public class ChessBoardPrinter {
     private static final String EMPTY = "   ";
 
     public ChessBoardPrinter(ChessBoard BOARD){
-        this.BOARD = BoardToStringListPieces(BOARD);
-        this.PIECE_COLORS = BoardToStringListColors(BOARD);
+        this.BOARD = boardToStringListPieces(BOARD);
+        this.PIECE_COLORS = boardToStringListColors(BOARD);
     }
 
-    private String[][] BoardToStringListPieces(ChessBoard board){
+    private String[][] boardToStringListPieces(ChessBoard board){
         ChessPiece[][] pieces = board.getBoard();
         String[][] pieceType = new String[8][8];
         for (int i = 0; i < 8; i++) {
@@ -56,7 +56,7 @@ public class ChessBoardPrinter {
         return pieceType;
     }
 
-    private String[][] BoardToStringListColors(ChessBoard board){
+    private String[][] boardToStringListColors(ChessBoard board){
         ChessPiece[][] pieces = board.getBoard();
         String[][] pieceColor = new String[8][8];
         for (int i = 0; i < pieces.length; i++) {

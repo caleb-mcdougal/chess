@@ -42,18 +42,6 @@ public class UserService {
         return new RegisterResponse(request.username(), authToken, null);
     }
 
-    private static SQLUserDAO getSQLUserDAO(RegisterRequest request) throws BadRequestException, AlreadyTakenException, DataAccessException {
-        //Check user inputs given in request
-        SQLUserDAO sud = new SQLUserDAO();
-        if(request.username() == null || request.password() == null || request.email() == null || request.username().isBlank() || request.password().isBlank() || request.email().isBlank()){
-            throw new BadRequestException("Must have all user data");
-        }
-        if(sud.userExists(request.username())){
-            throw new AlreadyTakenException("This username is already taken");
-        }
-        return sud;
-    }
-
     public LoginResponse login(LoginRequest request) throws UnauthorizedException, DataAccessException, BadRequestException { // removed: NoExistingUserException
         //Check valid username
         SQLUserDAO sud = new SQLUserDAO();

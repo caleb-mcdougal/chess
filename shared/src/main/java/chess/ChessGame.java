@@ -15,9 +15,9 @@ public class ChessGame {
     private ChessBoard board;
     private boolean gameEnded;
 
-    public static ChessGame CreateNew(){
+    public static ChessGame createNew(){
         var game = new ChessGame();
-        game.board = ChessBoard.CreateNew();
+        game.board = ChessBoard.createNew();
         game.teamTurn = TeamColor.WHITE;
         game.gameEnded = false;
         return game;

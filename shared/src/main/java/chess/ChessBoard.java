@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class ChessBoard {
     private ChessPiece[][] board;
 
-    public static ChessBoard CreateNew(){
+    public static ChessBoard createNew(){
         var board = new ChessBoard();
         board.resetBoard();
         return board;

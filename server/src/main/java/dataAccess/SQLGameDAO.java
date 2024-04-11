@@ -4,13 +4,9 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.Exceptions.BadRequestException;
 import dataAccess.Exceptions.DataAccessException;
-import dataAccess.GameDAO;
 import model.GameData;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -30,7 +26,7 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
 
     @Override
     public int createGame(String name) throws DataAccessException{
-        ChessGame newGame = ChessGame.CreateNew();
+        ChessGame newGame = ChessGame.createNew();
         var json = new Gson().toJson(newGame);
         try (var conn = DatabaseManager.getConnection()) {
             try (var stmt = conn.prepareStatement("INSERT INTO game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {

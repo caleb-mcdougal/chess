@@ -21,7 +21,7 @@ public class MemoryGameDAO implements GameDAO {
         gameIDIncrementer += 1;
 
         //Create new game in the DB
-        ChessGame newGame = ChessGame.CreateNew();
+        ChessGame newGame = ChessGame.createNew();
         GameData gd = new GameData(gameIDIncrementer, null, null, name, newGame);
         gameDB.put(gameIDIncrementer, gd);
 
@@ -65,12 +65,4 @@ public class MemoryGameDAO implements GameDAO {
         gameDB.clear();
     }
 
-    public int getDBSize(){
-        if(gameDB != null) {
-            return gameDB.size();
-        }
-        else {
-            return 0;
-        }
-    }
 }

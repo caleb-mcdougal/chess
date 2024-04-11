@@ -186,7 +186,7 @@ public class ChessBoardPrinter {
         HashSet<ChessMove> validMoves = game.validMoves(startPosition);
         boolean[][] highlightBoard = new boolean[8][8];
         for(ChessMove move:validMoves){
-            highlightBoard[move.getEndPosition().getRow()][move.getEndPosition().getColumn()] = true;
+            highlightBoard[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1] = true;
         }
 
         return highlightBoard;
@@ -278,7 +278,7 @@ public class ChessBoardPrinter {
                         printPiece(out, boardRow[7 - i], colorRow[7 - i]);
                     }
                 } else {
-                    if(positionHighlight[i]) {
+                    if(positionHighlight[7-i]) {
                         out.print(SET_BG_COLOR_DARK_GREEN);
                         printPiece(out, boardRow[7 - i], colorRow[7 - i]);
                     }

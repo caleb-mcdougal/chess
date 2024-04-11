@@ -211,9 +211,6 @@ public class WSServer {
         Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.sendServerMessageAll(username,notification, gameData.gameID());
 
-//        LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
-//        connections.sendMessageToRoot(username, loadGame, gameData.gameID());
-        //Load the game for the root
         LoadGame loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameData.game());
         sendLoadToRoot(session, loadGame);
 
@@ -257,14 +254,14 @@ public class WSServer {
         if(Objects.equals(gameData.whiteUsername(), username)){ // if user is white
             if(gameData.game().getTeamTurn() == ChessGame.TeamColor.BLACK){ // if it is blacks turn send error
                 ServerMessageError serverMessageError =
-                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Not your turn");
+                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid move");
                 sendErrorToRoot(session, serverMessageError);
                 return;
             }
         } else if (Objects.equals(gameData.blackUsername(), username)) { // if user is black
             if(gameData.game().getTeamTurn() == ChessGame.TeamColor.WHITE){ // if it is whites turn send error
                 ServerMessageError serverMessageError =
-                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Not your turn");
+                        new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid move");
                 sendErrorToRoot(session, serverMessageError);
                 return;
             }
@@ -282,7 +279,7 @@ public class WSServer {
         } catch (InvalidMoveException e) {
             System.out.println("in move caught bad move");
             ServerMessageError serverMessageError =
-                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Not your turn");
+                    new ServerMessageError(ServerMessage.ServerMessageType.ERROR, "Invalid move");
             sendErrorToRoot(session, serverMessageError);
             return;
         }
@@ -407,7 +404,6 @@ public class WSServer {
     }
 
     private void resign(Session session, String authToken, String msg) {
-        System.out.println("in resign");
         //Check username and authToken
         String username = null;
         try {
@@ -418,10 +414,8 @@ public class WSServer {
             sendErrorToRoot(session, serverMessageError);
             return;
         }
-        System.out.println("in resign");
 
         Resign command = new Gson().fromJson(msg, Resign.class);
-        System.out.println("in resign");
         //Get game data
         GameData gameData = null;
         SQLGameDAO sgd = new SQLGameDAO();
@@ -441,7 +435,6 @@ public class WSServer {
             sendErrorToRoot(session, serverMessageError);
             return;
         }
-        System.out.println("in resign");
         //Team color shananigans
         if(!Objects.equals(gameData.whiteUsername(), username) && !Objects.equals(gameData.blackUsername(), username)){ // if user is white
             ServerMessageError serverMessageError =
@@ -449,7 +442,6 @@ public class WSServer {
             sendErrorToRoot(session, serverMessageError);
             return;
         }
-        System.out.println("in resign");
         gameData.game().endGame();
         try {
             sgd.updateGameBoard(command.getGameID(), gameData.game());
@@ -460,7 +452,6 @@ public class WSServer {
             return;
         }
 
-        System.out.println("in resign");
         String message = getResignMessage(username, gameData);
         Notification notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.sendServerMessageAll(username,notification, command.getGameID());

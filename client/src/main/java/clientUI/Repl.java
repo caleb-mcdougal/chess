@@ -2,7 +2,6 @@ package clientUI;
 
 import Exceptions.ResponseException;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -118,6 +117,8 @@ public class Repl implements ServerMessageObserver{
                 case "move" -> move(params);
                 case "leave" -> leave(params);
                 case "resign" -> resign(params);
+                case "redraw" -> redraw(params);
+                case "highlight" -> highlight(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -220,18 +221,20 @@ public class Repl implements ServerMessageObserver{
             if (inGame){
                 throw new ResponseException(400, "Leave the current game to join a new game");
             }
+
             int gameID = getDBGameID(Integer.parseInt(params[0]));
             JoinGameRequest request = new JoinGameRequest(params[1], gameID);
             JoinGameResponse response = server.join(request);
             JoinPlayer joinPlayer = new JoinPlayer(server.getAuthToken(), gameID, params[1]);
             WSCommunicator.sendUserCommand(joinPlayer);
+
             teamColor = params[1];
             this.gameID = gameID;
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
             }
             inGame = true;
-            return String.format("Joined game: %s", Integer.parseInt(params[0]));
+            return "";//String.format("Joined game: %s", Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
     }
@@ -260,6 +263,9 @@ public class Repl implements ServerMessageObserver{
             if (inGame){
                 throw new ResponseException(400, "Leave the current game to observe a new game");
             }
+//            if (!currentGame.gamePlayable()){
+//                throw new ResponseException(400, "This game is already over");
+//            }
             int gameID = getDBGameID(Integer.parseInt(params[0]));
             JoinGameRequest request = new JoinGameRequest(null, gameID);
             JoinGameResponse response = server.join(request);
@@ -270,7 +276,7 @@ public class Repl implements ServerMessageObserver{
                 throw new ResponseException(400, response.message());
             }
             inGame = true;
-            return String.format("Observing game: %s", Integer.parseInt(params[0]));
+            return "";//String.format("Observing game: %s", Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <ID>");
     }
@@ -302,10 +308,13 @@ public class Repl implements ServerMessageObserver{
             if (!inGame){
                 throw new ResponseException(400, "Join a game to make a move");
             }
+//            if (!currentGame.gamePlayable()){
+//                throw new ResponseException(400, "This game is already over");
+//            }
             ChessMove move = inputToMove(params[0], params[1]);
             MakeMove makeMove = new MakeMove(server.getAuthToken(), gameID, move);
             WSCommunicator.sendUserCommand(makeMove);
-            return "\n";
+            return "";
         }
         throw new ResponseException(400, "Expected <a-h><1-8> for both start and end positions");
     }
@@ -378,9 +387,42 @@ public class Repl implements ServerMessageObserver{
             if (!inGame){
                 throw new ResponseException(400, "You are not in a game");
             }
+
             Resign resign = new Resign(server.getAuthToken(), gameID);
             WSCommunicator.sendUserCommand(resign);
             return "You lost";
+        }
+        throw new ResponseException(400, "Expected no additional arguments");
+    }
+
+    public String redraw (String... params) throws ResponseException {
+        if (params.length == 0) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to join a game");
+            }
+            if (!inGame){
+                throw new ResponseException(400, "You are not in a game");
+            }
+
+            ChessBoardPrinter boardPrinter = new ChessBoardPrinter(currentGame.getBoard());
+            boardPrinter.printBoards(teamColor);
+            return "";
+        }
+        throw new ResponseException(400, "Expected no additional arguments");
+    }
+
+    public String highlight (String... params) throws ResponseException {
+        if (params.length == 1) {
+            if (!signedIn){
+                throw new ResponseException(400, "Login to join a game");
+            }
+            if (!inGame){
+                throw new ResponseException(400, "You are not in a game");
+            }
+
+            ChessBoardPrinter boardPrinter = new ChessBoardPrinter(currentGame.getBoard());
+            boardPrinter.printHighlight(teamColor, params[0], currentGame);
+            return "";
         }
         throw new ResponseException(400, "Expected no additional arguments");
     }

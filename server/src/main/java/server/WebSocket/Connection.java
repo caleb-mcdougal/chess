@@ -13,7 +13,12 @@ public class Connection {
         this.session = session;
     }
 
-    public void send(String msg) throws IOException {
-        session.getRemote().sendString(msg);
+    public void send(String msg){
+        try {
+            session.getRemote().sendString(msg);
+        } catch (IOException e) {
+            System.out.println("Error sending WS message to entire session");
+            throw new RuntimeException(e);
+        }
     }
 }

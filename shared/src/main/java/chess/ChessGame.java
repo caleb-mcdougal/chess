@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -14,11 +13,13 @@ public class ChessGame {
 
     private ChessGame.TeamColor teamTurn;
     private ChessBoard board;
+    private boolean gameEnded;
 
     public static ChessGame CreateNew(){
         var game = new ChessGame();
         game.board = ChessBoard.CreateNew();
         game.teamTurn = TeamColor.WHITE;
+        game.gameEnded = false;
         return game;
     }
 
@@ -40,6 +41,14 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         teamTurn = team;
+    }
+
+    public void endGame(){
+        this.gameEnded = true;
+    }
+
+    public boolean gameEnded(){
+        return this.gameEnded;
     }
 
     @Override

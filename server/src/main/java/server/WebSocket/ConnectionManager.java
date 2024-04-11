@@ -14,6 +14,7 @@ public class ConnectionManager {
 
     public void add(String visitorName, Session session, Integer gameID) {
         //Might need to add a check if the user is already in a game?
+        System.out.println("in add");
         if(connections.containsKey(gameID)){ // If the game already has a map get it and the visitor with a new connection
             ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
             var connection = new Connection(visitorName, session);
@@ -28,11 +29,13 @@ public class ConnectionManager {
     }
 
     public void remove(String visitorName, Integer gameID) {
+        System.out.println("in remove");
         ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
         gameMap.remove(visitorName);
     }
 
-    public void sendServerMessageAll(String excludeVisitorName, ServerMessage serverMessage, Integer gameID) throws IOException {
+    public void sendServerMessageAll(String excludeVisitorName, ServerMessage serverMessage, Integer gameID){
+        System.out.println("in sendServerMessageAll");
         ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
         var removeList = new ArrayList<Connection>();
         for (var c : gameMap.values()) {
@@ -51,7 +54,8 @@ public class ConnectionManager {
         }
     }
 
-    public void sendMessageToRoot(String visitorName, ServerMessage serverMessage, Integer gameID) throws IOException {
+    public void sendMessageToRoot(String visitorName, ServerMessage serverMessage, Integer gameID){
+        System.out.println("in sendMessageToRoot");
         ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
         var removeList = new ArrayList<Connection>();
         for (var c : gameMap.values()) {

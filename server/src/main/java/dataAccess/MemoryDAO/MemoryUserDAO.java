@@ -24,15 +24,6 @@ public class MemoryUserDAO implements UserDAO {
         userEmail.clear();
     }
 
-    public int getDBSize(){
-        if(userPassword != null) {
-            return userPassword.size();
-        }
-        else {
-            return 0;
-        }
-    }
-
     @Override
     public void createUser(UserData ud) {
         //Create new user with username linked to password and email in respective DB's

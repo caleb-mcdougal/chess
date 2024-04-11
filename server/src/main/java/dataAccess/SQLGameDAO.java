@@ -22,11 +22,7 @@ public class SQLGameDAO extends SQLDAOParent implements GameDAO {
             try (PreparedStatement stmt = conn.prepareStatement(statement)){
                 stmt.executeUpdate();
             }
-                                                                                    //Unsure about this
-//            statement = "ALTER TABLE game AUTO_INCREMENT = 1";
-//            try (PreparedStatement stmt = conn.prepareStatement(statement)){
-//                stmt.executeUpdate();
-//            }
+
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(500, "Error in clear");
         }

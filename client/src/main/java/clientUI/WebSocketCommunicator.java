@@ -15,9 +15,6 @@ public class WebSocketCommunicator extends Endpoint {
     private Repl repl;
 
     public WebSocketCommunicator(String url, Repl repl) throws ResponseException {
-//        URI uri = new URI("ws://localhost:8080/connect");
-//        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-//        this.session = container.connectToServer(this, uri);
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/connect");
@@ -31,7 +28,6 @@ public class WebSocketCommunicator extends Endpoint {
 
                 @Override
                 public void onMessage(String message) {
-//                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                     repl.notify(message);
                 }
 

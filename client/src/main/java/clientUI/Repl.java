@@ -263,9 +263,7 @@ public class Repl implements ServerMessageObserver{
             if (inGame){
                 throw new ResponseException(400, "Leave the current game to observe a new game");
             }
-//            if (!currentGame.gamePlayable()){
-//                throw new ResponseException(400, "This game is already over");
-//            }
+
             int gameID = getDBGameID(Integer.parseInt(params[0]));
             JoinGameRequest request = new JoinGameRequest(null, gameID);
             JoinGameResponse response = server.join(request);
@@ -308,9 +306,7 @@ public class Repl implements ServerMessageObserver{
             if (!inGame){
                 throw new ResponseException(400, "Join a game to make a move");
             }
-//            if (!currentGame.gamePlayable()){
-//                throw new ResponseException(400, "This game is already over");
-//            }
+
             ChessMove move = inputToMove(params[0], params[1]);
             MakeMove makeMove = new MakeMove(server.getAuthToken(), gameID, move);
             WSCommunicator.sendUserCommand(makeMove);
@@ -330,10 +326,8 @@ public class Repl implements ServerMessageObserver{
         int endRow = 9;
         int endCol = 9;
         String[] letterString = {"a", "b", "c", "d", "e", "f", "g", "h"};
-//        System.out.println("before loop");
         for (int i = 0; i < letterString.length; i++) {
-//            System.out.println("in loop ");
-//            System.out.println(i);
+
             if(start.substring(0, 1).toLowerCase().equals(letterString[i])){
                 startCol = i+1;
             }
@@ -486,7 +480,6 @@ public class Repl implements ServerMessageObserver{
         else{
             System.out.print("\n" + RESET + "[LOGGED_OUT]");
         }
-//        System.out.print("\n" + RESET + ">>> " + GREEN);
         System.out.print(">>> " + GREEN);
     }
 }

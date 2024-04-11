@@ -23,7 +23,7 @@ import static ui.EscapeSequences.*;
 public class Repl implements ServerMessageObserver{
 
     private final ServerFacade server;
-    private final WebSocketCommunicator WSCommunicator;
+    private final WebSocketCommunicator webSocketCommunicator;
     private boolean signedIn;
     private boolean inGame;
     private ChessGame currentGame;
@@ -33,7 +33,7 @@ public class Repl implements ServerMessageObserver{
 
     public Repl(String serverURL) throws ResponseException {
         server = new ServerFacade(serverURL);
-        WSCommunicator = new WebSocketCommunicator(serverURL, this);
+        webSocketCommunicator = new WebSocketCommunicator(serverURL, this);
         signedIn = false;
         teamColor = null;
     }
@@ -196,21 +196,17 @@ public class Repl implements ServerMessageObserver{
 
     private String listToString(ListGamesResponse response){
         GameData[] games = response.games();
-        StringBuilder SB = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < games.length; i++) {
-            SB.append(i + 1).append(". ");
-            SB.append(games[i].gameName());
-//            if (games[i].whiteUsername() != null){
-                SB.append(" WHITE: ");
-                SB.append(games[i].whiteUsername());
-//            }
-//            if (games[i].blackUsername() != null){
-                SB.append("  BLACK: ");
-                SB.append(games[i].blackUsername());
-//            }
-            SB.append("\n");
+            stringBuilder.append(i + 1).append(". ");
+            stringBuilder.append(games[i].gameName());
+            stringBuilder.append(" WHITE: ");
+            stringBuilder.append(games[i].whiteUsername());
+            stringBuilder.append("  BLACK: ");
+            stringBuilder.append(games[i].blackUsername());
+            stringBuilder.append("\n");
         }
-        return SB.toString();
+        return stringBuilder.toString();
     }
 
     public String join (String... params) throws ResponseException {
@@ -226,7 +222,7 @@ public class Repl implements ServerMessageObserver{
             JoinGameRequest request = new JoinGameRequest(params[1], gameID);
             JoinGameResponse response = server.join(request);
             JoinPlayer joinPlayer = new JoinPlayer(server.getAuthToken(), gameID, params[1]);
-            WSCommunicator.sendUserCommand(joinPlayer);
+            webSocketCommunicator.sendUserCommand(joinPlayer);
 
             teamColor = params[1];
             this.gameID = gameID;
@@ -268,7 +264,7 @@ public class Repl implements ServerMessageObserver{
             JoinGameRequest request = new JoinGameRequest(null, gameID);
             JoinGameResponse response = server.join(request);
             JoinObserver joinObserver = new JoinObserver(server.getAuthToken(), gameID);
-            WSCommunicator.sendUserCommand(joinObserver);
+            webSocketCommunicator.sendUserCommand(joinObserver);
             teamColor = null;
             if (response.message() != null){
                 throw new ResponseException(400, response.message());
@@ -309,7 +305,7 @@ public class Repl implements ServerMessageObserver{
 
             ChessMove move = inputToMove(params[0], params[1]);
             MakeMove makeMove = new MakeMove(server.getAuthToken(), gameID, move);
-            WSCommunicator.sendUserCommand(makeMove);
+            webSocketCommunicator.sendUserCommand(makeMove);
             return "";
         }
         throw new ResponseException(400, "Expected <a-h><1-8> for both start and end positions");
@@ -365,7 +361,7 @@ public class Repl implements ServerMessageObserver{
                 throw new ResponseException(400, "You are not in a game");
             }
             Leave leave = new Leave(server.getAuthToken(), gameID);
-            WSCommunicator.sendUserCommand(leave);
+            webSocketCommunicator.sendUserCommand(leave);
             inGame = false;
             return "You left the game";
         }
@@ -383,7 +379,7 @@ public class Repl implements ServerMessageObserver{
             }
 
             Resign resign = new Resign(server.getAuthToken(), gameID);
-            WSCommunicator.sendUserCommand(resign);
+            webSocketCommunicator.sendUserCommand(resign);
             return "You lost";
         }
         throw new ResponseException(400, "Expected no additional arguments");

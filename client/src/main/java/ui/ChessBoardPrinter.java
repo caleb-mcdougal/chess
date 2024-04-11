@@ -15,10 +15,10 @@ public class ChessBoardPrinter {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
 
-    private String[][] BOARD;
+    private String[][] board;
 
 
-    private String[][] PIECE_COLORS;
+    private String[][] pieceColors;
 
 
     private static final String[] EDGE = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 " };
@@ -26,9 +26,9 @@ public class ChessBoardPrinter {
     private static final String[] HEADER = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h " };
     private static final String EMPTY = "   ";
 
-    public ChessBoardPrinter(ChessBoard BOARD){
-        this.BOARD = boardToStringListPieces(BOARD);
-        this.PIECE_COLORS = boardToStringListColors(BOARD);
+    public ChessBoardPrinter(ChessBoard board){
+        this.board = boardToStringListPieces(board);
+        this.pieceColors = boardToStringListColors(board);
     }
 
     private String[][] boardToStringListPieces(ChessBoard board){
@@ -142,7 +142,7 @@ public class ChessBoardPrinter {
         drawHeaders(out, " W ");
         int counter = 0;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
-            drawRow(out, EDGE[7 - i], BOARD[7 - i], PIECE_COLORS[7 - i], counter, "WHITE", highlightBoard[7-i]);
+            drawRow(out, EDGE[7 - i], board[7 - i], pieceColors[7 - i], counter, "WHITE", highlightBoard[7-i]);
             counter += 1;
         }
         drawHeaders(out, " W ");
@@ -152,7 +152,7 @@ public class ChessBoardPrinter {
         drawHeaders(out, " B ");
         int counter = 1;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
-            drawRow(out, EDGE[i], BOARD[i], PIECE_COLORS[i], counter, "BLACK", highlightBoard[i]);
+            drawRow(out, EDGE[i], board[i], pieceColors[i], counter, "BLACK", highlightBoard[i]);
             counter += 1;
         }
 

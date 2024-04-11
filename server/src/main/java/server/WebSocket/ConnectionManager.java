@@ -53,24 +53,4 @@ public class ConnectionManager {
             gameMap.remove(c.visitorName);
         }
     }
-
-    public void sendMessageToRoot(String visitorName, ServerMessage serverMessage, Integer gameID){
-        System.out.println("in sendMessageToRoot");
-        ConcurrentHashMap<String, Connection> gameMap = connections.get(gameID);
-        var removeList = new ArrayList<Connection>();
-        for (var c : gameMap.values()) {
-            if (c.session.isOpen()) {
-                if (c.visitorName.equals(visitorName)) {
-                    c.send(new Gson().toJson(serverMessage));
-                }
-            } else {
-                removeList.add(c);
-            }
-        }
-
-        // Clean up any connections that were left open.
-        for (var c : removeList) {
-            gameMap.remove(c.visitorName);
-        }
-    }
 }

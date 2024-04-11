@@ -54,12 +54,5 @@ public class MemoryAuthDAO implements AuthDAO {
         authDB.clear();
     }
 
-    public int getDBSize(){
-        if(authDB != null) {
-            return authDB.size();
-        }
-        else {
-            return 0;
-        }    }
 
 }
